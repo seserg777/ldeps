@@ -1,30 +1,30 @@
 # ldeps
 
-Laravel проект с админ-панелью для управления каталогом товаров.
+Laravel project with admin panel for product catalog management.
 
-## Возможности
+## Features
 
-- **Админ-панель** с тёмным дизайном
-- **Управление товарами** и категориями
-- **Пользовательская система** с группами доступа
-- **API** для фронтенда
-- **Корзина** и избранное
-- **Многоязычность**
+- **Admin Panel** with dark theme design
+- **Product and Category Management**
+- **User System** with access groups
+- **API** for frontend
+- **Shopping Cart** and Wishlist
+- **Multilingual Support**
 
-## Установка
+## Installation
 
-1. Клонируйте репозиторий
-2. Скопируйте `.env.example` в `.env`
-3. Настройте подключение к БД
-4. Выполните:
+1. Clone the repository
+2. Copy `.env.example` to `.env`
+3. Configure database connection
+4. Run:
    ```bash
    composer install
    php artisan migrate
    php artisan db:seed
    ```
 
-## Админка
+## Admin Panel
 
-Доступ: `/admin`
-- Логин: пользователи из группы "Суперпользователи" (ID: 8)
-- Полностью изолированный интерфейс
+Access: `/admin`
+- Login: users with admin privileges
+- Completely isolated interface
