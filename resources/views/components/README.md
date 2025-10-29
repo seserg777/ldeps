@@ -1,103 +1,103 @@
 # Modal Components
 
-## Базовый модальный компонент
+## Base Modal Component
 
-`modal.blade.php` - это базовый компонент для создания модальных окон, который расширяют другие специализированные модальные окна.
+`modal.blade.php` is the base component for creating modal windows that other specialized modal windows extend.
 
-### Параметры
+### Parameters
 
-- `id` - уникальный идентификатор модального окна
-- `title` - заголовок модального окна
-- `size` - размер (sm, md, lg, xl)
-- `closable` - можно ли закрыть (true/false)
-- `backdrop` - закрытие по клику на фон (true/false)
-- `keyboard` - закрытие по Escape (true/false)
-- `dynamicTitle` - динамический заголовок через Alpine.js (true/false)
+- `id` - unique identifier for the modal window
+- `title` - modal window title
+- `size` - size (sm, md, lg, xl)
+- `closable` - whether it can be closed (true/false)
+- `backdrop` - close on backdrop click (true/false)
+- `keyboard` - close on Escape key (true/false)
+- `dynamicTitle` - dynamic title via Alpine.js (true/false)
 
-### Использование
+### Usage
 
 ```html
-<!-- Простое модальное окно -->
-<x-modal id="myModal" title="Заголовок">
-    <p>Содержимое модального окна</p>
+<!-- Simple modal window -->
+<x-modal id="myModal" title="Title">
+    <p>Modal window content</p>
 </x-modal>
 
-<!-- Модальное окно с футером -->
-<x-modal id="confirmModal" title="Подтверждение" size="sm">
-    <p>Вы уверены?</p>
+<!-- Modal with footer -->
+<x-modal id="confirmModal" title="Confirmation" size="sm">
+    <p>Are you sure?</p>
     
     <x-slot name="footer">
-        <button @click="$refs.confirmModal.close()">Отмена</button>
-        <button @click="confirm()">Подтвердить</button>
+        <button @click="$refs.confirmModal.close()">Cancel</button>
+        <button @click="confirm()">Confirm</button>
     </x-slot>
 </x-modal>
 
-<!-- Модальное окно с динамическим заголовком -->
-<x-modal id="dynamicModal" title="'Заголовок: ' + count" :dynamic-title="true">
-    <p>Содержимое</p>
+<!-- Modal with dynamic title -->
+<x-modal id="dynamicModal" title="'Title: ' + count" :dynamic-title="true">
+    <p>Content</p>
 </x-modal>
 ```
 
-### Управление через Alpine.js
+### Control via Alpine.js
 
 ```html
-<!-- Открытие -->
-<button @click="$refs.myModal.open()">Открыть</button>
+<!-- Open -->
+<button @click="$refs.myModal.open()">Open</button>
 
-<!-- Закрытие -->
-<button @click="$refs.myModal.close()">Закрыть</button>
+<!-- Close -->
+<button @click="$refs.myModal.close()">Close</button>
 
-<!-- Переключение -->
-<button @click="$refs.myModal.toggle()">Переключить</button>
+<!-- Toggle -->
+<button @click="$refs.myModal.toggle()">Toggle</button>
 ```
 
-## Специализированные модальные окна
+## Specialized Modal Windows
 
 ### Cart Modal
 
-Модальное окно корзины с товарами.
+Shopping cart modal with products.
 
 ```html
 <x-cart-modal />
 ```
 
-**Функции:**
-- Автоматическая загрузка товаров
-- Удаление товаров
-- Подсчёт суммы
-- Переход к полной корзине
+**Features:**
+- Automatic product loading
+- Product removal
+- Total calculation
+- Navigate to full cart page
 
 ### Product Quick View
 
-Модальное окно быстрого просмотра товара.
+Product quick view modal.
 
 ```html
 <x-product-quick-view />
 ```
 
-**Функции:**
-- Загрузка данных товара
-- Добавление в корзину
-- Добавление в избранное
-- Переход к странице товара
+**Features:**
+- Product data loading
+- Add to cart
+- Add to wishlist
+- Navigate to product page
 
-## Создание собственного модального окна
+## Creating Custom Modal Window
 
 ```html
 <!-- my-custom-modal.blade.php -->
 <div x-data="myCustomModal()">
     <x-modal 
         id="myCustomModal" 
-        title="Моё модальное окно"
+        title="My Modal Window"
         size="lg"
         :closable="true"
     >
-        <!-- Содержимое -->
-        <p>Содержимое моего модального окна</p>
+        <!-- Content -->
+        <p>My modal window content</p>
         
-        <!-- Футер -->
+        <!-- Footer -->
         <x-slot name="footer">
-            <button @click="$refs.myCustomModal.close()">Закрыть</button>
+            <button @click="$refs.myCustomModal.close()">Close</button>
         </x-slot>
     </x-modal>
 </div>
@@ -105,7 +105,7 @@
 <script>
 function myCustomModal() {
     return {
-        // Ваша логика Alpine.js
+        // Your Alpine.js logic
         open() {
             this.$refs.myCustomModal.open();
         },
@@ -118,10 +118,10 @@ function myCustomModal() {
 </script>
 ```
 
-## Преимущества архитектуры
+## Architecture Benefits
 
-1. **Переиспользование** - базовый компонент для всех модальных окон
-2. **Консистентность** - одинаковый внешний вид и поведение
-3. **Гибкость** - легко создавать новые модальные окна
-4. **Поддержка** - изменения в базовом компоненте применяются ко всем
-5. **Производительность** - один компонент для всех модальных окон
+1. **Reusability** - base component for all modal windows
+2. **Consistency** - same appearance and behavior
+3. **Flexibility** - easy to create new modal windows
+4. **Maintainability** - changes in base component apply to all
+5. **Performance** - one component for all modal windows
