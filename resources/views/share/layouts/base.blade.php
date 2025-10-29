@@ -35,14 +35,40 @@
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
 
-    <!-- Vue 3 -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Vite (manual include for frameworks без встроенной директивы @vite) -->
+    <?php
+        $hotPath = public_path('hot');
+        if (file_exists($hotPath)) {
+            $url = trim(file_get_contents($hotPath));
+            echo '<script type="module" src="' . $url . '/@vite/client"></script>';
+            echo '<script type="module" src="' . $url . '/resources/js/app.js"></script>';
+        } else {
+            $manifestPath = public_path('build/manifest.json');
+            if (file_exists($manifestPath)) {
+                $manifest = json_decode(file_get_contents($manifestPath), true);
+                $entry = $manifest['resources/js/app.js'] ?? null;
+                if ($entry) {
+                    // Always serve from build because current web root is project root
+                    if (!empty($entry['css'])) {
+                        foreach ($entry['css'] as $css) {
+                            $cssPublic = url('build/' . $css);
+                            $cssRoot = url('build/' . $css);
+                            echo '<script>(function(){var l=document.createElement("link");l.rel="stylesheet";l.href="' . $cssPublic . '";l.onerror=function(){l.href="' . $cssRoot . '"};document.head.appendChild(l)})();</script>';
+                        }
+                    }
+                    $jsPublic = url('build/' . $entry['file']);
+                    $jsRoot = url('build/' . $entry['file']);
+                    echo '<script type="module">import("' . $jsPublic . '").catch(()=>import("' . $jsRoot . '"))</script>';
+                }
+            }
+        }
+    ?>
 
     <!-- Google Fonts - Rubik with display=swap for better performance -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -70,9 +96,12 @@
         }
     </style>
 </head>
-<body id="app">
-    <!-- Header -->
-    @include('share.layouts.partials.header')
+<body>
+    <!-- Vue Root -->
+    <div id="vue-root">
+        <!-- Header -->
+        @include('share.layouts.partials.header')
+    </div>
 
     <!-- Breadcrumbs -->
     @hasSection('breadcrumbs')
@@ -96,6 +125,8 @@
     @stack('scripts')
 
     <!-- Vue Components -->
-    @stack('vue-components')
+    <div id="vue-root-modals">
+        @stack('vue-components')
+    </div>
 </body>
 </html>

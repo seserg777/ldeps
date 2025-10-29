@@ -46,6 +46,9 @@ Route::get('/api/products', [ProductController::class, 'getProducts'])->name('pr
 Route::get('/api/filters', [ProductController::class, 'getFilters'])->name('filters.api');
 Route::get('/api/search', [ProductController::class, 'search'])->name('search.api');
 
+// Vue products page
+Route::get('/products-vue', [ProductController::class, 'index'])->name('products.vue');
+
 // Wishlist routes
 Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
 Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');

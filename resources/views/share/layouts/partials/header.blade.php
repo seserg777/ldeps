@@ -82,22 +82,24 @@
                 @else
                     <!-- Guest Menu -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">
+                        <a class="nav-link" href="{{ route('auth.login') }}">
                             <i class="fas fa-sign-in-alt me-1"></i>Увійти
                         </a>
                     </li>
                 @endauth
-                
+
                 <!-- Cart -->
                 <li class="nav-item">
-                    <button 
-                        class="nav-link text-light border-0 bg-transparent" 
-                        title="Кошик"
-                        onclick="openCartModal()"
-                    >
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="badge bg-danger ms-1" id="cart-count">0</span>
-                    </button>
+                    <div class="nav-link p-0">
+                        <mini-cart
+                            cart-index-url="{{ route('cart.index') }}"
+                            cart-modal-url="{{ route('cart.modal') }}"
+                            cart-remove-url="{{ route('cart.remove') }}"
+                            csrf-token="{{ csrf_token() }}"
+                            count-url="{{ route('cart.count') }}"
+                            use-float="false"
+                        ></mini-cart>
+                    </div>
                 </li>
             </ul>
         </div>

@@ -93,7 +93,7 @@
                     <!-- Product Title -->
                     <h6 class="card-title mb-2 fw-bold text-dark">
                             <a href="{{ route('products.show-by-path', $product->full_path) }}" 
-                               class="text-decoration-none text-dark stretched-link">
+                               class="text-decoration-none text-dark">
                                 {{ Str::limit($product->name, 60) }}
                             </a>
                     </h6>

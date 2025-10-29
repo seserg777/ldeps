@@ -144,6 +144,11 @@ class ProductController extends Controller
             }])
             ->get();
 
+        // Check if Vue version is requested
+        if ($request->get('vue') === '1' || $request->routeIs('products.vue')) {
+            return view('front.products.index-vue', compact('products', 'manufacturers', 'priceRange', 'categories'));
+        }
+        
         return view('front.products.index-new', compact('products', 'manufacturers', 'priceRange', 'categories'));
     }
 
@@ -539,7 +544,11 @@ class ProductController extends Controller
             $query->priceRange($minPrice, $maxPrice);
         }
 
-        // Manufacturer filtering is handled by f parameter only
+        // Manufacturer filtering
+        if ($request->filled('manufacturers')) {
+            $manufacturerIds = array_map('intval', explode(',', $request->manufacturers));
+            $query->whereIn('product_manufacturer_id', $manufacturerIds);
+        }
 
         if ($request->filled('special_price')) {
             $query->specialPrice();
@@ -558,7 +567,12 @@ class ProductController extends Controller
 
         // Sorting
         $sortBy = $request->get('sort', 'date_added');
+        $sortDirection = $request->get('direction', 'desc');
+        
         switch ($sortBy) {
+            case 'price':
+                $query->orderBy('product_price', $sortDirection);
+                break;
             case 'price_asc':
                 $query->priceAsc();
                 break;
@@ -572,7 +586,7 @@ class ProductController extends Controller
                 $query->byRating();
                 break;
             case 'name':
-                $query->orderBy('name_uk-UA', 'asc');
+                $query->orderBy('name_uk-UA', $sortDirection);
                 break;
             default:
                 $query->orderBy('product_date_added', 'desc');
@@ -580,13 +594,124 @@ class ProductController extends Controller
         }
 
         $perPage = $request->get('per_page', 20);
-        $products = $query->paginate($perPage);
+        $products = $query->with(['manufacturer', 'categories', 'productCharacteristics.extraField', 'productCharacteristics.extraFieldValue'])
+                         ->paginate($perPage);
+
+        // Get manufacturers for filter
+        $manufacturers = Manufacturer::published()
+            ->ordered()
+            ->withCount(['products' => function($query) {
+                $query->published();
+            }])
+            ->having('products_count', '>', 0)
+            ->get();
+
+        // Group products by category for Vue components
+        $categories = [];
+        $productsByCategory = $products->groupBy(function($product) {
+            return $product->categories->first() ? $product->categories->first()->category_id : 'uncategorized';
+        });
+
+        foreach ($productsByCategory as $categoryId => $categoryProducts) {
+            if ($categoryId === 'uncategorized') {
+                $categories[] = [
+                    'category_id' => 'uncategorized',
+                    'name' => 'Інші товари',
+                    'description' => 'Товари без категорії',
+                    'url' => null,
+                    'products' => $this->formatProductsForVue($categoryProducts)
+                ];
+            } else {
+                $category = Category::find($categoryId);
+                if ($category) {
+                    $categories[] = [
+                        'category_id' => $category->category_id,
+                        'name' => $category->name,
+                        'description' => $category->description,
+                        'url' => route('category.show', $category->full_path),
+                        'products' => $this->formatProductsForVue($categoryProducts)
+                    ];
+                }
+            }
+        }
 
         return response()->json([
-            'html' => view('front.products.partials.product-grid', ['products' => $products])->render(),
-            'pagination' => view('front.products.partials.pagination', ['products' => $products])->render(),
-            'count' => $products->total(),
+            'success' => true,
+            'categories' => $categories,
+            'manufacturers' => $manufacturers,
+            'total' => $products->total(),
+            'pagination' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'per_page' => $products->perPage(),
+                'total' => $products->total()
+            ]
         ]);
+    }
+
+    /**
+     * Format products for Vue components
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $products
+     * @return array
+     */
+    private function formatProductsForVue($products)
+    {
+        return $products->map(function($product) {
+            return [
+                'product_id' => $product->product_id,
+                'name' => $product->name,
+                'short_description' => $product->product_short_description,
+                'thumbnail_url' => $product->thumbnail_url,
+                'product_price' => $product->product_price,
+                'formatted_price' => $product->formatted_price,
+                'old_price' => $product->product_price > 2000 ? number_format($product->product_price * 1.2, 2) : null,
+                'hits' => $product->hits ?? 0,
+                'rating' => 4, // Default rating
+                'reviews_count' => rand(10, 50),
+                'url' => route('products.show-by-path', $product->full_path),
+                'extra_fields' => $this->formatExtraFields($product),
+                'manufacturer' => $product->manufacturer ? [
+                    'name' => $product->manufacturer->name,
+                    'logo' => $product->manufacturer->manufacturer_logo
+                ] : null
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Format extra fields for Vue components
+     *
+     * @param \App\Models\Product\Product $product
+     * @return array
+     */
+    private function formatExtraFields($product)
+    {
+        try {
+            $extraFieldsData = $product->product_extra_fields ?? [];
+            if (!is_array($extraFieldsData) || is_string($extraFieldsData)) {
+                $extraFieldsData = [];
+            }
+            if (is_object($extraFieldsData) && method_exists($extraFieldsData, 'toArray')) {
+                $extraFieldsData = $extraFieldsData->toArray();
+            }
+        } catch (\Exception $e) {
+            $extraFieldsData = [];
+        }
+
+        $formattedFields = [];
+        if (is_array($extraFieldsData) && !empty($extraFieldsData)) {
+            foreach ($extraFieldsData as $extraField) {
+                if (is_array($extraField) && isset($extraField['field_name']) && isset($extraField['field_value'])) {
+                    $formattedFields[] = [
+                        'field_name' => $extraField['field_name'],
+                        'field_value' => $extraField['field_value']
+                    ];
+                }
+            }
+        }
+
+        return $formattedFields;
     }
 
     /**
