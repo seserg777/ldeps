@@ -439,24 +439,53 @@
         button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Додаємо...';
         button.disabled = true;
         
-        // Simulate API call
-        setTimeout(() => {
-            // Show success message
-            button.innerHTML = '<i class="fas fa-check me-1"></i>Додано!';
-            button.classList.remove('btn-primary');
-            button.classList.add('btn-success');
-            
-            // Show toast notification
-            showToast('Товар додано до кошика!', 'success');
-            
-            // Reset button after 2 seconds
-            setTimeout(() => {
+        // Real API call
+        $.ajax({
+            url: '{{ route("cart.add") }}',
+            method: 'POST',
+            data: {
+                product_id: productId,
+                quantity: 1,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    button.innerHTML = '<i class="fas fa-check me-1"></i>Додано!';
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-success');
+                    
+                    // Show toast notification
+                    showToast('Товар додано до кошика!', 'success');
+                    
+                    // Update cart count
+                    updateCartCount();
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.classList.remove('btn-success');
+                        button.classList.add('btn-primary');
+                        button.disabled = false;
+                    }, 2000);
+                } else {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    showToast('Помилка: ' + response.message, 'error');
+                }
+            },
+            error: function(xhr) {
                 button.innerHTML = originalText;
-                button.classList.remove('btn-success');
-                button.classList.add('btn-primary');
                 button.disabled = false;
-            }, 2000);
-        }, 1000);
+                showToast('Помилка додавання товару', 'error');
+            }
+        });
+    }
+    
+    // Update cart count function
+    function updateCartCount() {
+        $.get('{{ route("cart.count") }}', function(response) {
+            $('#cart-count').text(response.count);
+        });
     }
     
     // Load more products function
