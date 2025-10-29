@@ -35,6 +35,9 @@
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
     
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
     <!-- Google Fonts - Rubik with display=swap for better performance -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap"></noscript>
@@ -506,10 +509,14 @@
                 </a>
                 
                 <!-- Cart -->
-                <a class="nav-link text-light" href="{{ route('cart.index') }}" title="Кошик">
+                <button 
+                    class="nav-link text-light border-0 bg-transparent" 
+                    title="Кошик"
+                    @click="$refs.cartModal.open()"
+                >
                     <i class="fas fa-shopping-cart"></i>
                     <span class="badge bg-danger ms-1" id="cart-count">0</span>
-                </a>
+                </button>
             </div>
         </div>
     </nav>
@@ -1064,6 +1071,11 @@
         });
     });
     </script>
+    
+    <!-- Cart Modal -->
+    <div x-ref="cartModal">
+        <x-cart-modal />
+    </div>
 </body>
 </html>
 

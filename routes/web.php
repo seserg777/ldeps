@@ -58,6 +58,7 @@ Route::post('/cart/update', [CartController::class, 'update'])->name('cart.updat
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
+Route::get('/cart/modal', [CartController::class, 'modal'])->name('cart.modal');
 
 // Custom Authentication routes
 Route::prefix('auth')->group(function () {

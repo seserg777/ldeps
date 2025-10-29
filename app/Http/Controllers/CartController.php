@@ -178,4 +178,38 @@ class CartController extends Controller
         
         return response()->json(['count' => array_sum($cart)]);
     }
+
+    /**
+     * Get cart data for modal.
+     *
+     * @return JsonResponse
+     */
+    public function modal(): JsonResponse
+    {
+        $cart = session('cart', []);
+        
+        // Get products from cart
+        $products = Product::published()
+            ->whereIn('product_id', array_keys($cart))
+            ->get()
+            ->map(function($product) use ($cart) {
+                return [
+                    'product_id' => $product->product_id,
+                    'name' => $product->name,
+                    'price' => $product->product_price,
+                    'quantity' => $cart[$product->product_id] ?? 1,
+                    'image' => $product->product_image ?: '/images/no-image.svg'
+                ];
+            });
+
+        $total = $products->sum(function($product) {
+            return $product['price'] * $product['quantity'];
+        });
+
+        return response()->json([
+            'items' => $products,
+            'count' => array_sum($cart),
+            'total' => $total
+        ]);
+    }
 }
