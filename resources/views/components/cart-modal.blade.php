@@ -33,6 +33,7 @@
                             :src="item.image || '/images/no-image.svg'" 
                             :alt="item.name"
                             class="w-16 h-16 object-cover rounded-lg"
+                            @error="$event.target.src = '/images/no-image.svg'"
                         >
                     </div>
                     

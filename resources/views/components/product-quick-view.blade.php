@@ -20,20 +20,21 @@
             <!-- Product Image -->
             <div>
                 <img 
-                    :src="product.image || '/images/no-image.svg'" 
-                    :alt="product.name"
+                    :src="product ? (product.image || '/images/no-image.svg') : '/images/no-image.svg'" 
+                    :alt="product ? product.name : 'Product'"
                     class="w-full h-64 object-cover rounded-lg"
+                    @error="$event.target.src = '/images/no-image.svg'"
                 >
             </div>
             
             <!-- Product Info -->
             <div>
-                <h2 class="text-2xl font-bold text-gray-900 mb-2" x-text="product.name"></h2>
-                <p class="text-lg font-semibold text-blue-600 mb-4" x-text="formatPrice(product.price)"></p>
-                <p class="text-gray-600 mb-4" x-text="product.description"></p>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2" x-text="product ? product.name : ''"></h2>
+                <p class="text-lg font-semibold text-blue-600 mb-4" x-text="product ? formatPrice(product.price) : ''"></p>
+                <p class="text-gray-600 mb-4" x-text="product ? product.description : ''"></p>
                 
                 <!-- Actions -->
-                <div class="flex space-x-3">
+                <div class="flex space-x-3" x-show="product">
                     <button 
                         @click="addToCart(product.product_id)"
                         class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -62,6 +63,7 @@
                 <a 
                     :href="product ? '/products/' + product.product_id : '#'"
                     class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    x-show="product"
                 >
                     Перейти до товару
                 </a>
