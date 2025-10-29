@@ -55,38 +55,18 @@
 
             <!-- Right Navigation -->
             <ul class="navbar-nav">
-                @auth('custom')
-                    <!-- User Menu -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-1"></i>{{ auth('custom')->user()->username }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ route('profile.index') }}">
-                                <i class="fas fa-user me-2"></i>Профіль
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ route('wishlist.index') }}">
-                                <i class="fas fa-heart me-2"></i>Список бажань
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('auth.logout') }}" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Вийти
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                @else
-                    <!-- Guest Menu -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('auth.login') }}">
-                            <i class="fas fa-sign-in-alt me-1"></i>Увійти
-                        </a>
-                    </li>
-                @endauth
+                <!-- Auth Button (Vue) -->
+                <li class="nav-item">
+                    <div class="nav-link p-0">
+                        <auth-button
+                            :is-authenticated="{{ auth('custom')->check() ? 'true' : 'false' }}"
+                            username="{{ auth('custom')->check() ? auth('custom')->user()->username : '' }}"
+                            login-url="{{ route('auth.login.submit') }}"
+                            logout-url="{{ route('auth.logout') }}"
+                            csrf-token="{{ csrf_token() }}"
+                        ></auth-button>
+                    </div>
+                </li>
 
                 <!-- Cart -->
                 <li class="nav-item">

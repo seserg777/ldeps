@@ -15,6 +15,10 @@ use App\Http\Controllers\Admin\CategoryAdminController;
 use App\Http\Controllers\Admin\ManufacturerAdminController;
 use App\Http\Controllers\Admin\OrderAdminController;
 use App\Http\Controllers\Admin\CustomerAdminController;
+use App\Http\Controllers\Admin\MenuTypeController;
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ContentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -158,6 +162,58 @@ Route::prefix('admin')
         // Sales
         Route::get('/orders', [OrderAdminController::class, 'index'])->name('admin.orders');
         Route::get('/customers', [CustomerAdminController::class, 'index'])->name('admin.customers');
+
+        // Menu Management
+        Route::prefix('menu')->group(function () {
+            // Menu Types
+            Route::get('/types', [MenuTypeController::class, 'index'])->name('admin.menu.types.index');
+            Route::get('/types/create', [MenuTypeController::class, 'create'])->name('admin.menu.types.create');
+            Route::post('/types', [MenuTypeController::class, 'store'])->name('admin.menu.types.store');
+            Route::get('/types/{menuType}', [MenuTypeController::class, 'show'])->name('admin.menu.types.show');
+            Route::get('/types/{menuType}/edit', [MenuTypeController::class, 'edit'])->name('admin.menu.types.edit');
+            Route::put('/types/{menuType}', [MenuTypeController::class, 'update'])->name('admin.menu.types.update');
+            Route::delete('/types/{menuType}', [MenuTypeController::class, 'destroy'])->name('admin.menu.types.destroy');
+            Route::post('/types/update-ordering', [MenuTypeController::class, 'updateOrdering'])->name('admin.menu.types.update-ordering');
+
+            // Menu Items
+            Route::get('/{menutype}/items', [MenuController::class, 'index'])->name('admin.menu.items.index');
+            Route::get('/{menutype}/items/create', [MenuController::class, 'create'])->name('admin.menu.items.create');
+            Route::post('/{menutype}/items', [MenuController::class, 'store'])->name('admin.menu.items.store');
+            Route::get('/{menutype}/items/{menu}', [MenuController::class, 'show'])->name('admin.menu.items.show');
+            Route::get('/{menutype}/items/{menu}/edit', [MenuController::class, 'edit'])->name('admin.menu.items.edit');
+            Route::put('/{menutype}/items/{menu}', [MenuController::class, 'update'])->name('admin.menu.items.update');
+            Route::delete('/{menutype}/items/{menu}', [MenuController::class, 'destroy'])->name('admin.menu.items.destroy');
+            Route::post('/{menutype}/items/{menu}/toggle-published', [MenuController::class, 'togglePublished'])->name('admin.menu.items.toggle-published');
+            Route::post('/{menutype}/items/{menu}/trash', [MenuController::class, 'trash'])->name('admin.menu.items.trash');
+            Route::post('/{menutype}/items/{menu}/restore', [MenuController::class, 'restore'])->name('admin.menu.items.restore');
+        });
+
+        // Content Management
+        Route::prefix('content')->group(function () {
+            // Categories
+            Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+            Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+            Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+            Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('admin.categories.show');
+            Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+            Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+            Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+            Route::post('/categories/{category}/toggle-published', [CategoryController::class, 'togglePublished'])->name('admin.categories.toggle-published');
+
+            // Content
+            Route::get('/', [ContentController::class, 'index'])->name('admin.content.index');
+            Route::get('/create', [ContentController::class, 'create'])->name('admin.content.create');
+            Route::post('/', [ContentController::class, 'store'])->name('admin.content.store');
+            Route::get('/{content}', [ContentController::class, 'show'])->name('admin.content.show');
+            Route::get('/{content}/edit', [ContentController::class, 'edit'])->name('admin.content.edit');
+            Route::put('/{content}', [ContentController::class, 'update'])->name('admin.content.update');
+            Route::delete('/{content}', [ContentController::class, 'destroy'])->name('admin.content.destroy');
+            Route::post('/{content}/toggle-published', [ContentController::class, 'togglePublished'])->name('admin.content.toggle-published');
+            Route::post('/{content}/archive', [ContentController::class, 'archive'])->name('admin.content.archive');
+            Route::post('/{content}/trash', [ContentController::class, 'trash'])->name('admin.content.trash');
+            Route::post('/{content}/restore', [ContentController::class, 'restore'])->name('admin.content.restore');
+            Route::post('/{content}/toggle-featured', [ContentController::class, 'toggleFeatured'])->name('admin.content.toggle-featured');
+        });
     });
 
 // Static files

@@ -6,6 +6,7 @@ import { Categories, Category, ProductList, Product } from './features/catalog/c
 import { BaseButton, UiCard } from './shared/components'
 import UiModal from './shared/components/Ui/UiModal.vue'
 import { MiniCart, MiniCartModal } from './features/cart/components'
+import { AuthButton } from './features/auth/components'
 
 // Make components globally available
 // Bootstrap Vue apps and register components globally so they work in Blade in-DOM templates
@@ -196,4 +197,30 @@ if (document.readyState === 'interactive' || document.readyState === 'complete')
   mountMiniCartIslands()
 } else {
   document.addEventListener('DOMContentLoaded', mountMiniCartIslands)
+}
+
+// Mount AuthButton islands
+function mountAuthIslands() {
+  const nodes = document.querySelectorAll('auth-button')
+  nodes.forEach((el) => {
+    if (el.__vue_app__) return
+    const props = {
+      isAuthenticated: el.getAttribute('is-authenticated') === 'true',
+      username: el.getAttribute('username') || '',
+      loginUrl: el.getAttribute('login-url'),
+      logoutUrl: el.getAttribute('logout-url'),
+      csrfToken: el.getAttribute('csrf-token')
+    }
+    try {
+      const app = createApp(AuthButton, props)
+      app.mount(el)
+      el.__vue_app__ = app
+    } catch (e) {}
+  })
+}
+
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  mountAuthIslands()
+} else {
+  document.addEventListener('DOMContentLoaded', mountAuthIslands)
 }

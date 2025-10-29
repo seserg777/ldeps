@@ -9,7 +9,7 @@
     'actions' => [],
     'bulkActions' => [],
     'pagination' => true,
-    'perPage' => 15,
+    'perPage' => 10,
     'showFilters' => false,
     'filters' => [],
     'emptyMessage' => 'Нет данных для отображения',
@@ -93,16 +93,23 @@
                     </div>
                 @endif
 
-                @if($showFilters && count($filters) > 0)
+                @if(($showFilters || count($filters) > 0) && count($filters) > 0)
                     <div class="flex space-x-2">
                         @foreach($filters as $filter)
-                            <select class="text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                <option>{{ $filter['label'] }}</option>
+                            <select name="{{ $filter['key'] }}" class="text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                 @foreach($filter['options'] as $value => $label)
-                                    <option value="{{ $value }}">{{ $label }}</option>
+                                    <option value="{{ $value }}" {{ request($filter['key']) == $value ? 'selected' : '' }}>{{ $label }}</option>
                                 @endforeach
                             </select>
                         @endforeach
+                        <button type="submit" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-filter mr-1"></i>
+                            Фильтр
+                        </button>
+                        <a href="{{ request()->url() }}" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-times mr-1"></i>
+                            Очистить
+                        </a>
                     </div>
                 @endif
             </div>
@@ -191,6 +198,75 @@
                                                 @else
                                                     <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
                                                         {{ ucfirst($value) }}
+                                                    </span>
+                                                @endif
+                                                @break
+                                            @case('client_type')
+                                                @if($value == 0)
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                        Фронтенд
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                        Админка
+                                                    </span>
+                                                @endif
+                                                @break
+                                            @case('menu_status')
+                                                @if($value == 1)
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                                        Опубликовано
+                                                    </span>
+                                                @elseif($value == 0)
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                        Не опубликовано
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                                        В корзине
+                                                    </span>
+                                                @endif
+                                                @break
+                                            @case('hierarchical')
+                                                <div style="padding-left: {{ ($item->level - 1) * 20 }}px;">
+                                                    @if($item->level > 1)
+                                                        <i class="fas fa-level-down-alt text-gray-400 mr-1"></i>
+                                                    @endif
+                                                    <strong>{{ $value }}</strong>
+                                                    @if($item->note)
+                                                        <br><small class="text-gray-500">{{ $item->note }}</small>
+                                                    @endif
+                                                </div>
+                                                @break
+                                            @case('content_status')
+                                                @if($value == 1)
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                                        Опубликовано
+                                                    </span>
+                                                @elseif($value == 0)
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                        Не опубликовано
+                                                    </span>
+                                                @elseif($value == 2)
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                        В архиве
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                                        В корзине
+                                                    </span>
+                                                @endif
+                                                @break
+                                            @case('boolean')
+                                                @if($value)
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                                        <i class="fas fa-check mr-1"></i>
+                                                        Да
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                        <i class="fas fa-times mr-1"></i>
+                                                        Нет
                                                     </span>
                                                 @endif
                                                 @break

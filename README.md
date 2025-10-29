@@ -1,16 +1,19 @@
 # ldeps
 
-Laravel project with admin panel for product catalog management.
+Laravel project with comprehensive admin panel for e-commerce and content management.
 
 ## Features
 
-- **Admin Panel** with dark theme design
-- **Product and Category Management**
-- **User System** with access groups
-- **API** for frontend
-- **Shopping Cart** and Wishlist
-- **Multilingual Support**
+- **Admin Panel** with dark theme design and English interface
+- **Product and Category Management** with hierarchical structure
+- **Content Management System** with categories and articles
+- **Menu Management** with types and hierarchical items
+- **User System** with access groups and authentication
+- **Shopping Cart** and Wishlist with Vue.js components
+- **Vue.js Frontend** with Composition API and Vite build system
+- **Multilingual Support** (Russian, Ukrainian, English)
 - **Modular Architecture** following Laravel best practices
+- **Responsive Design** with Tailwind CSS
 
 ## Project Structure
 
@@ -32,7 +35,11 @@ app/
 │   │       ├── CategoryAdminController.php
 │   │       ├── ManufacturerAdminController.php
 │   │       ├── OrderAdminController.php
-│   │       └── CustomerAdminController.php
+│   │       ├── CustomerAdminController.php
+│   │       ├── MenuTypeController.php
+│   │       ├── MenuController.php
+│   │       ├── CategoryController.php
+│   │       └── ContentController.php
 │   ├── Middleware/        # Custom middleware
 │   ├── Requests/          # Form request validation
 │   └── Resources/         # API resources

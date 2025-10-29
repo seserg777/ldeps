@@ -1,12 +1,12 @@
 @extends('admin.layout')
 
-@section('title', 'Дашборд')
+@section('title', 'Dashboard')
 
 @section('content')
     <!-- Welcome section -->
     <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900">Добро пожаловать в админ панель!</h1>
-        <p class="mt-1 text-sm text-gray-600">Управляйте товарами, заказами и настройками сайта</p>
+        <h1 class="text-2xl font-bold text-gray-900">Welcome to Admin Panel!</h1>
+        <p class="mt-1 text-sm text-gray-600">Manage products, orders and site settings</p>
     </div>
 
     <!-- KPI Cards -->
@@ -22,7 +22,7 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Товары</dt>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Products</dt>
                             <dd class="text-lg font-medium text-gray-900">{{ \App\Models\Product\Product::count() }}</dd>
                         </dl>
                     </div>
@@ -31,7 +31,7 @@
             <div class="bg-gray-50 px-5 py-3">
                 <div class="text-sm">
                     <a href="{{ route('admin.products') }}" class="font-medium text-blue-600 hover:text-blue-500">
-                        Управление товарами
+                        Manage Products
                     </a>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Категории</dt>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Categories</dt>
                             <dd class="text-lg font-medium text-gray-900">{{ \App\Models\Category\Category::count() }}</dd>
                         </dl>
                     </div>
@@ -57,7 +57,7 @@
             <div class="bg-gray-50 px-5 py-3">
                 <div class="text-sm">
                     <a href="{{ route('admin.categories') }}" class="font-medium text-green-600 hover:text-green-500">
-                        Управление категориями
+                        Manage Categories
                     </a>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Заказы</dt>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Orders</dt>
                             <dd class="text-lg font-medium text-gray-900">0</dd>
                         </dl>
                     </div>
@@ -83,7 +83,7 @@
             <div class="bg-gray-50 px-5 py-3">
                 <div class="text-sm">
                     <a href="{{ route('admin.orders') }}" class="font-medium text-yellow-600 hover:text-yellow-500">
-                        Управление заказами
+                        Manage Orders
                     </a>
                 </div>
             </div>
@@ -100,7 +100,7 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Пользователи</dt>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Users</dt>
                             <dd class="text-lg font-medium text-gray-900">0</dd>
                         </dl>
                     </div>
@@ -109,7 +109,7 @@
             <div class="bg-gray-50 px-5 py-3">
                 <div class="text-sm">
                     <a href="{{ route('admin.customers') }}" class="font-medium text-purple-600 hover:text-purple-500">
-                        Управление пользователями
+                        Manage Users
                     </a>
                 </div>
             </div>
@@ -119,17 +119,17 @@
     <!-- Recent Activity -->
     <div class="bg-white shadow rounded-lg">
         <div class="px-4 py-5 sm:p-6">
-            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Последние товары</h3>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Latest Products</h3>
             <div class="overflow-hidden">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Название</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Категория</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Производитель</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Цена</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Статус</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Manufacturer</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -151,11 +151,11 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($product->product_publish)
                                         <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                            Опубликован
+                                            Published
                                         </span>
                                     @else
                                         <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                            Скрыт
+                                            Hidden
                                         </span>
                                     @endif
                                 </td>
@@ -163,7 +163,7 @@
                         @empty
                             <tr>
                                 <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
-                                    Товары не найдены
+                                    No products found
                                 </td>
                             </tr>
                         @endforelse
@@ -173,7 +173,7 @@
             <div class="mt-4">
                 <a href="{{ route('admin.products') }}" 
                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Посмотреть все товары
+                    View All Products
                     <i class="fas fa-arrow-right ml-2"></i>
                 </a>
             </div>

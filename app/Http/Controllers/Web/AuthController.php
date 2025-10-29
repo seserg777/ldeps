@@ -68,7 +68,13 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended('/profile');
+        // Prefer explicit redirect URL from the form (stay on the same page)
+        $redirectUrl = $request->input('redirect');
+        if ($redirectUrl && filter_var($redirectUrl, FILTER_VALIDATE_URL)) {
+            return redirect()->to($redirectUrl);
+        }
+
+        return redirect()->intended(url()->previous() ?: '/');
     }
 
     /**
@@ -84,7 +90,11 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        $redirectUrl = $request->input('redirect');
+        if ($redirectUrl && filter_var($redirectUrl, FILTER_VALIDATE_URL)) {
+            return redirect()->to($redirectUrl);
+        }
+        return redirect()->back()->withInput([]);
     }
 
     /**
