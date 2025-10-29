@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ContentStoreRequest;
 use App\Models\Content\Content;
 use App\Models\Content\Category;
 use Illuminate\Http\Request;
@@ -280,25 +281,8 @@ class ContentController extends Controller
     /**
      * Store a newly created content.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(ContentStoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'alias' => 'required|string|max:400',
-            'introtext' => 'nullable|string',
-            'fulltext' => 'nullable|string',
-            'state' => 'required|integer|in:0,1,2,-2',
-            'catid' => 'required|integer|exists:vjprf_categories,id',
-            'created_by_alias' => 'nullable|string|max:255',
-            'publish_up' => 'nullable|date',
-            'publish_down' => 'nullable|date|after:publish_up',
-            'metakey' => 'nullable|string',
-            'metadesc' => 'nullable|string',
-            'access' => 'required|integer|min:0',
-            'featured' => 'boolean',
-            'language' => 'nullable|string|max:7',
-            'note' => 'nullable|string|max:255'
-        ]);
 
         $data = $request->all();
         $data['created'] = now();
@@ -309,7 +293,7 @@ class ContentController extends Controller
         Content::create($data);
 
         return redirect()->route('admin.content.index')
-            ->with('success', 'Контент успешно создан.');
+            ->with('success', 'Content successfully created.');
     }
 
     /**
@@ -362,7 +346,7 @@ class ContentController extends Controller
         $content->update($data);
 
         return redirect()->route('admin.content.index')
-            ->with('success', 'Контент успешно обновлен.');
+            ->with('success', 'Content successfully updated.');
     }
 
     /**
@@ -373,7 +357,7 @@ class ContentController extends Controller
         $content->delete();
 
         return redirect()->route('admin.content.index')
-            ->with('success', 'Контент успешно удален.');
+            ->with('success', 'Content successfully deleted.');
     }
 
     /**
@@ -429,7 +413,7 @@ class ContentController extends Controller
     {
         $content->update(['featured' => !$content->featured]);
 
-        $status = $content->featured ? 'добавлен в рекомендуемые' : 'удален из рекомендуемых';
+        $status = $content->featured ? 'added to featured' : 'removed from featured';
         return redirect()->route('admin.content.index')
             ->with('success', "Контент {$status}.");
     }

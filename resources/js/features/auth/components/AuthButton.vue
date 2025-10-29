@@ -36,7 +36,7 @@ const props = defineProps({
 })
 
 const isOpen = ref(false)
-const btnTitle = props.isAuthenticated ? 'Обліковий запис' : 'Увійти'
+const btnTitle = props.isAuthenticated ? 'Account' : 'Login'
 
 function open() { isOpen.value = true }
 </script>

@@ -13,13 +13,13 @@
 
     <div class="card-body d-flex flex-column p-3">
       <h6 class="card-title mb-2 fw-bold text-dark">
-        <a :href="product.url" class="text-decoration-none text-dark">
+        <a :href="productUrl" class="text-decoration-none text-dark">
           {{ product.name }}
         </a>
       </h6>
 
       <p class="card-text text-muted small mb-2 flex-grow-1">
-        {{ product.short_description || 'Оптичний кабель високої якості для професійного використання' }}
+        {{ productDescription }}
       </p>
 
       <div v-if="product.extra_fields && product.extra_fields.length > 0" class="product-extra-fields mb-2">
@@ -31,7 +31,7 @@
 
       <div class="product-rating mb-2">
         <div class="stars d-inline-block">
-          <i v-for="i in 5" :key="i" :class="i <= product.rating ? 'fas fa-star text-warning' : 'far fa-star text-warning'" />
+          <i v-for="i in 5" :key="i" :class="i <= productRating ? 'fas fa-star text-warning' : 'far fa-star text-warning'" />
         </div>
         <small class="text-muted ms-1">({{ product.reviews_count || Math.floor(Math.random() * 50) + 10 }})</small>
       </div>
@@ -41,9 +41,9 @@
       <div class="product-actions">
         <div class="d-flex justify-content-between align-items-center">
           <small class="text-muted">
-            <i class="fas fa-eye me-1"></i>{{ product.hits || 0 }} переглядів
+            <i class="fas fa-eye me-1"></i>{{ product.hits || 0 }} views
           </small>
-          <ProductActions :product-id="product.product_id" :url="product.url" @cart="handleAddToCart" @wishlist="handleAddToWishlist" />
+          <ProductActions :product-id="product.product_id" :url="productUrl" @cart="handleAddToCart" @wishlist="handleAddToWishlist" />
         </div>
       </div>
     </div>
@@ -60,12 +60,12 @@ const props = defineProps({
 
 const emit = defineEmits(['add-to-cart', 'add-to-wishlist'])
 
-const product = computed(() => ({
-  ...props.product,
-  url: props.product.url || `/products/${props.product.product_id}`,
-  rating: props.product.rating || 4,
-  short_description: props.product.short_description || props.product.product_short_description
-}))
+const productUrl = computed(() => props.product.url || `/products/${props.product.product_id}`)
+const productRating = computed(() => props.product.rating || 4)
+const productDescription = computed(() => 
+  props.product.short_description || props.product.product_short_description || 
+  'High quality optical cable for professional use'
+)
 
 const handleAddToCart = () => emit('add-to-cart', props.product.product_id)
 const handleAddToWishlist = () => emit('add-to-wishlist', props.product.product_id)

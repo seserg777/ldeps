@@ -29,7 +29,7 @@ const props = defineProps({
   csrfToken: { type: String, required: true },
   countUrl: { type: String, default: '/cart/count' },
   initialCount: { type: Number, default: 0 },
-  title: { type: String, default: 'Кошик' },
+  title: { type: String, default: 'Cart' },
   useFloat: { type: Boolean, default: false }
 })
 

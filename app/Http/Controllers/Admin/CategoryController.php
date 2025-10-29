@@ -3,13 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CategoryStoreRequest;
 use App\Models\Content\Category;
+use App\Services\Admin\CategoryService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
 class CategoryController extends Controller
 {
+    private CategoryService $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     /**
      * Display a listing of categories.
      */
@@ -216,37 +225,18 @@ class CategoryController extends Controller
     /**
      * Store a newly created category.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CategoryStoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'alias' => 'required|string|max:400',
-            'note' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'published' => 'boolean',
-            'parent_id' => 'required|integer',
-            'access' => 'required|integer|min:0',
-            'extension' => 'required|string|max:50',
-            'language' => 'nullable|string|max:7',
-            'metadesc' => 'nullable|string|max:1024',
-            'metakey' => 'nullable|string|max:1024'
-        ]);
 
-        $data = $request->all();
-        $data['path'] = $this->generatePath($data['alias'], $data['parent_id']);
-        $data['level'] = $this->calculateLevel($data['parent_id']);
-        $data['lft'] = $this->calculateLft($data['parent_id']);
-        $data['rgt'] = $data['lft'] + 1;
-        $data['created_time'] = now();
-        $data['modified_time'] = now();
+        $data = $this->categoryService->prepareCategoryData($request->all());
 
         // Update rgt values for parent and siblings
-        $this->updateRgtValues($data['lft']);
+        $this->categoryService->updateRgtValues($data['lft']);
 
         Category::create($data);
 
         return redirect()->route('admin.categories.index')
-            ->with('success', 'Категория успешно создана.');
+            ->with('success', 'Category successfully created.');
     }
 
     /**
@@ -265,7 +255,7 @@ class CategoryController extends Controller
     public function edit(Category $category): View
     {
         $parentCategories = Category::where('id', '!=', $category->id)->orderBy('lft')->get();
-        
+
         return view('admin.content.categories.edit', compact('category', 'parentCategories'));
     }
 
@@ -301,7 +291,7 @@ class CategoryController extends Controller
         $category->update($data);
 
         return redirect()->route('admin.categories.index')
-            ->with('success', 'Категория успешно обновлена.');
+            ->with('success', 'Category successfully updated.');
     }
 
     /**
@@ -327,7 +317,7 @@ class CategoryController extends Controller
         $category->delete();
 
         return redirect()->route('admin.categories.index')
-            ->with('success', 'Категория успешно удалена.');
+            ->with('success', 'Category successfully deleted.');
     }
 
     /**
@@ -337,75 +327,9 @@ class CategoryController extends Controller
     {
         $category->update(['published' => !$category->published]);
 
-        $status = $category->published ? 'опубликована' : 'снята с публикации';
+        $status = $category->published ? 'published' : 'unpublished';
         return redirect()->route('admin.categories.index')
-            ->with('success', "Категория {$status}.");
+            ->with('success', "Category {$status}.");
     }
 
-    /**
-     * Generate path for category.
-     */
-    private function generatePath($alias, $parentId)
-    {
-        if ($parentId == 0) {
-            return $alias;
-        }
-
-        $parent = Category::find($parentId);
-        return $parent ? $parent->path . '/' . $alias : $alias;
-    }
-
-    /**
-     * Calculate level for category.
-     */
-    private function calculateLevel($parentId)
-    {
-        if ($parentId == 0) {
-            return 1;
-        }
-
-        $parent = Category::find($parentId);
-        return $parent ? $parent->level + 1 : 1;
-    }
-
-    /**
-     * Calculate lft value for category.
-     */
-    private function calculateLft($parentId)
-    {
-        if ($parentId == 0) {
-            return Category::max('rgt') + 1;
-        }
-
-        $parent = Category::find($parentId);
-        return $parent ? $parent->rgt : Category::max('rgt') + 1;
-    }
-
-    /**
-     * Update rgt values for parent and siblings.
-     */
-    private function updateRgtValues($lft)
-    {
-        Category::where('rgt', '>=', $lft)->increment('rgt', 2);
-        Category::where('lft', '>', $lft)->increment('lft', 2);
-    }
-
-    /**
-     * Update lft/rgt values when parent changes.
-     */
-    private function updateLftRgtValues($category, $newParentId)
-    {
-        // Implementation for updating nested set values
-        // This is a simplified version - in production you'd want more robust logic
-    }
-
-    /**
-     * Update rgt values after deletion.
-     */
-    private function updateRgtValuesAfterDelete($lft, $rgt)
-    {
-        $diff = $rgt - $lft + 1;
-        Category::where('rgt', '>', $rgt)->decrement('rgt', $diff);
-        Category::where('lft', '>', $rgt)->decrement('lft', $diff);
-    }
 }

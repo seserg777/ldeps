@@ -276,7 +276,7 @@ class MenuController extends Controller
         Menu::create($data);
 
         return redirect()->route('admin.menu.items.index', $menutype)
-            ->with('success', 'Пункт меню успешно создан.');
+            ->with('success', 'Menu item successfully created.');
     }
 
     /**
@@ -335,7 +335,7 @@ class MenuController extends Controller
         $menu->update($data);
 
         return redirect()->route('admin.menu.items.index', $menutype)
-            ->with('success', 'Пункт меню успешно обновлен.');
+            ->with('success', 'Menu item successfully updated.');
     }
 
     /**
@@ -355,7 +355,7 @@ class MenuController extends Controller
         $menu->delete();
 
         return redirect()->route('admin.menu.items.index', $menutype)
-            ->with('success', 'Пункт меню успешно удален.');
+            ->with('success', 'Menu item successfully deleted.');
     }
 
     /**

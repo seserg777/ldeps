@@ -5,25 +5,25 @@
         <input type="hidden" name="_token" :value="csrfToken" />
         <input type="hidden" name="redirect" :value="redirectUrl" />
         <div class="mb-3">
-          <label class="form-label">Логін</label>
+          <label class="form-label">Login</label>
           <input v-model="username" name="username" class="form-control" required />
         </div>
         <div class="mb-3">
-          <label class="form-label">Пароль</label>
+          <label class="form-label">Password</label>
           <input v-model="password" name="password" type="password" class="form-control" required />
         </div>
         <div class="d-grid">
-          <button type="submit" class="btn btn-primary">Увійти</button>
+          <button type="submit" class="btn btn-primary">Login</button>
         </div>
       </form>
     </div>
 
     <div v-else class="text-center">
-      <p class="mb-3">Ви увійшли як <strong>{{ usernameLabel }}</strong></p>
+      <p class="mb-3">Logged in as <strong>{{ usernameLabel }}</strong></p>
       <form :action="logoutUrl" method="POST">
         <input type="hidden" name="_token" :value="csrfToken" />
         <input type="hidden" name="redirect" :value="redirectUrl" />
-        <button type="submit" class="btn btn-outline-danger">Вийти</button>
+        <button type="submit" class="btn btn-outline-danger">Logout</button>
       </form>
     </div>
   </ui-modal>
@@ -52,8 +52,8 @@ watch(isOpen, v => emit('update:modelValue', v))
 const usernameField = ref('')
 const passwordField = ref('')
 
-const usernameLabel = computed(() => props.username || 'користувач')
-const modalTitle = computed(() => props.isAuthenticated ? 'Обліковий запис' : 'Вхід')
+const usernameLabel = computed(() => props.username || 'user')
+const modalTitle = computed(() => props.isAuthenticated ? 'Account' : 'Login')
 
 const redirectUrl = computed(() => window.location.href)
 

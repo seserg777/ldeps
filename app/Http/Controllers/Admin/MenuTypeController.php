@@ -155,7 +155,7 @@ class MenuTypeController extends Controller
         MenuType::create($data);
 
         return redirect()->route('admin.menu.types.index')
-            ->with('success', 'Тип меню успешно создан.');
+            ->with('success', 'Menu type successfully created.');
     }
 
     /**
@@ -193,7 +193,7 @@ class MenuTypeController extends Controller
         $menuType->update($request->all());
 
         return redirect()->route('admin.menu.types.index')
-            ->with('success', 'Тип меню успешно обновлен.');
+            ->with('success', 'Menu type successfully updated.');
     }
 
     /**
@@ -210,7 +210,7 @@ class MenuTypeController extends Controller
         $menuType->delete();
 
         return redirect()->route('admin.menu.types.index')
-            ->with('success', 'Тип меню успешно удален.');
+            ->with('success', 'Menu type successfully deleted.');
     }
 
     /**
@@ -228,6 +228,6 @@ class MenuTypeController extends Controller
         }
 
         return redirect()->route('admin.menu.types.index')
-            ->with('success', 'Порядок типов меню обновлен.');
+            ->with('success', 'Menu types order updated.');
     }
 }
