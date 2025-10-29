@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SaleBannerController;
+use App\Http\Controllers\Web\WishlistController;
+use App\Http\Controllers\Web\CartController;
+use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\ProfileController;
+use App\Http\Controllers\Web\SaleBannerController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\Admin\ProductAdminController;
@@ -35,6 +35,7 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
 // Category routes with hierarchical alias
+Route::get('/categories', [ProductController::class, 'categories'])->name('categories.index');
 Route::get('/category/{path}', [ProductController::class, 'category'])->name('category.show')->where('path', '.*');
 
 // Language switching
@@ -59,6 +60,31 @@ Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remov
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
 Route::get('/cart/modal', [CartController::class, 'modal'])->name('cart.modal');
+
+// Static files routes
+Route::get('/images/{filename}', function ($filename) {
+    $path = public_path('images/' . $filename);
+    if (file_exists($path)) {
+        return response()->file($path);
+    }
+    abort(404);
+})->where('filename', '.*');
+
+Route::get('/favicon.ico', function () {
+    $path = public_path('favicon.ico');
+    if (file_exists($path)) {
+        return response()->file($path);
+    }
+    abort(404);
+});
+
+Route::get('/sw.js', function () {
+    $path = public_path('sw.js');
+    if (file_exists($path)) {
+        return response()->file($path);
+    }
+    abort(404);
+});
 
 // Custom Authentication routes
 Route::prefix('auth')->group(function () {
@@ -107,13 +133,46 @@ Route::prefix('admin')
 
         // Catalog
         Route::get('/products', [ProductAdminController::class, 'index'])->name('admin.products');
+        Route::get('/products/create', [ProductAdminController::class, 'create'])->name('admin.products.create');
+        Route::post('/products', [ProductAdminController::class, 'store'])->name('admin.products.store');
+        Route::get('/products/{id}/edit', [ProductAdminController::class, 'edit'])->name('admin.products.edit');
+        Route::put('/products/{id}', [ProductAdminController::class, 'update'])->name('admin.products.update');
+        Route::delete('/products/{id}', [ProductAdminController::class, 'destroy'])->name('admin.products.destroy');
         Route::get('/categories', [CategoryAdminController::class, 'index'])->name('admin.categories');
+        Route::get('/categories/create', [CategoryAdminController::class, 'create'])->name('admin.categories.create');
+        Route::post('/categories', [CategoryAdminController::class, 'store'])->name('admin.categories.store');
+        Route::get('/categories/{id}/edit', [CategoryAdminController::class, 'edit'])->name('admin.categories.edit');
+        Route::put('/categories/{id}', [CategoryAdminController::class, 'update'])->name('admin.categories.update');
+        Route::delete('/categories/{id}', [CategoryAdminController::class, 'destroy'])->name('admin.categories.destroy');
+        
         Route::get('/manufacturers', [ManufacturerAdminController::class, 'index'])->name('admin.manufacturers');
+        Route::get('/manufacturers/create', [ManufacturerAdminController::class, 'create'])->name('admin.manufacturers.create');
+        Route::post('/manufacturers', [ManufacturerAdminController::class, 'store'])->name('admin.manufacturers.store');
+        Route::get('/manufacturers/{id}/edit', [ManufacturerAdminController::class, 'edit'])->name('admin.manufacturers.edit');
+        Route::put('/manufacturers/{id}', [ManufacturerAdminController::class, 'update'])->name('admin.manufacturers.update');
+        Route::delete('/manufacturers/{id}', [ManufacturerAdminController::class, 'destroy'])->name('admin.manufacturers.destroy');
 
         // Sales
         Route::get('/orders', [OrderAdminController::class, 'index'])->name('admin.orders');
         Route::get('/customers', [CustomerAdminController::class, 'index'])->name('admin.customers');
     });
+
+// Static files
+Route::get('/css/{filename}', function ($filename) {
+    $path = public_path("css/{$filename}");
+    if (file_exists($path)) {
+        return response()->file($path, ['Content-Type' => 'text/css']);
+    }
+    abort(404);
+})->name('css.file');
+
+Route::get('/js/{filename}', function ($filename) {
+    $path = public_path("js/{$filename}");
+    if (file_exists($path)) {
+        return response()->file($path, ['Content-Type' => 'application/javascript']);
+    }
+    abort(404);
+})->name('js.file');
 
 // Product routes with hierarchical paths (must be last)
 Route::get('/{path}', [ProductController::class, 'showByPath'])->name('products.show-by-path')->where('path', '.*');

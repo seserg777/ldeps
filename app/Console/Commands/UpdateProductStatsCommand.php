@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Product;
+use App\Models\Product\Product;
 use App\Jobs\UpdateProductStatistics;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;

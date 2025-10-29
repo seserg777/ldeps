@@ -39,7 +39,7 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($categories as $categoryData) {
-            \App\Models\Category::create($categoryData);
+            \App\Models\Category\Category::create($categoryData);
         }
 
         // Create products
@@ -128,7 +128,7 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $productData) {
-            \App\Models\Product::create($productData);
+            \App\Models\Product\Product::create($productData);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use App\Models\Product;
+use App\Models\Product\Product;
 use Illuminate\Support\Str;
 
 class ProductHelper

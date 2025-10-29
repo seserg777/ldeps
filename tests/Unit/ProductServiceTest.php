@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Models\Product;
+use App\Models\Product\Product;
 use App\Models\Manufacturer;
 use App\Services\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;

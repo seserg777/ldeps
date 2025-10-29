@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Product;
+use App\Models\Product\Product;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

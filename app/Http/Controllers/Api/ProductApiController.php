@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Repositories\ProductRepository;
-use App\Services\SearchService;
+use App\Services\Product\SearchService;
 use App\Http\Requests\ProductFilterRequest;
 use App\Http\Requests\SearchRequest;
 use Illuminate\Http\JsonResponse;

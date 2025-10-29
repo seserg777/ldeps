@@ -2,7 +2,7 @@
 
 namespace App\Http\View\Composers;
 
-use App\Models\Category;
+use App\Models\Category\Category;
 use Illuminate\View\View;
 
 class CategoryComposer
