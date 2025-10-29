@@ -4,7 +4,8 @@
     'size' => 'md', // sm, md, lg, xl
     'closable' => true,
     'backdrop' => true,
-    'keyboard' => true
+    'keyboard' => true,
+    'dynamicTitle' => false
 ])
 
 <div 
@@ -48,7 +49,11 @@
             <!-- Header -->
             <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
                 <h3 class="text-lg font-semibold text-gray-900">
-                    {{ $title }}
+                    @if($dynamicTitle)
+                        <span x-text="{{ $title }}"></span>
+                    @else
+                        {{ $title }}
+                    @endif
                 </h3>
                 @if($closable)
                     <button 

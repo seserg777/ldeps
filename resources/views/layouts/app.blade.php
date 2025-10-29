@@ -1072,9 +1072,13 @@
     });
     </script>
     
-    <!-- Cart Modal -->
+    <!-- Modals -->
     <div x-ref="cartModal">
         <x-cart-modal />
+    </div>
+    
+    <div x-ref="productQuickView">
+        <x-product-quick-view />
     </div>
 </body>
 </html>
