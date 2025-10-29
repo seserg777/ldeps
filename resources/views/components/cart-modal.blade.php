@@ -131,7 +131,6 @@ function cartModal() {
                 
                 if (response.ok) {
                     await this.loadCart();
-                    // Update cart count in header
                     this.updateHeaderCartCount();
                 }
             } catch (error) {
@@ -140,7 +139,6 @@ function cartModal() {
         },
         
         updateHeaderCartCount() {
-            // Update the cart count in the header
             const cartCountElement = document.getElementById('cart-count');
             if (cartCountElement) {
                 cartCountElement.textContent = this.cartCount;
