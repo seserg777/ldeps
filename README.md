@@ -1,6 +1,6 @@
 # ldeps
 
-Laravel project with comprehensive admin panel for e-commerce and content management.
+Laravel + Vue (Composition API) project for e‑commerce and content. The frontend uses PHP‑SSR (Blade) for initial HTML and Vue hydration for interactivity. Menus and several widgets are rendered server‑side for SEO. Full page shells (`Homepage`, `Page`) and feature widgets hydrate on the client.
 
 ## Features
 
@@ -11,18 +11,22 @@ Laravel project with comprehensive admin panel for e-commerce and content manage
 - **User System** with access groups and authentication
 - **Shopping Cart** and Wishlist with Vue.js components
 - **Vue.js Frontend** with Composition API and Vite build system
+- **PHP‑SSR + Hydration** for menus and modules
+- **Islands architecture**: `Homepage.vue`, `Page.vue`, universal `Content.vue`
+- **JoomShopping integration**: root category landings and product grids for sub‑categories
 - **Multilingual Support** (Russian, Ukrainian, English)
 - **Modular Architecture** following Laravel best practices
 - **Responsive Design** with Tailwind CSS
 
-## Project Structure
+## Project Structure (key paths)
 
 ```
 app/
 ├── Http/
 │   ├── Controllers/
-│   │   ├── Web/           # Frontend controllers
-│   │   │   ├── ProductController.php
+│   │   ├── Web/                  # Frontend controllers (PHP‑SSR)
+│   │   │   ├── ProductController.php       # product pages + category pages (render Page.vue)
+│   │   │   ├── JshoppingController.php     # JSON for JoomShopping categories/complexes
 │   │   │   ├── CartController.php
 │   │   │   ├── AuthController.php
 │   │   │   ├── ProfileController.php
@@ -71,14 +75,21 @@ app/
 
 resources/
 ├── views/
-│   ├── admin/             # Admin panel views
-│   ├── front/             # Frontend views
-│   ├── share/             # Shared components
-│   │   ├── layouts/       # Layout templates
-│   │   └── components/    # Reusable components
-│   └── components/        # Blade components
-├── js/                    # JavaScript assets
-└── css/                   # CSS assets
+│   ├── front/
+│   │   ├── homepage.blade.php   # mounts Homepage.vue
+│   │   └── page.blade.php       # mounts Page.vue
+│   └── share/
+│       ├── menu/html.blade.php       # SSR menu HTML
+│       └── products/module.blade.php # SSR product module HTML
+├── js/
+│   ├── app.js                         # registers and mounts Vue islands
+│   └── features/
+│       ├── homepage/components/Homepage.vue
+│       ├── page/components/Page.vue
+│       ├── content/components/Content.vue
+│       ├── jshopping/components/JshoppingCategory.vue
+│       └── catalog/components/{ProductsModule.vue,SearchModule.vue}
+└── css/
 
 routes/
 ├── web.php               # Web routes
@@ -100,12 +111,20 @@ tests/
 1. Clone the repository
 2. Copy `.env.example` to `.env`
 3. Configure database connection
-4. Run:
+4. Backend setup:
    ```bash
    composer install
    php artisan migrate
    php artisan db:seed
    ```
+5. Frontend build (Vite):
+   ```bash
+   npm install
+   npm run build    # production build
+   # or npm run dev # development
+   ```
+
+> In production, Blade falls back to built assets if the Vite dev server is unavailable.
 
 ## Admin Panel
 
@@ -122,3 +141,16 @@ Access: `/admin`
 - **Maintainability**: Clear separation of concerns
 - **Testability**: Isolated components for testing
 - **Laravel Best Practices**: Follows framework conventions
+
+## Public Endpoints (SSR + JSON)
+
+- `GET /menu/html/{menutype}?maxLevels=...&language=...` – SSR menu HTML
+- `GET /products/html?limit=3&random=1` – SSR product module (used by `ProductsModule.vue`)
+- `GET /api/page-meta/{path}` – JSON page meta for universal `Content.vue`
+- `GET /api/jshopping/category/{id}` – JSON for JoomShopping categories (children, complexes)
+- `GET /api/products` – product listing API (supports `category`, `per_page`, filters)
+
+## Frontend Pages
+
+- Root pages mount `Homepage.vue`.
+- All other pages mount `Page.vue`, which includes two SSR menus and a universal `<Content />` that resolves: articles, banners, and JoomShopping categories (root landing or 5×5 product grid for sub‑categories).
