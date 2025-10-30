@@ -45,6 +45,7 @@ class ProductController extends Controller
      */
     public function index(ProductFilterRequest $request)
     {
+
         $query = Product::published();
 
         // Search functionality
@@ -151,6 +152,8 @@ class ProductController extends Controller
         
         return view('front.products.index-new', compact('products', 'manufacturers', 'priceRange', 'categories'));
     }
+
+    
 
     /**
      * Display the specified product.

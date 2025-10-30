@@ -1,5 +1,9 @@
 @extends('share.layouts.app')
 
+@php
+    $componentType = 'product';
+@endphp
+
 @section('title', $product->name . ' - ' . config('app.name', 'Laravel'))
 @section('description', Str::limit(strip_tags($product->short_description), 160))
 

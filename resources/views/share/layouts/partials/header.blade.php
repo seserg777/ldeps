@@ -1,3 +1,80 @@
+<!-- Top Menu (Vue) -->
+<div class="bg-light border-bottom">
+    <?php
+        use App\Models\Menu\Menu;
+        $__menutype = 'main-menu-add';
+        $extractParams = function($item) {
+            if (is_array($item->params)) {
+                return $item->params;
+            }
+            if (is_string($item->params) && $item->params !== '') {
+                $decoded = json_decode($item->params, true);
+                return is_array($decoded) ? $decoded : [];
+            }
+            return [];
+        };
+        $shouldShow = function($item) use ($extractParams) {
+            $params = $extractParams($item);
+            // default: show if not specified
+            return (int)($params['menu_show'] ?? 1) !== 0;
+        };
+        $buildTree = function ($parentId) use (&$buildTree, $__menutype, $shouldShow, $extractParams) {
+            $children = Menu::ofType($__menutype)
+                ->published()
+                ->where('parent_id', $parentId)
+                ->orderBy('ordering')
+                ->get()
+                ->filter($shouldShow);
+            return $children->map(function ($item) use (&$buildTree, $shouldShow, $extractParams) {
+                $params = $extractParams($item);
+                return [
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'alias' => $item->alias,
+                    'path' => $item->full_path,
+                    'link' => $item->link,
+                    'type' => $item->type,
+                    'level' => $item->level,
+                    'img' => $item->img,
+                    'language' => $item->language,
+                    'menu_show' => (int)($params['menu_show'] ?? 1),
+                    'children' => $buildTree($item->id),
+                ];
+            })->values()->all();
+        };
+        $menuTreeTop = Menu::ofType($__menutype)->published()->root()->orderBy('ordering')->get()
+            ->filter($shouldShow)
+            ->map(function ($item) use (&$buildTree, $shouldShow, $extractParams) {
+                $params = $extractParams($item);
+                return [
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'alias' => $item->alias,
+                    'path' => $item->full_path,
+                    'link' => $item->link,
+                    'type' => $item->type,
+                    'level' => $item->level,
+                    'img' => $item->img,
+                    'language' => $item->language,
+                    'menu_show' => (int)($params['menu_show'] ?? 1),
+                    'children' => $buildTree($item->id),
+                ];
+            })->values()->all();
+        $menuTreeJson = htmlspecialchars(json_encode($menuTreeTop, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES), ENT_QUOTES, 'UTF-8');
+    ?>
+    <div class="container py-2">
+                <site-menu menutype="main-menu-add" layout="default">
+            <script type="application/json" class="menu-data">{!! json_encode($menuTreeTop, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) !!}</script>
+        </site-menu>
+    </div>
+    
+    <style>
+        /* keep top menu subtle */
+        .site-menu .menu-link{ color:#212529; }
+        .site-menu .menu-link:hover{ color:#0d6efd; }
+    </style>
+</div>
+
 <!-- Header -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
     <div class="container">

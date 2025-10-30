@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import BaseModal from './BaseModal.vue'
 
 const props = defineProps({
@@ -100,8 +100,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const emit = defineEmits(['update:modelValue'])
 
 const isOpen = ref(false)
 const loading = ref(false)
@@ -167,17 +165,13 @@ const close = () => {
   isOpen.value = false
 }
 
-// Expose methods for parent components
 defineExpose({
   open,
   close
 })
 
 onMounted(() => {
-  // Make cart modal globally accessible
-  window.cartModalInstance = {
-    open,
-    close
-  }
+  window.cartModalInstance = { open, close }
 })
 </script>
+

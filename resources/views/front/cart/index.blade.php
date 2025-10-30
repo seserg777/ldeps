@@ -1,5 +1,9 @@
 @extends('share.layouts.app')
 
+@php
+    $componentType = 'cart';
+@endphp
+
 @section('title', 'Кошик')
 
 @section('content')

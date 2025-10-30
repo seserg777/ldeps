@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\ProductController;
+use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\ContentController as WebContentController;
+use App\Http\Controllers\Web\BannerController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Web\WishlistController;
 use App\Http\Controllers\Web\CartController;
@@ -32,7 +35,21 @@ use App\Http\Controllers\Admin\ContentController;
 */
 
 // Main product catalog page
-Route::get('/', [ProductController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Content routes
+Route::get('/articles', [WebContentController::class, 'index'])->name('content.index');
+Route::get('/articles/{id}', [WebContentController::class, 'show'])->name('content.show');
+
+// Banner routes
+Route::get('/promo', [BannerController::class, 'index'])->name('banners.index');
+Route::get('/banner/{id}', [BannerController::class, 'show'])->name('banners.show');
+
+// Route for individual banners: /promo/449.html (must be before generic routes)
+Route::get('/{category}/{id}.html', [HomeController::class, 'showBanner'])->name('banner.show')->where('category', '[a-zA-Z0-9\-_]+')->where('id', '[0-9]+');
+
+// SEO-friendly URLs for menu items
+Route::get('/{path}.html', [HomeController::class, 'showPage'])->name('page.show')->where('path', '[a-zA-Z0-9\-_]+');
 
 // Product routes
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');

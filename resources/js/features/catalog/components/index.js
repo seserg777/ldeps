@@ -6,3 +6,4 @@ export { default as Product } from './Product.vue'
 export * as Parts from './parts'
 
 
+export { default as Tags } from './Tags.vue'

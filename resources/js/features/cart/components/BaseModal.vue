@@ -68,39 +68,14 @@
 import { computed, watch } from 'vue'
 
 const props = defineProps({
-  id: {
-    type: String,
-    default: 'modal'
-  },
-  title: {
-    type: String,
-    default: 'Modal Title'
-  },
-  size: {
-    type: String,
-    default: 'md',
-    validator: (value) => ['sm', 'md', 'lg', 'xl'].includes(value)
-  },
-  closable: {
-    type: Boolean,
-    default: true
-  },
-  backdrop: {
-    type: Boolean,
-    default: true
-  },
-  keyboard: {
-    type: Boolean,
-    default: true
-  },
-  dynamicTitle: {
-    type: Boolean,
-    default: false
-  },
-  modelValue: {
-    type: Boolean,
-    default: false
-  }
+  id: { type: String, default: 'modal' },
+  title: { type: String, default: 'Modal Title' },
+  size: { type: String, default: 'md', validator: (value) => ['sm', 'md', 'lg', 'xl'].includes(value) },
+  closable: { type: Boolean, default: true },
+  backdrop: { type: Boolean, default: true },
+  keyboard: { type: Boolean, default: true },
+  dynamicTitle: { type: Boolean, default: false },
+  modelValue: { type: Boolean, default: false }
 })
 
 const emit = defineEmits(['update:modelValue', 'close', 'open'])
@@ -111,12 +86,7 @@ const isOpen = computed({
 })
 
 const modalSizeClass = computed(() => {
-  const sizes = {
-    sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-lg',
-    xl: 'max-w-xl'
-  }
+  const sizes = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-xl' }
   return `w-full ${sizes[props.size]}`
 })
 
@@ -130,7 +100,6 @@ const open = () => {
   emit('open')
 }
 
-// Watch for open/close changes
 watch(isOpen, (newValue) => {
   if (newValue) {
     document.body.style.overflow = 'hidden'
@@ -141,9 +110,6 @@ watch(isOpen, (newValue) => {
   }
 })
 
-// Expose methods for parent components
-defineExpose({
-  open,
-  close
-})
+defineExpose({ open, close })
 </script>
+

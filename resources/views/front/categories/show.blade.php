@@ -1,5 +1,9 @@
 @extends('share.layouts.app')
 
+@php
+    $componentType = 'category';
+@endphp
+
 @section('title', $category->name)
 
 @section('products-count', $products->total())

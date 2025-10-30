@@ -96,7 +96,7 @@
         }
     </style>
 </head>
-<body>
+<body class="controller-{{ strtolower(class_basename(request()->route()->getController())) }} component-{{ $componentClass ?? 'default' }}"
     <!-- Vue Root -->
     <div id="vue-root">
         <!-- Header -->
