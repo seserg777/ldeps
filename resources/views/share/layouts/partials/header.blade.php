@@ -196,6 +196,18 @@
     </div>
 </nav>
 
+<style>
+    /* Ensure Vue site-menu is readable inside dark navbar */
+    .navbar.bg-primary .site-menu { background: transparent !important; border: 0; }
+    .navbar.bg-primary .site-menu .menu-link { color: #ffffff !important; padding: 12px 16px; }
+    .navbar.bg-primary .site-menu .menu-link.active { color: #ffffff !important; border-bottom-color: rgba(255,255,255,.85); }
+    .navbar.bg-primary .site-menu .menu-link:hover { color: #ffffff !important; background-color: rgba(255,255,255,0.12); border-bottom-color: rgba(255,255,255,.85); }
+    .navbar.bg-primary .site-menu .menu-submenu { color: #212529; }
+    .navbar.bg-primary .site-menu .menu-submenu .menu-link { color: #495057 !important; }
+    .navbar.bg-primary .site-menu .menu-submenu .menu-link:hover { color: #0d6efd !important; }
+    .navbar.bg-primary .site-menu .menu-root { gap: 0; }
+</style>
+
 <!-- Top Bar (Optional) -->
 @if(config('app.show_top_bar', false))
     <div class="bg-dark text-light py-2">
