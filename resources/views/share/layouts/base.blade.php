@@ -41,32 +41,28 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Vite (manual include for frameworks без встроенной директивы @vite) -->
+    <!-- Vite: dev with robust fallback to build manifest -->
     <?php
         $hotPath = public_path('hot');
+        $manifestPath = public_path('build/manifest.json');
+        $manifest = file_exists($manifestPath) ? json_decode(file_get_contents($manifestPath), true) : null;
+        $entry = $manifest['resources/js/app.js'] ?? null;
+
+        // Preload CSS from build if available (safe to include in dev too)
+        if ($entry && !empty($entry['css'])) {
+            foreach ($entry['css'] as $css) {
+                $cssUrl = url('build/' . $css);
+                echo '<link rel="stylesheet" href="' . $cssUrl . '">';
+            }
+        }
+
         if (file_exists($hotPath)) {
             $url = trim(file_get_contents($hotPath));
-            echo '<script type="module" src="' . $url . '/@vite/client"></script>';
-            echo '<script type="module" src="' . $url . '/resources/js/app.js"></script>';
-        } else {
-            $manifestPath = public_path('build/manifest.json');
-            if (file_exists($manifestPath)) {
-                $manifest = json_decode(file_get_contents($manifestPath), true);
-                $entry = $manifest['resources/js/app.js'] ?? null;
-                if ($entry) {
-                    // Always serve from build because current web root is project root
-                    if (!empty($entry['css'])) {
-                        foreach ($entry['css'] as $css) {
-                            $cssPublic = url('build/' . $css);
-                            $cssRoot = url('build/' . $css);
-                            echo '<script>(function(){var l=document.createElement("link");l.rel="stylesheet";l.href="' . $cssPublic . '";l.onerror=function(){l.href="' . $cssRoot . '"};document.head.appendChild(l)})();</script>';
-                        }
-                    }
-                    $jsPublic = url('build/' . $entry['file']);
-                    $jsRoot = url('build/' . $entry['file']);
-                    echo '<script type="module">import("' . $jsPublic . '").catch(()=>import("' . $jsRoot . '"))</script>';
-                }
-            }
+            $buildJs = $entry ? url('build/' . $entry['file']) : '';
+            echo '<script type="module">(async()=>{try{await import("' . $url . '/@vite/client");await import("' . $url . '/resources/js/app.js");}catch(e){' . ($buildJs ? 'await import("' . $buildJs . '");' : '') . '}})();</script>';
+        } else if ($entry) {
+            $buildJs = url('build/' . $entry['file']);
+            echo '<script type="module">import("' . $buildJs . '")</script>';
         }
     ?>
 

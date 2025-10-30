@@ -78,11 +78,6 @@
 <!-- Header -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
     <div class="container">
-        <!-- Brand -->
-        <a class="navbar-brand" href="{{ route('products.index') }}">
-            <i class="fas fa-shopping-bag me-2"></i>Каталог товарів
-        </a>
-
         <!-- Mobile Toggle -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -90,35 +85,73 @@
 
         <!-- Navigation -->
         <div class="collapse navbar-collapse" id="navbarNav">
-            <!-- Left Navigation -->
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('products.index') }}">
-                        <i class="fas fa-home me-1"></i>Головна
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-th-large me-1"></i>Категорії
-                    </a>
-                    <ul class="dropdown-menu">
-                        @foreach(\App\Models\Category\Category::where('category_publish', 1)->take(10)->get() as $category)
-                            <li>
-                                <a class="dropdown-item" href="{{ route('category.show', $category->category_id) }}">
-                                    {{ $category->name }}
-                                </a>
-                            </li>
-                        @endforeach
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ route('categories.index') }}">Всі категорії</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('sale-banners.index') }}">
-                        <i class="fas fa-percent me-1"></i>Акції
-                    </a>
-                </li>
-            </ul>
+            <!-- Left: mainmenu-rus via Vue site-menu -->
+            <div class="me-auto">
+                <?php
+                    // Build menu tree for mainmenu-rus to feed Vue site-menu
+                    use App\Models\Menu\Menu as __HeaderMenuModel;
+                    $__headerMenutype = 'mainmenu-rus';
+                    $__extractParams = function($item) {
+                        if (is_array($item->params)) { return $item->params; }
+                        if (is_string($item->params) && $item->params !== '') {
+                            $decoded = json_decode($item->params, true);
+                            return is_array($decoded) ? $decoded : [];
+                        }
+                        return [];
+                    };
+                    $__shouldShow = function($item) use ($__extractParams) {
+                        $params = $__extractParams($item);
+                        return (int)($params['menu_show'] ?? 1) !== 0;
+                    };
+                    $__buildTree = function ($parentId) use (&$__buildTree, $__headerMenutype, $__shouldShow, $__extractParams) {
+                        $children = __HeaderMenuModel::ofType($__headerMenutype)
+                            ->published()
+                            ->where('parent_id', $parentId)
+                            ->orderBy('ordering')
+                            ->get()
+                            ->filter($__shouldShow);
+                        return $children->map(function ($item) use (&$__buildTree, $__extractParams) {
+                            $params = $__extractParams($item);
+                            return [
+                                'id' => $item->id,
+                                'title' => $item->title,
+                                'alias' => $item->alias,
+                                // Use alias as SEO-friendly path for our Vue menu generator
+                                'path' => $item->alias,
+                                'link' => $item->link,
+                                'type' => $item->type,
+                                'level' => $item->level,
+                                'img' => $item->img,
+                                'language' => $item->language,
+                                'menu_show' => (int)($params['menu_show'] ?? 1),
+                                'children' => $__buildTree($item->id),
+                            ];
+                        })->values()->all();
+                    };
+                    $__menuTreeHeader = __HeaderMenuModel::ofType($__headerMenutype)
+                        ->published()->root()->orderBy('ordering')->get()
+                        ->filter($__shouldShow)
+                        ->map(function ($item) use (&$__buildTree, $__extractParams) {
+                            $params = $__extractParams($item);
+                            return [
+                                'id' => $item->id,
+                                'title' => $item->title,
+                                'alias' => $item->alias,
+                                'path' => $item->alias,
+                                'link' => $item->link,
+                                'type' => $item->type,
+                                'level' => $item->level,
+                                'img' => $item->img,
+                                'language' => $item->language,
+                                'menu_show' => (int)($params['menu_show'] ?? 1),
+                                'children' => $__buildTree($item->id),
+                            ];
+                        })->values()->all();
+                ?>
+                <site-menu menutype="mainmenu-rus" layout="default">
+                    <script type="application/json" class="menu-data">{!! json_encode($__menuTreeHeader, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) !!}</script>
+                </site-menu>
+            </div>
 
             <!-- Search -->
             <form class="d-flex me-3" method="GET" action="{{ route('products.index') }}">
