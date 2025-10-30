@@ -206,6 +206,10 @@
     .navbar.bg-primary .site-menu .menu-submenu .menu-link { color: #495057 !important; }
     .navbar.bg-primary .site-menu .menu-submenu .menu-link:hover { color: #0d6efd !important; }
     .navbar.bg-primary .site-menu .menu-root { gap: 0; }
+    /* Fix hidden menu due to generic .collapse { visibility: collapse } */
+    #navbarNav.collapse { visibility: visible !important; }
+    .navbar .navbar-collapse.collapse { visibility: visible !important; }
+    .collapse.show { visibility: visible !important; }
 </style>
 
 <!-- Top Bar (Optional) -->
