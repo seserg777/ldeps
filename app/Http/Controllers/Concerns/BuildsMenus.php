@@ -39,7 +39,8 @@ trait BuildsMenus
                 $children = Menu::ofType($type)
                     ->published()
                     ->where('parent_id', $parentId)
-                    ->orderBy('ordering')
+                            ->orderBy('ordering')
+                            ->orderBy('lft')
                     ->get()
                     ->filter($shouldShow);
 
@@ -64,7 +65,8 @@ trait BuildsMenus
             $menus[$type] = Menu::ofType($type)
                 ->published()
                 ->root()
-                ->orderBy('ordering')
+                        ->orderBy('ordering')
+                        ->orderBy('lft')
                 ->get()
                 ->filter($shouldShow)
                 ->map(function ($item) use (&$buildTree, $shouldShow, $extractParams) {

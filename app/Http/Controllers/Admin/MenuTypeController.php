@@ -25,6 +25,7 @@ class MenuTypeController extends Controller
                 $query->where('published', -2);
             }])
             ->orderBy('ordering')
+            ->orderBy('lft')
             ->paginate(10);
 
         $columns = [

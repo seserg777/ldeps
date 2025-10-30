@@ -23,6 +23,7 @@
                 ->published()
                 ->where('parent_id', $parentId)
                 ->orderBy('ordering')
+                ->orderBy('lft')
                 ->get()
                 ->filter($shouldShow);
             return $children->map(function ($item) use (&$buildTree, $shouldShow, $extractParams) {
@@ -42,7 +43,7 @@
                 ];
             })->values()->all();
         };
-        $menuTreeTop = Menu::ofType($__menutype)->published()->root()->orderBy('ordering')->get()
+$menuTreeTop = Menu::ofType($__menutype)->published()->root()->orderBy('ordering')->orderBy('lft')->get()
             ->filter($shouldShow)
             ->map(function ($item) use (&$buildTree, $shouldShow, $extractParams) {
                 $params = $extractParams($item);
@@ -108,6 +109,7 @@
                             ->published()
                             ->where('parent_id', $parentId)
                             ->orderBy('ordering')
+                            ->orderBy('lft')
                             ->get()
                             ->filter($__shouldShow);
                         return $children->map(function ($item) use (&$__buildTree, $__extractParams) {
@@ -129,7 +131,7 @@
                         })->values()->all();
                     };
                     $__menuTreeHeader = __HeaderMenuModel::ofType($__headerMenutype)
-                        ->published()->root()->orderBy('ordering')->get()
+                        ->published()->root()->orderBy('ordering')->orderBy('lft')->get()
                         ->filter($__shouldShow)
                         ->map(function ($item) use (&$__buildTree, $__extractParams) {
                             $params = $__extractParams($item);

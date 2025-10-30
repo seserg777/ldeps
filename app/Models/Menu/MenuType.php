@@ -44,7 +44,7 @@ class MenuType extends Model
      */
     public function rootMenuItems()
     {
-        return $this->menuItems()->root()->orderBy('ordering');
+        return $this->menuItems()->root()->orderBy('ordering')->orderBy('lft');
     }
 
     /**
