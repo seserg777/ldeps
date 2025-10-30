@@ -69,6 +69,16 @@
     <!-- Google Fonts - Rubik with display=swap for better performance -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap"></noscript>
+    <style>
+        /* Enforce font-display swap for faster text rendering */
+        @font-face {
+            font-family: 'Rubik';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: local('Rubik');
+        }
+    </style>
 
     @stack('styles')
 
