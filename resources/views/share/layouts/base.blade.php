@@ -118,36 +118,15 @@
     }
 @endphp
 <body class="controller-{{ strtolower(class_basename(request()->route()->getController())) }} component-{{ $componentClass ?? 'default' }}{{ $activeMenuId ? ' itemid-' . $activeMenuId : '' }}"
-    <!-- Vue Root -->
+    <!-- Vue Root: Only Vue components should render the page -->
     <div id="vue-root">
-        <!-- Header -->
-        @include('share.layouts.partials.header')
-    </div>
-
-    <!-- Breadcrumbs -->
-    @hasSection('breadcrumbs')
-        @yield('breadcrumbs')
-    @endif
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            @yield('content')
+        @stack('vue-components')
+        <div id="vue-root-modals">
+            @stack('vue-modals')
         </div>
-    </main>
-
-    <!-- Footer -->
-    @include('share.layouts.partials.footer')
-
-    <!-- Modals -->
-    @stack('modals')
+    </div>
 
     <!-- Scripts -->
     @stack('scripts')
-
-    <!-- Vue Components -->
-    <div id="vue-root-modals">
-        @stack('vue-components')
-    </div>
 </body>
 </html>

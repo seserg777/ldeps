@@ -5,7 +5,7 @@ import { createApp } from 'vue'
 import '../css/app.css'
 // Import Vue components
 // Feature components (barrel exports)
-import { Categories, Category, ProductList, Product } from './features/catalog/components'
+import { Categories, Category, ProductList, Product, ProductsModule, SearchModule } from './features/catalog/components'
 // Shared UI components (optional global reg)
 import { BaseButton, UiCard } from './shared/components'
 import UiModal from './shared/components/Ui/UiModal.vue'
@@ -13,7 +13,8 @@ import { MiniCart, MiniCartModal, CartModal } from './features/cart/components'
 import { AuthButton } from './features/auth/components'
 import { Menu as SiteMenu } from './features/menu/components'
 import { Homepage } from './features/homepage/components'
-import { Content, ContentList } from './features/content/components'
+import { Page } from './features/page/components'
+import { Content, Article, ArticleList } from './features/content/components'
 import { Exussalebanner, ExussalebannerList } from './features/promo/components'
 import { Pagination } from './features/common/components'
 
@@ -24,7 +25,7 @@ function mountVueApps() {
   // Components are mounted as "islands" below.
   const modalsRoot = document.getElementById('vue-root-modals')
   if (modalsRoot) {
-    const modalsApp = createApp({})
+    const modalsApp = createApp({ render: () => null })
     modalsApp.component('ui-modal', UiModal)
     modalsApp.component('mini-cart-modal', MiniCartModal)
     modalsApp.component('cart-modal', CartModal)
@@ -161,7 +162,7 @@ function updateWishlistCount() {
 }
 
 // Export for module systems
-export { Categories, Category, ProductList, Product, Homepage, Content, ContentList, Exussalebanner, ExussalebannerList, Pagination }
+export { Categories, Category, ProductList, Product, ProductsModule, SearchModule, Homepage, Page, Content, Article, ArticleList, Exussalebanner, ExussalebannerList, Pagination }
 
 // Delegated click handler for buttons with .add-to-cart
 document.addEventListener('click', (e) => {
@@ -252,47 +253,7 @@ function mountCartModalIslands() {
 
 // mountCartModalIslands() is now called in the general mounting block
 
-// Mount SiteMenu islands
-function mountSiteMenuIslands() {
-  console.log('Vue available:', typeof createApp !== 'undefined')
-  console.log('SiteMenu component:', SiteMenu)
-  const nodes = document.querySelectorAll('site-menu')
-  console.log('Mounting site-menu islands, found nodes:', nodes.length)
-  nodes.forEach((el) => {
-    if (el.__vue_app__) {
-      console.log('Site-menu already mounted, skipping')
-      return
-    }
-    const menuDataScript = el.querySelector('script.menu-data')
-    let items = []
-    if (menuDataScript && menuDataScript.textContent) {
-      try {
-        items = JSON.parse(menuDataScript.textContent)
-        console.log('Site-menu: Parsed items from script tag:', items.length)
-      } catch (e) {
-        console.error('Site-menu: Error parsing menu data from script tag:', e)
-      }
-    }
-    const props = {
-      menutype: el.getAttribute('menutype') || 'top',
-      apiUrl: el.getAttribute('api-url') || '',
-      items: items, // Pass parsed items directly
-      layout: el.getAttribute('layout') || 'default',
-      language: el.getAttribute('language') || 'ru-UA'
-    }
-    console.log('Mounting site-menu with props:', props)
-    try {
-      const app = createApp(SiteMenu, props)
-      app.mount(el)
-      el.__vue_app__ = app
-      console.log('Site-menu mounted successfully')
-    } catch (e) {
-      console.error('Error mounting site-menu:', e)
-    }
-  })
-}
-
-// mountSiteMenuIslands() is now called in the general mounting block
+// SiteMenu is only used inside Vue components now; no in-DOM mounting needed
 
 // Mount Homepage islands
 function mountHomepageIslands() {
@@ -304,48 +265,14 @@ function mountHomepageIslands() {
       return
     }
     const props = {
-      heroData: (() => {
-        const raw = el.getAttribute('hero-data')
-        if (!raw) return {}
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid hero-data JSON for homepage:', e)
-          return {}
-        }
-      })(),
-      featuredCategories: (() => {
-        const raw = el.getAttribute('featured-categories')
+      menuItems: (() => {
+        const raw = el.getAttribute('menu-items')
         if (!raw) return []
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid featured-categories JSON for homepage:', e)
-          return []
-        }
+        try { return JSON.parse(raw) } catch { return [] }
       })(),
-      featuredProducts: (() => {
-        const raw = el.getAttribute('featured-products')
-        if (!raw) return []
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid featured-products JSON for homepage:', e)
-          return []
-        }
-      })(),
-      saleBanners: (() => {
-        const raw = el.getAttribute('sale-banners')
-        if (!raw) return []
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid sale-banners JSON for homepage:', e)
-          return []
-        }
-      })(),
-      loading: el.getAttribute('loading') === 'true',
-      error: el.getAttribute('error') || null
+      language: el.getAttribute('language') || 'uk',
+      siteName: el.getAttribute('site-name') || '',
+      siteDescription: el.getAttribute('site-description') || ''
     }
     console.log('Mounting homepage with props:', props)
     try {
@@ -358,320 +285,121 @@ function mountHomepageIslands() {
     }
   })
 }
-
-// mountHomepageIslands() is now called in the general mounting block
-
-// Mount Content islands
-function mountContentIslands() {
-  const nodes = document.querySelectorAll('content-component')
-  console.log('Mounting content islands, found nodes:', nodes.length)
+// Mount Page islands (wrapper for internal pages; renders slot content)
+function mountPageIslands() {
+  const nodes = document.querySelectorAll('page-component')
+  console.log('Mounting page islands, found nodes:', nodes.length)
   nodes.forEach((el) => {
-    if (el.__vue_app__) {
-      console.log('Content already mounted, skipping')
-      return
-    }
+    if (el.__vue_app__) return
     const props = {
-      menuItems: (() => {
-        const raw = el.getAttribute('menu-items')
-        if (!raw) return []
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid menu-items JSON for content:', e)
-          return []
-        }
-      })(),
-      language: el.getAttribute('language') || 'ru-UA',
+      language: el.getAttribute('language') || 'uk',
       siteName: el.getAttribute('site-name') || '',
       siteDescription: el.getAttribute('site-description') || '',
+      title: el.getAttribute('title') || '',
       menuItem: (() => {
         const raw = el.getAttribute('menu-item')
         if (!raw) return null
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid menu-item JSON for content:', e)
-          return null
-        }
+        try { return JSON.parse(raw) } catch { return null }
       })(),
       linkParams: (() => {
         const raw = el.getAttribute('link-params')
         if (!raw) return null
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid link-params JSON for content:', e)
-          return null
-        }
+        try { return JSON.parse(raw) } catch { return null }
       })(),
       article: (() => {
         const raw = el.getAttribute('article')
         if (!raw) return null
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid article JSON for content:', e)
-          return null
-        }
-      })()
-    }
-    console.log('Mounting content with props:', props)
-    try {
-      const app = createApp(Content, props)
-      app.mount(el)
-      el.__vue_app__ = app
-      console.log('Content mounted successfully')
-    } catch (e) {
-      console.error('Error mounting content:', e)
-    }
-  })
-}
-
-// mountContentIslands() is now called in the general mounting block
-
-// Mount ContentList islands
-function mountContentListIslands() {
-  const nodes = document.querySelectorAll('content-list-component')
-  console.log('Mounting content-list islands, found nodes:', nodes.length)
-  nodes.forEach((el) => {
-    if (el.__vue_app__) {
-      console.log('ContentList already mounted, skipping')
-      return
-    }
-    const props = {
-      menuItems: (() => {
-        const raw = el.getAttribute('menu-items')
-        if (!raw) return []
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid menu-items JSON for content-list:', e)
-          return []
-        }
-      })(),
-      language: el.getAttribute('language') || 'uk',
-      siteName: el.getAttribute('site-name') || '',
-      siteDescription: el.getAttribute('site-description') || '',
-      menuItem: (() => {
-        const raw = el.getAttribute('menu-item')
-        if (!raw) return null
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid menu-item JSON for content-list:', e)
-          return null
-        }
-      })(),
-      linkParams: (() => {
-        const raw = el.getAttribute('link-params')
-        if (!raw) return null
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid link-params JSON for content-list:', e)
-          return null
-        }
+        try { return JSON.parse(raw) } catch { return null }
       })(),
       articles: (() => {
         const raw = el.getAttribute('articles')
         if (!raw) return []
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid articles JSON for content-list:', e)
-          return []
-        }
+        try { return JSON.parse(raw) } catch { return [] }
       })(),
       pagination: (() => {
         const raw = el.getAttribute('pagination')
         if (!raw) return null
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid pagination JSON for content-list:', e)
-          return null
-        }
+        try { return JSON.parse(raw) } catch { return null }
       })()
     }
-    console.log('Mounting content-list with props:', props)
     try {
-      const app = createApp(ContentList, props)
+      const app = createApp(Page, props)
+      // Register possible child components used inside slot content
+      app.component('content-component', Content)
+      app.component('content-list-component', ArticleList)
+      app.component('exussalebanner-component', Exussalebanner)
+      app.component('exussalebanner-list-component', ExussalebannerList)
+      app.component('pagination-component', Pagination)
       app.mount(el)
       el.__vue_app__ = app
-      console.log('ContentList mounted successfully')
+      console.log('Page mounted successfully')
     } catch (e) {
-      console.error('Error mounting content-list:', e)
+      console.error('Error mounting page:', e)
     }
   })
 }
-// mountContentListIslands() is now called in the general mounting block
 
-// Mount Exussalebanner islands
-function mountExussalebannerIslands() {
-  const nodes = document.querySelectorAll('exussalebanner-component')
-  console.log('Mounting exussalebanner islands, found nodes:', nodes.length)
+// Mount ProductsModule islands
+function mountProductsModuleIslands() {
+  const nodes = document.querySelectorAll('products-module')
   nodes.forEach((el) => {
-    if (el.__vue_app__) {
-      console.log('Exussalebanner already mounted, skipping')
-      return
-    }
+    if (el.__vue_app__) return
     const props = {
-      menuItems: (() => {
-        const raw = el.getAttribute('menu-items')
-        if (!raw) return []
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid menu-items JSON for exussalebanner:', e)
-          return []
-        }
-      })(),
-      language: el.getAttribute('language') || 'ru-UA',
-      siteName: el.getAttribute('site-name') || '',
-      siteDescription: el.getAttribute('site-description') || '',
-      menuItem: (() => {
-        const raw = el.getAttribute('menu-item')
-        if (!raw) return null
-        try {
-          return JSON.parse(raw)
-        } catch (e) {
-          console.error('Invalid menu-item JSON for exussalebanner:', e)
-          return null
-        }
-      })(),
-              linkParams: (() => {
-                const raw = el.getAttribute('link-params')
-                if (!raw) return null
-                try {
-                  return JSON.parse(raw)
-                } catch (e) {
-                  console.error('Invalid link-params JSON for exussalebanner:', e)
-                  return null
-                }
-              })(),
-              banner: (() => {
-                const raw = el.getAttribute('banner')
-                if (!raw) return null
-                try {
-                  return JSON.parse(raw)
-                } catch (e) {
-                  console.error('Invalid banner JSON for exussalebanner:', e)
-                  return null
-                }
-              })()
-            }
-    console.log('Mounting exussalebanner with props:', props)
+      type: el.getAttribute('type') || 'random',
+      limit: Number(el.getAttribute('limit') || 3) || 3,
+      apiUrl: el.getAttribute('api-url') || '/api/products'
+    }
     try {
-      const app = createApp(Exussalebanner, props)
+      const app = createApp(ProductsModule, props)
       app.mount(el)
       el.__vue_app__ = app
-      console.log('Exussalebanner mounted successfully')
-    } catch (e) {
-      console.error('Error mounting exussalebanner:', e)
-    }
+    } catch (e) {}
   })
 }
 
-// mountExussalebannerIslands() is now called in the general mounting block
-
-// Mount ExussalebannerList islands
-function mountExussalebannerListIslands() {
-  const nodes = document.querySelectorAll('exussalebanner-list-component')
-  console.log('Mounting exussalebanner-list islands, found nodes:', nodes.length)
+// Mount SearchModule islands
+function mountSearchModuleIslands() {
+  const nodes = document.querySelectorAll('search-module')
   nodes.forEach((el) => {
-    if (el.__vue_app__) {
-      console.log('ExussalebannerList already mounted, skipping')
-      return
+    if (el.__vue_app__) return
+    const props = {
+      apiUrl: el.getAttribute('api-url') || '/api/search',
+      placeholder: el.getAttribute('placeholder') || 'Поиск оборудования'
     }
-    
-            const props = {
-              menuItems: (() => {
-                const raw = el.getAttribute('menu-items')
-                if (!raw) return []
-                try {
-                  return JSON.parse(raw)
-                } catch (e) {
-                  console.error('Invalid menu-items JSON for exussalebanner-list:', e)
-                  return []
-                }
-              })(),
-              language: el.getAttribute('language') || 'ru-UA',
-              siteName: el.getAttribute('site-name') || '',
-              siteDescription: el.getAttribute('site-description') || '',
-              menuItem: (() => {
-                const raw = el.getAttribute('menu-item')
-                if (!raw) return null
-                try {
-                  return JSON.parse(raw)
-                } catch (e) {
-                  console.error('Invalid menu-item JSON for exussalebanner-list:', e)
-                  return null
-                }
-              })(),
-              linkParams: (() => {
-                const raw = el.getAttribute('link-params')
-                if (!raw) return null
-                try {
-                  return JSON.parse(raw)
-                } catch (e) {
-                  console.error('Invalid link-params JSON for exussalebanner-list:', e)
-                  return null
-                }
-              })(),
-              banners: (() => {
-                const raw = el.getAttribute('banners')
-                if (!raw) return []
-                try {
-                  return JSON.parse(raw)
-                } catch (e) {
-                  console.error('Invalid banners JSON for exussalebanner-list:', e)
-                  return []
-                }
-              })(),
-              pagination: (() => {
-                const raw = el.getAttribute('pagination')
-                if (!raw) return null
-                try {
-                  return JSON.parse(raw)
-                } catch (e) {
-                  console.error('Invalid pagination JSON for exussalebanner-list:', e)
-                  return null
-                }
-              })()
-            }
-    console.log('Mounting exussalebanner-list with props:', props)
     try {
-      const app = createApp(ExussalebannerList, props)
+      const app = createApp(SearchModule, props)
       app.mount(el)
       el.__vue_app__ = app
-      console.log('ExussalebannerList mounted successfully')
-    } catch (e) {
-      console.error('Error mounting exussalebanner-list:', e)
-    }
+    } catch (e) {}
   })
 }
 
-// mountExussalebannerListIslands() is now called in the general mounting block
+
+// mountHomepageIslands() is now called in the general mounting block
+
+// Content is rendered inside Page/Homepage via Content wrapper; no islands needed
+
+// Content list is handled inside Content; no islands needed
+
+// Promo components are rendered inside Content; no islands needed
+
+// Promo list handled inside Content; no islands needed
 
 // Mount all islands
 if (document.readyState === 'interactive' || document.readyState === 'complete') {
   mountVueApps()
   mountCartModalIslands()
-  mountSiteMenuIslands()
+  mountPageIslands()
   mountHomepageIslands()
-  mountContentIslands()
-  mountContentListIslands()
-  mountExussalebannerIslands()
-  mountExussalebannerListIslands()
+  mountProductsModuleIslands()
+  mountSearchModuleIslands()
 } else {
   document.addEventListener('DOMContentLoaded', () => {
     mountVueApps()
     mountCartModalIslands()
-    mountSiteMenuIslands()
+    mountPageIslands()
     mountHomepageIslands()
-    mountContentIslands()
-    mountContentListIslands()
-    mountExussalebannerIslands()
-    mountExussalebannerListIslands()
+    mountProductsModuleIslands()
+    mountSearchModuleIslands()
   })
 }

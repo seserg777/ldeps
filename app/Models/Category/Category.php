@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use App\Traits\HasLocalizedFields;
 use App\Models\Product\Product;
+use App\Models\Complex;
 
 class Category extends Model
 {

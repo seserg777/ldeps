@@ -1,31 +1,18 @@
-<!--
-  Homepage Component - Full Page Component
-  
-  This component is responsible for rendering the entire homepage structure:
-  - Top menu navigation
-  - Hero section
-  - Featured categories
-  - Featured products  
-  - Sale banners
-  - Footer
-  
-  This approach allows each page type to have its own complete component
-  that handles the entire page layout and structure.
--->
 <template>
-  <div class="homepage">
+  <div class="page">
     <section class="top">
       <div class="container">
         <site-menu 
           menutype="main-menu-add"
           layout="default"
           :language="language"
+          :items="menuItemsTop"
           :max-levels="2"
         />
-      </div>        
+      </div>
     </section>
 
-    <!-- Header / Site Menu (single source of truth for homepage) -->
+    <!-- Header / Site Menu for inner pages -->
     <header>
       <div class="container py-2">
         <div class="row">
@@ -36,10 +23,11 @@
           </div>
 
           <div class="col-7">
-            <site-menu 
+            <site-menu
               menutype="mainmenu-rus"
               layout="default"
               :language="language"
+              :items="menuItemsMain"
               :max-levels="4"
             />
           </div>
@@ -51,24 +39,29 @@
       </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main Content for inner pages -->
     <main>
       <div class="container py-4">
-        <div class="row justify-content-center">
-          <div class="col-md-10">
-            <!-- Hero / Intro -->
-            <section class="text-center mb-4">
-              <h1 class="display-5 fw-bold text-primary mb-2">Homepage Component</h1>
-              <p class="text-muted mb-0">Компонент главной страницы</p>
-            </section>
+        <!-- Optional breadcrumbs slot -->
+        <section class="mb-3">
+          <slot name="breadcrumbs" />
+        </section>
 
-            
+        <section>
+          <h1 v-if="title" class="h3 fw-semibold mb-3">{{ title }}</h1>
+          <!-- Universal Content -->
+          <Content
+            :language="language"
+            :menu-item="menuItem"
+            :link-params="linkParams"
+            :article="article"
+            :articles="articles"
+            :pagination="pagination"
+          />
 
-            <section>
-             <ProductsModule type="random" limit="3"></ProductsModule>
-            </section>
-          </div>
-        </div>
+          <!-- Additional slot content if needed -->
+          <slot />
+        </section>
       </div>
     </main>
 
@@ -79,53 +72,36 @@
       </div>
     </footer>
   </div>
-  
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { Menu as SiteMenu } from '../../menu/components'
-import ProductsModule from '../../catalog/components/ProductsModule.vue'
+import Content from '../../content/components/Content.vue'
 
 const props = defineProps({
-  // Language
-  language: {
-    type: String,
-    default: 'ru-UA'
-  },
+  menuItemsTop: { type: Array, default: () => [] },
+  menuItemsMain: { type: Array, default: () => [] },
+  language: { type: String, default: 'ru-UA' },
+  siteName: { type: String, default: 'Интернет-магазин' },
+  siteDescription: { type: String, default: 'Лучшие товары по доступным ценам' },
+  title: { type: String, default: '' },
+  maxLevels: { type: Number, default: 4 },
+  // Content props
+  menuItem: { type: Object, default: null },
+  linkParams: { type: Object, default: null },
+  article: { type: Object, default: null },
+  articles: { type: Array, default: () => [] },
+  pagination: { type: Object, default: null }
 })
 
-// Computed properties
 const currentYear = computed(() => new Date().getFullYear())
 </script>
 
 <style scoped>
-.homepage { min-height: 100vh; display: flex; flex-direction: column; }
+.page { min-height: 100vh; display: flex; flex-direction: column; }
 main { flex: 1 0 auto; }
 footer { margin-top: auto; }
-
-.hero-section {
-  background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
-}
-
-.category-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.category-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
-}
-
-.banner-card {
-  transition: transform 0.3s ease;
-}
-
-.banner-card:hover {
-  transform: translateY(-3px);
-}
-
-.object-fit-cover {
-  object-fit: cover;
-}
 </style>
+
+

@@ -46,13 +46,33 @@ trait BuildsMenus
 
                 return $children->map(function ($item) use (&$buildTree, $shouldShow, $extractParams) {
                     $params = $extractParams($item);
+
+                    // Resolve alias type: use target menu item's routing params
+                    $effectiveAlias = $item->alias;
+                    $effectivePath = $item->alias;
+                    $effectiveLink = $item->link;
+                    $effectiveType = $item->type;
+
+                    if ($item->type === 'alias') {
+                        $targetId = (int) ($params['aliasoptions'] ?? 0);
+                        if ($targetId > 0) {
+                            $target = Menu::published()->where('id', $targetId)->first();
+                            if ($target) {
+                                $effectiveAlias = $target->alias ?: $effectiveAlias;
+                                $effectivePath = $target->alias ?: $effectivePath;
+                                $effectiveLink = $target->link ?: $effectiveLink;
+                                $effectiveType = $target->type ?: $effectiveType;
+                            }
+                        }
+                    }
+
                     return [
                         'id' => $item->id,
                         'title' => $item->title,
-                        'alias' => $item->alias,
-                        'path' => $item->alias, // Use alias as path for SEO URLs
-                        'link' => $item->link,
-                        'type' => $item->type,
+                        'alias' => $effectiveAlias,
+                        'path' => $effectivePath, // Use alias as path for SEO URLs
+                        'link' => $effectiveLink,
+                        'type' => $effectiveType,
                         'level' => $item->level,
                         'img' => $item->img,
                         'language' => $item->language,
@@ -71,13 +91,32 @@ trait BuildsMenus
                 ->filter($shouldShow)
                 ->map(function ($item) use (&$buildTree, $shouldShow, $extractParams) {
                     $params = $extractParams($item);
+
+                    $effectiveAlias = $item->alias;
+                    $effectivePath = $item->alias;
+                    $effectiveLink = $item->link;
+                    $effectiveType = $item->type;
+
+                    if ($item->type === 'alias') {
+                        $targetId = (int) ($params['aliasoptions'] ?? 0);
+                        if ($targetId > 0) {
+                            $target = Menu::published()->where('id', $targetId)->first();
+                            if ($target) {
+                                $effectiveAlias = $target->alias ?: $effectiveAlias;
+                                $effectivePath = $target->alias ?: $effectivePath;
+                                $effectiveLink = $target->link ?: $effectiveLink;
+                                $effectiveType = $target->type ?: $effectiveType;
+                            }
+                        }
+                    }
+
                     return [
                         'id' => $item->id,
                         'title' => $item->title,
-                        'alias' => $item->alias,
-                        'path' => $item->alias, // Use alias as path for SEO URLs
-                        'link' => $item->link,
-                        'type' => $item->type,
+                        'alias' => $effectiveAlias,
+                        'path' => $effectivePath, // Use alias as path for SEO URLs
+                        'link' => $effectiveLink,
+                        'type' => $effectiveType,
                         'level' => $item->level,
                         'img' => $item->img,
                         'language' => $item->language,

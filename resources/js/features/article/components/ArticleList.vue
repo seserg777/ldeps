@@ -54,38 +54,14 @@ import { defineProps } from 'vue'
 import { Pagination } from '../../common/components'
 
 const props = defineProps({
-  menuItems: {
-    type: Array,
-    default: () => []
-  },
-  language: {
-    type: String,
-    default: 'uk'
-  },
-  siteName: {
-    type: String,
-    default: ''
-  },
-  siteDescription: {
-    type: String,
-    default: ''
-  },
-  menuItem: {
-    type: Object,
-    default: null
-  },
-  linkParams: {
-    type: Object,
-    default: null
-  },
-  articles: {
-    type: Array,
-    default: () => []
-  },
-  pagination: {
-    type: Object,
-    default: null
-  }
+  menuItems: { type: Array, default: () => [] },
+  language: { type: String, default: 'uk' },
+  siteName: { type: String, default: '' },
+  siteDescription: { type: String, default: '' },
+  menuItem: { type: Object, default: null },
+  linkParams: { type: Object, default: null },
+  articles: { type: Array, default: () => [] },
+  pagination: { type: Object, default: null }
 })
 
 // Generate article URL based on level parameter
@@ -99,40 +75,15 @@ const getArticleUrl = (article) => {
 }
 
 // Use articles from props
-console.log('ContentList mounted with articles:', props.articles)
+console.log('ArticleList mounted with articles:', props.articles)
 </script>
 
 <style scoped>
-.content-list-component {
-  min-height: 400px;
-}
-
-.article-preview {
-  height: 100%;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.article-preview:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-
-.alert-info {
-  color: #0c5460;
-  background-color: #d1ecf1;
-  border-color: #bee5eb;
-}
-
-.alert-warning {
-  color: #856404;
-  background-color: #fff3cd;
-  border-color: #ffeaa7;
-}
+.content-list-component { min-height: 400px; }
+.article-preview { height: 100%; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.article-preview:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+.alert { padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; }
+.alert-info { color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb; }
+.alert-warning { color: #856404; background-color: #fff3cd; border-color: #ffeaa7; }
 </style>
+

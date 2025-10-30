@@ -7,15 +7,15 @@
 @section('title', 'Главная страница')
 @section('description', 'Интернет-магазин с широким ассортиментом качественных товаров')
 
-@section('content')
-<div id="vue-homepage">
-    <homepage-component
-        :menu-items='@json($menuItems)'
-        site-name="{{ $siteName }}"
-        site-description="{{ $siteDescription }}"
-    ></homepage-component>
-</div>
-@endsection
+@push('vue-components')
+<homepage-component
+    menu-items-top='@json($menuItemsTop ?? [], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)'
+    menu-items-main='@json($menuItemsMain ?? [], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)'
+    language="{{ app()->getLocale() === 'uk' ? 'uk' : 'ru' }}"
+    site-name="{{ $siteName }}"
+    site-description="{{ $siteDescription }}"
+></homepage-component>
+@endpush
 
 @push('scripts')
 <script>

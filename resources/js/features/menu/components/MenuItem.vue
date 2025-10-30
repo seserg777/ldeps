@@ -9,11 +9,11 @@
       <i v-if="item.children && item.children.length && canRenderChildren" class="menu-arrow fas fa-chevron-down"></i>
     </a>
     
-    <!-- Submenu: level 1 renders as mega-menu with up to 4 columns; deeper levels use flyout -->
+    <!-- Submenu rendering -->
     <template v-if="item.children && item.children.length && canRenderChildren">
-      <!-- Mega menu for top level -->
+      <!-- Level 1 is ALWAYS rendered as mega menu -->
       <div
-        v-if="isMega"
+        v-if="level === 1"
         class="menu-mega"
         :class="{ 'show': isSubmenuVisible }"
         @mouseenter="isSubmenuVisible = true"
@@ -30,7 +30,7 @@
               <li v-for="g in (child.children || [])" :key="g.id" class="mega-item">
                 <a :href="generateUrl(g)" class="mega-link">{{ g.title }}</a>
                 <!-- fourth level as nested inline list -->
-                <ul v-if="g.children && g.children.length && (level + 2) < maxLevels" class="mega-sublist">
+                <ul v-if="g.children && g.children.length && (level + 2) <= maxLevels" class="mega-sublist">
                   <li v-for="gg in g.children" :key="gg.id" class="mega-subitem">
                     <a :href="generateUrl(gg)" class="mega-sublink">{{ gg.title }}</a>
                   </li>
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <!-- Regular flyout for deeper levels -->
+      <!-- Deeper levels (level >= 2) use regular flyout -->
       <ul 
         v-else 
         class="menu-submenu"
@@ -93,8 +93,6 @@ const isActive = computed(() => {
   // Match exact, and nested paths like /promo/449
   return candidates.includes(current) || current.startsWith(`/${path}/`)
 })
-// Mega menu only for top level
-const isMega = computed(() => props.level === 1)
 
 // Parse link parameters to determine component type
 const parseLinkParams = (link) => {
@@ -292,6 +290,13 @@ const hideSubmenu = () => {
 }
 
 .menu-mega.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Ensure level-1 mega opens on hover as well */
+.menu-item.level-1:hover > .menu-mega {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);

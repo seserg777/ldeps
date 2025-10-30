@@ -17,15 +17,17 @@ class HomeController extends Controller
     public function index(): View
     {
         // Build required menus. We can add more types later as needed.
-        $menus = $this->buildMenus(['main-menu-add']);
-        $menuItems = $menus['main-menu-add'] ?? [];
+        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
+        $menuItemsTop = $menus['main-menu-add'] ?? [];
+        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
 
         $siteName = config('app.name', 'Интернет-магазин');
         $siteDescription = 'Лучшие товары по доступным ценам';
         $language = app()->getLocale();
 
         return view('front.homepage', compact(
-            'menuItems',
+            'menuItemsTop',
+            'menuItemsMain',
             'siteName',
             'siteDescription',
             'language'
@@ -60,15 +62,17 @@ class HomeController extends Controller
                 abort(404, 'Article not found');
             }
 
-            $menus = $this->buildMenus(['main-menu-add']);
-            $menuItems = $menus['main-menu-add'] ?? [];
+            $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
+            $menuItemsTop = $menus['main-menu-add'] ?? [];
+            $menuItemsMain = $menus['mainmenu-rus'] ?? [];
 
             $siteName = config('app.name', 'Интернет-магазин');
             $siteDescription = 'Лучшие товары по доступным ценам';
             $language = app()->getLocale();
 
             $pageData = [
-                'menuItems' => $menuItems,
+                'menuItemsTop' => $menuItemsTop,
+                'menuItemsMain' => $menuItemsMain,
                 'siteName' => $siteName,
                 'siteDescription' => $siteDescription,
                 'language' => $language,
@@ -102,15 +106,17 @@ class HomeController extends Controller
         }
 
         // For other types, show generic page
-        $menus = $this->buildMenus(['main-menu-add']);
-        $menuItems = $menus['main-menu-add'] ?? [];
+        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
+        $menuItemsTop = $menus['main-menu-add'] ?? [];
+        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
 
         $siteName = config('app.name', 'Интернет-магазин');
         $siteDescription = 'Лучшие товары по доступным ценам';
         $language = app()->getLocale();
 
         $pageData = [
-            'menuItems' => $menuItems,
+            'menuItemsTop' => $menuItemsTop,
+            'menuItemsMain' => $menuItemsMain,
             'siteName' => $siteName,
             'siteDescription' => $siteDescription,
             'language' => $language,
@@ -130,6 +136,53 @@ class HomeController extends Controller
     {
         // Redirect to BannerController for proper handling
         return redirect()->to("/banner/{$id}");
+    }
+
+    /**
+     * JSON meta for a page by SEO alias (used by Vue components during hydration)
+     */
+    public function pageMeta(string $path)
+    {
+        $menuItem = \App\Models\Menu\Menu::where('alias', $path)
+            ->where('published', 1)
+            ->first();
+
+        if (!$menuItem) {
+            return response()->json(['success' => false, 'message' => 'Not found'], 404);
+        }
+
+        $linkParams = $this->parseLinkParams($menuItem->link);
+        $componentType = $this->getComponentType($linkParams);
+
+        $payload = [
+            'success' => true,
+            'menuItem' => [
+                'title' => $menuItem->title,
+                'alias' => $menuItem->alias,
+                'path' => $menuItem->alias,
+                'link' => $menuItem->link,
+                'level' => $menuItem->level,
+            ],
+            'linkParams' => $linkParams,
+            'componentType' => $componentType,
+        ];
+
+        if ($componentType === 'Content' && isset($linkParams['id'])) {
+            $record = \App\Models\JContent::published()->find((int) $linkParams['id']);
+            if ($record) {
+                $payload['additionalData']['article'] = [
+                    'id' => $record->id,
+                    'title' => $record->title,
+                    'alias' => $record->alias,
+                    'description' => $record->introtext,
+                    'fulltext' => $record->fulltext,
+                    'image' => null,
+                    'created' => optional($record->created)->format('Y-m-d H:i:s'),
+                ];
+            }
+        }
+
+        return response()->json($payload);
     }
 
     /**

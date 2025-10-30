@@ -32,15 +32,17 @@ class ContentController extends Controller
         ];
 
         // Build menus
-        $menus = $this->buildMenus(['main-menu-add']);
-        $menuItems = $menus['main-menu-add'] ?? [];
+        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
+        $menuItemsTop = $menus['main-menu-add'] ?? [];
+        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
 
         $siteName = config('app.name', 'Интернет-магазин');
         $siteDescription = 'Лучшие товары по доступным ценам';
 
         // Prepare data for the component
         $pageData = [
-            'menuItems' => $menuItems,
+            'menuItemsTop' => $menuItemsTop,
+            'menuItemsMain' => $menuItemsMain,
             'siteName' => $siteName,
             'siteDescription' => $siteDescription,
             'language' => $language,
@@ -95,15 +97,17 @@ class ContentController extends Controller
         ];
 
         // Build menus
-        $menus = $this->buildMenus(['main-menu-add']);
-        $menuItems = $menus['main-menu-add'] ?? [];
+        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
+        $menuItemsTop = $menus['main-menu-add'] ?? [];
+        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
 
         $siteName = config('app.name', 'Интернет-магазин');
         $siteDescription = 'Лучшие товары по доступным ценам';
 
         // Prepare data for the component
         $pageData = [
-            'menuItems' => $menuItems,
+            'menuItemsTop' => $menuItemsTop,
+            'menuItemsMain' => $menuItemsMain,
             'siteName' => $siteName,
             'siteDescription' => $siteDescription,
             'language' => $language,

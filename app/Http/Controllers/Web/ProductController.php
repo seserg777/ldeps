@@ -17,9 +17,11 @@ use App\Http\Requests\SearchRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Http\Controllers\Concerns\BuildsMenus;
 
 class ProductController extends Controller
 {
+    use BuildsMenus;
     protected ProductService $productService;
     protected CategoryService $categoryService;
     protected SearchService $searchService;
@@ -161,8 +163,13 @@ class ProductController extends Controller
      * @param int $id
      * @return View
      */
-    public function show(int $id): View
+    public function show($id): View
     {
+        $id = (int) $id;
+        if ($id <= 0) {
+            abort(404, 'Product not found');
+        }
+
         $product = Product::published()
             ->with(['manufacturer', 'categories', 'productCharacteristics.extraField', 'productCharacteristics.extraFieldValue'])
             ->findOrFail($id);
@@ -501,7 +508,38 @@ class ProductController extends Controller
                 ->get();
         });
 
-        return view('front.products.index-new', compact('products', 'manufacturers', 'priceRange', 'categories', 'category', 'childCategories', 'filteredExtraFieldValue', 'filteredManufacturer', 'filterParam'));
+        // Render universal Vue page with Content component so that JshoppingCategory can handle rendering
+        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
+        $menuItemsTop = $menus['main-menu-add'] ?? [];
+        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
+
+        $linkParams = [
+            'option' => 'com_jshopping',
+            'view' => 'category',
+            'layout' => 'category',
+            'task' => 'view',
+            'category_id' => (string) $category->category_id,
+        ];
+
+        $pageData = [
+            'language' => app()->getLocale(),
+            'siteName' => config('app.name', 'Site'),
+            'siteDescription' => '',
+            'menuItem' => [
+                'id' => null,
+                'title' => $category->name,
+                'alias' => $category->alias,
+                'path' => $category->full_path,
+            ],
+            'linkParams' => $linkParams,
+            'componentType' => 'Content',
+            'additionalData' => [],
+        ];
+
+        $activeMenuId = null;
+        $componentClass = 'default';
+
+        return view('front.page', compact('pageData', 'menuItemsTop', 'menuItemsMain', 'activeMenuId', 'componentClass'));
     }
 
     /**
@@ -832,6 +870,64 @@ class ProductController extends Controller
             ->get();
 
         return view('front.categories.index', compact('categories'));
+    }
+
+    /**
+     * SSR partial: render small products module HTML for hydration.
+     */
+    public function moduleHtml(Request $request)
+    {
+        $limit = (int) $request->get('limit', 3);
+        $random = (bool) $request->get('random', false);
+
+        // Reuse getProducts to fetch a list quickly
+        $req = Request::create('/api/products', 'GET', [
+            'per_page' => max(1, $limit),
+        ]);
+        /** @var JsonResponse $json */
+        $json = $this->getProducts($req);
+        $data = $json->getData(true);
+
+        // Prefer products list from API; our API groups products under categories
+        $list = [];
+        if (isset($data['products']) && is_array($data['products'])) {
+            $list = $data['products'];
+        } elseif (isset($data['data']) && is_array($data['data'])) {
+            $list = $data['data'];
+        } elseif (!empty($data['categories']) && is_array($data['categories'])) {
+            // Flatten categories[*].products
+            foreach ($data['categories'] as $cat) {
+                if (!empty($cat['products']) && is_array($cat['products'])) {
+                    foreach ($cat['products'] as $p) {
+                        $list[] = $p;
+                    }
+                }
+            }
+        }
+
+        if ($random && !empty($list)) {
+            shuffle($list);
+        }
+        $list = array_slice($list, 0, max(1, $limit));
+
+        $products = array_map(function ($p) {
+            $id = $p['product_id'] ?? $p['id'] ?? null;
+            $name = $p['name'] ?? $p['title'] ?? '';
+            $image = $p['thumbnail_url'] ?? $p['image'] ?? $p['img'] ?? '/images/placeholder.png';
+            $slug = $p['full_path'] ?? $p['slug'] ?? null;
+            if (!empty($p['url'])) {
+                $url = $p['url'];
+            } elseif ($slug) {
+                $url = route('products.show-by-path', $slug);
+            } elseif ($id && is_numeric($id)) {
+                $url = route('products.show', (int) $id);
+            } else {
+                $url = '#';
+            }
+            return compact('id', 'name', 'image', 'url');
+        }, $list);
+
+        return view('share.products.module', compact('products'));
     }
 
 }

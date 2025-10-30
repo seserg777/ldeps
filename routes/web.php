@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\ContentController as WebContentController;
 use App\Http\Controllers\Web\BannerController;
@@ -11,6 +10,10 @@ use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\SaleBannerController;
+use App\Http\Controllers\Web\MenuController as WebMenuController;
+use App\Http\Controllers\Web\HomeController as WebHomeController;
+use App\Http\Controllers\Web\ProductController;
+use App\Http\Controllers\Web\JshoppingController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\Admin\ProductAdminController;
@@ -53,6 +56,8 @@ Route::get('/{path}.html', [HomeController::class, 'showPage'])->name('page.show
 
 // Product routes
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+// SSR products module must be before /products/{id}
+Route::get('/products/html', [ProductController::class, 'moduleHtml'])->name('products.module.html');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
 // Category routes with hierarchical alias
@@ -66,9 +71,20 @@ Route::get('/language/{locale}', [LanguageController::class, 'switchLanguage'])-
 Route::get('/api/products', [ProductController::class, 'getProducts'])->name('products.api');
 Route::get('/api/filters', [ProductController::class, 'getFilters'])->name('filters.api');
 Route::get('/api/search', [ProductController::class, 'search'])->name('search.api');
+Route::get('/api/jshopping/category/{id}', [JshoppingController::class, 'category'])->name('api.jshopping.category');
 
 // Vue products page
 Route::get('/products-vue', [ProductController::class, 'index'])->name('products.vue');
+
+// Server-rendered menu HTML for hydration/SEO
+Route::get('/menu/html/{menutype}', [WebMenuController::class, 'html'])->name('menu.html');
+
+// Page meta for Vue components (PHP-SSR + hydration; JSON only)
+Route::get('/api/page-meta/{path}', [WebHomeController::class, 'pageMeta'])
+    ->where('path', '[a-zA-Z0-9\-_]+')
+    ->name('page.meta');
+
+// (moved above product {id} route)
 
 // Wishlist routes
 Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
