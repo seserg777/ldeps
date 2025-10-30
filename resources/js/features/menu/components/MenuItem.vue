@@ -250,6 +250,13 @@ const hideSubmenu = () => {
   transform: translateY(0);
 }
 
+/* Ensure flyout opens on hover without JS for levels > 1 */
+.menu-item:hover > .menu-submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
 .menu-submenu .menu-item {
   display: block;
 }
