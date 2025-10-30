@@ -6,16 +6,24 @@
   >
     <a :href="generateUrl(item)" class="menu-link" :class="{ active: isActive }">
       <span class="menu-title">{{ item.title }}</span>
-      <i v-if="item.children && item.children.length" class="menu-arrow fas fa-chevron-down"></i>
+      <i v-if="item.children && item.children.length && canRenderChildren" class="menu-arrow fas fa-chevron-down"></i>
     </a>
     
     <!-- Dropdown submenu -->
     <ul 
-      v-if="item.children && item.children.length" 
+      v-if="item.children && item.children.length && canRenderChildren" 
       class="menu-submenu"
       :class="{ 'show': isSubmenuVisible }"
     >
-      <MenuItem v-for="child in item.children" :key="child.id" :item="child" :level="level + 1" :layout="layout" :language="language" />
+      <MenuItem 
+        v-for="child in item.children" 
+        :key="child.id" 
+        :item="child" 
+        :level="level + 1" 
+        :layout="layout" 
+        :language="language"
+        :max-levels="maxLevels"
+      />
     </ul>
   </li>
 </template>
@@ -27,10 +35,18 @@ const props = defineProps({
   item: { type: Object, required: true },
   level: { type: Number, default: 1 },
   layout: { type: String, default: 'default' },
-  language: { type: String, default: 'ru-UA' }
+  language: { type: String, default: 'ru-UA' },
+  // Maximum levels of submenu rendering allowed (root level is 1)
+  maxLevels: { type: Number, default: 1 }
 })
 
 const isSubmenuVisible = ref(false)
+
+// Whether children of this item can be rendered based on maxLevels
+const canRenderChildren = computed(() => {
+  if (!props.maxLevels || typeof props.maxLevels !== 'number') return false
+  return props.level < props.maxLevels
+})
 
 // Detect if this item corresponds to current page
 const isActive = computed(() => {
@@ -91,7 +107,7 @@ const getComponentType = (item) => {
 }
 
 const showSubmenu = () => {
-  if (props.level === 1) { // Only show submenu for first level items
+  if (canRenderChildren.value && props.level >= 1) {
     isSubmenuVisible.value = true
   }
 }

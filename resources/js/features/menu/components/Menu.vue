@@ -14,6 +14,7 @@
         :level="1"
         :layout="layout"
         :language="language"
+        :max-levels="maxLevels"
       />
     </ul>
   </nav>
@@ -36,6 +37,11 @@ const props = defineProps({
     type: String, 
     default: 'ru-UA',
     description: 'Language code for filtering menu items (e.g., "ru-UA", "en-US", "uk-UA")'
+  },
+  // Maximum levels (depth) to render, including the root level. Default 1 shows only top-level items
+  maxLevels: {
+    type: Number,
+    default: 1,
   }
 })
 
@@ -136,11 +142,6 @@ onMounted(() => {
  * - vertical: Vertical menu with white background and shadow
  * - compact: Compact horizontal menu with blue accent
  */
-.menu-layout-default {
-  background: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
-}
-
 .menu-layout-default .menu-level { 
   list-style: none; 
   margin: 0; 
