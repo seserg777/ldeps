@@ -9,22 +9,55 @@
       <i v-if="item.children && item.children.length && canRenderChildren" class="menu-arrow fas fa-chevron-down"></i>
     </a>
     
-    <!-- Dropdown submenu -->
-    <ul 
-      v-if="item.children && item.children.length && canRenderChildren" 
-      class="menu-submenu"
-      :class="{ 'show': isSubmenuVisible }"
-    >
-      <MenuItem 
-        v-for="child in item.children" 
-        :key="child.id" 
-        :item="child" 
-        :level="level + 1" 
-        :layout="layout" 
-        :language="language"
-        :max-levels="maxLevels"
-      />
-    </ul>
+    <!-- Submenu: level 1 renders as mega-menu with up to 4 columns; deeper levels use flyout -->
+    <template v-if="item.children && item.children.length && canRenderChildren">
+      <!-- Mega menu for top level -->
+      <div
+        v-if="isMega"
+        class="menu-mega"
+        :class="{ 'show': isSubmenuVisible }"
+        @mouseenter="isSubmenuVisible = true"
+        @mouseleave="isSubmenuVisible = false"
+      >
+        <div class="mega-columns">
+          <div
+            v-for="child in item.children"
+            :key="child.id"
+            class="mega-col"
+          >
+            <a :href="generateUrl(child)" class="mega-heading">{{ child.title }}</a>
+            <ul class="mega-list">
+              <li v-for="g in (child.children || [])" :key="g.id" class="mega-item">
+                <a :href="generateUrl(g)" class="mega-link">{{ g.title }}</a>
+                <!-- fourth level as nested inline list -->
+                <ul v-if="g.children && g.children.length && (level + 2) < maxLevels" class="mega-sublist">
+                  <li v-for="gg in g.children" :key="gg.id" class="mega-subitem">
+                    <a :href="generateUrl(gg)" class="mega-sublink">{{ gg.title }}</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Regular flyout for deeper levels -->
+      <ul 
+        v-else 
+        class="menu-submenu"
+        :class="{ 'show': isSubmenuVisible }"
+      >
+        <MenuItem 
+          v-for="child in item.children" 
+          :key="child.id" 
+          :item="child" 
+          :level="level + 1" 
+          :layout="layout" 
+          :language="language"
+          :max-levels="maxLevels"
+        />
+      </ul>
+    </template>
   </li>
 </template>
 
@@ -60,6 +93,8 @@ const isActive = computed(() => {
   // Match exact, and nested paths like /promo/449
   return candidates.includes(current) || current.startsWith(`/${path}/`)
 })
+// Mega menu only for top level
+const isMega = computed(() => props.level === 1)
 
 // Parse link parameters to determine component type
 const parseLinkParams = (link) => {
@@ -230,6 +265,54 @@ const hideSubmenu = () => {
   background-color: #f8f9fa;
   border-bottom-color: transparent;
 }
+
+/* Mega menu styles (level 1) */
+.menu-mega {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  background: #1f2837; /* dark panel to echo screenshot */
+  color: #e9ecef;
+  border-radius: 6px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.2);
+  padding: 20px 24px;
+  z-index: 3000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.menu-mega.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.mega-columns {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.mega-heading {
+  display: block;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-decoration: none;
+}
+
+.mega-list { list-style: none; margin: 0; padding: 0; }
+.mega-item { margin: 4px 0; }
+.mega-link { color: #cfd8e3; text-decoration: none; font-weight: 400; }
+.mega-link:hover { color: #fff; text-decoration: underline; }
+
+.mega-sublist { list-style: none; margin: 4px 0 0 12px; padding: 0; }
+.mega-subitem { margin: 2px 0; }
+.mega-sublink { color: #b6c2d9; text-decoration: none; font-size: 13px; }
+.mega-sublink:hover { color: #fff; text-decoration: underline; }
 
 /* Second level submenu positioning */
 .menu-submenu .menu-submenu {
