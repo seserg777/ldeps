@@ -117,14 +117,8 @@
         $activeMenuId = null;
     }
 @endphp
-<body class="controller-{{ strtolower(class_basename(request()->route()->getController())) }} component-{{ $componentClass ?? 'default' }}{{ $activeMenuId ? ' itemid-' . $activeMenuId : '' }}"
-    <!-- Vue Root: Only Vue components should render the page -->
-    <div id="vue-root">
-        @stack('vue-components')
-        <div id="vue-root-modals">
-            @stack('vue-modals')
-        </div>
-    </div>
+<body class="controller-{{ strtolower(class_basename(request()->route()->getController())) }} component-{{ $componentClass ?? 'default' }}{{ $activeMenuId ? ' itemid-' . $activeMenuId : '' }}">
+    @yield('content')
 
     <!-- Scripts -->
     @stack('scripts')
