@@ -4,8 +4,8 @@
     $componentType = 'homepage';
 @endphp
 
-@section('title', 'Главная страница')
-@section('description', 'Интернет-магазин с широким ассортиментом качественных товаров')
+@section('title', 'Home')
+@section('description', 'Online store with a wide range of quality products')
 
 @section('content')
   <div class="page home">
