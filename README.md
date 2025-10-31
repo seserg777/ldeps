@@ -139,13 +139,12 @@ Access: `/admin`
 
 ## Public Endpoints (SSR + JSON)
 
-- `GET /menu/html/{menutype}?maxLevels=...&language=...` – SSR menu HTML
-- `GET /products/html?limit=3&random=1` – SSR product module (used by `ProductsModule.vue`)
-- `GET /api/page-meta/{path}` – JSON page meta for universal `Content.vue`
+- `GET /menu/html/{menutype}?maxLevels=...&language=...` – SSR menu HTML used directly in Blade
+- `GET /products/html?limit=3&random=1` – SSR product module HTML (вставляется через Blade partial)
 - `GET /api/jshopping/category/{id}` – JSON for JoomShopping categories (children, complexes)
 - `GET /api/products` – product listing API (supports `category`, `per_page`, filters)
 
 ## Frontend Pages
 
-- Root pages mount `Homepage.vue`.
-- All other pages mount `Page.vue`, which includes two SSR menus and a universal `<Content />` that resolves: articles, banners, and JoomShopping categories (root landing or 5×5 product grid for sub‑categories).
+- Главная: `resources/views/front/homepage.blade.php` — SSR‑контент + подключаемые Blade partials (`search`, `products_module`, и т.д.).
+- Внутренние страницы: `resources/views/front/page.blade.php` — SSR‑контент в зависимости от маршрута, меню вставляется как SSR HTML.
