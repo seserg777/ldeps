@@ -75,7 +75,7 @@ class CreateTestUser extends Command
         // Test the created user
         $this->info("\nTesting authentication...");
         $isValid = Hash::driver('md5')->check($password, $user->password);
-        
+
         if ($isValid) {
             $this->info("✅ Password verification: SUCCESS");
         } else {

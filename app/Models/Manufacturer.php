@@ -10,7 +10,8 @@ use App\Models\Product\Product;
 
 class Manufacturer extends Model
 {
-    use HasFactory, HasLocalizedFields;
+    use HasFactory;
+    use HasLocalizedFields;
 
     protected $table = 'vjprf_jshopping_manufacturers';
     protected $primaryKey = 'manufacturer_id';
@@ -84,21 +85,21 @@ class Manufacturer extends Model
     public function getNameAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         // Map locale to database field format
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
-        
+
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $nameField = "name_{$dbLocale}";
-        
+
         if (isset($this->attributes[$nameField]) && !empty($this->attributes[$nameField])) {
             return $this->attributes[$nameField];
         }
-        
+
         // Fallback to Ukrainian name
         return $this->attributes['name_uk-UA'] ?? 'Без назви';
     }
@@ -109,20 +110,20 @@ class Manufacturer extends Model
     public function getAliasAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
-        
+
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $aliasField = "alias_{$dbLocale}";
-        
+
         if (isset($this->attributes[$aliasField]) && !empty($this->attributes[$aliasField])) {
             return $this->attributes[$aliasField];
         }
-        
+
         // Fallback to Ukrainian alias
         return $this->attributes['alias_uk-UA'] ?? '';
     }
@@ -133,20 +134,20 @@ class Manufacturer extends Model
     public function getShortDescriptionAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
-        
+
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $descField = "short_description_{$dbLocale}";
-        
+
         if (isset($this->attributes[$descField]) && !empty($this->attributes[$descField])) {
             return $this->attributes[$descField];
         }
-        
+
         return $this->attributes['short_description_uk-UA'] ?? '';
     }
 
@@ -156,20 +157,20 @@ class Manufacturer extends Model
     public function getDescriptionAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
-        
+
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $descField = "description_{$dbLocale}";
-        
+
         if (isset($this->attributes[$descField]) && !empty($this->attributes[$descField])) {
             return $this->attributes[$descField];
         }
-        
+
         return $this->attributes['description_uk-UA'] ?? '';
     }
 

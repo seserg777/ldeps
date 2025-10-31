@@ -48,7 +48,7 @@ class TestAuth extends Command
 
         // Test password verification
         $isValid = Hash::driver('md5')->check($password, $user->password);
-        
+
         if ($isValid) {
             $this->info("✅ Password verification: SUCCESS");
         } else {

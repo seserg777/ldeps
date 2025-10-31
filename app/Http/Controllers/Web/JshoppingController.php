@@ -72,5 +72,3 @@ class JshoppingController extends Controller
         ]);
     }
 }
-
-

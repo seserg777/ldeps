@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Menu extends Model
 {
     protected $table = 'vjprf_menu';
-    
+
     protected $fillable = [
         'menutype',
         'title',

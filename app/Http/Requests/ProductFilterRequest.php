@@ -63,7 +63,7 @@ class ProductFilterRequest extends FormRequest
     public function validatedWithDefaults(): array
     {
         $validated = $this->validated();
-        
+
         return array_merge([
             'price_min' => null,
             'price_max' => null,

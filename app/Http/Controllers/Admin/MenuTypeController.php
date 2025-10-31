@@ -16,8 +16,8 @@ class MenuTypeController extends Controller
     public function index(): View
     {
         $menuTypes = MenuType::withCount(['menuItems as published_count' => function ($query) {
-                $query->where('published', 1);
-            }])
+            $query->where('published', 1);
+        }])
             ->withCount(['menuItems as unpublished_count' => function ($query) {
                 $query->where('published', 0);
             }])
@@ -81,7 +81,7 @@ class MenuTypeController extends Controller
                 'label' => 'Menu Items',
                 'icon' => 'list',
                 'class' => 'info',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.menu.items.index', $item->menutype);
                 }
             ],
@@ -89,7 +89,7 @@ class MenuTypeController extends Controller
                 'label' => 'View',
                 'icon' => 'eye',
                 'class' => 'primary',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.menu.types.show', $item);
                 }
             ],
@@ -97,7 +97,7 @@ class MenuTypeController extends Controller
                 'label' => 'Edit',
                 'icon' => 'edit',
                 'class' => 'warning',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.menu.types.edit', $item);
                 }
             ],
@@ -105,10 +105,10 @@ class MenuTypeController extends Controller
                 'label' => 'Delete',
                 'icon' => 'trash',
                 'class' => 'danger',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.menu.types.destroy', $item);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->menuItems()->count() == 0;
                 }
             ]

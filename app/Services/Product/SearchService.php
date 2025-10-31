@@ -71,7 +71,7 @@ class SearchService
     private function searchCategories(string $query, int $limit): Collection
     {
         return Category::active()
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('name_uk-UA', 'like', "%{$query}%")
                   ->orWhere('name_ru-UA', 'like', "%{$query}%")
                   ->orWhere('name_en-GB', 'like', "%{$query}%")
@@ -100,7 +100,7 @@ class SearchService
     private function searchManufacturers(string $query, int $limit): Collection
     {
         return Manufacturer::published()
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('name_uk-UA', 'like', "%{$query}%")
                   ->orWhere('name_ru-UA', 'like', "%{$query}%")
                   ->orWhere('name_en-GB', 'like', "%{$query}%")

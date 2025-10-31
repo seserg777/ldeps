@@ -55,7 +55,7 @@ class CreateProductsTable extends Migration
             $table->integer('basic_price_unit_id')->default(0);
             $table->integer('label_id');
             $table->integer('vendor_id')->default(0);
-            
+
             // Multi-language fields
             $table->string('name_en-GB', 255);
             $table->string('alias_en-GB', 255);
@@ -64,7 +64,7 @@ class CreateProductsTable extends Migration
             $table->string('meta_title_en-GB', 255);
             $table->text('meta_description_en-GB');
             $table->text('meta_keyword_en-GB');
-            
+
             $table->string('name_uk-UA', 255);
             $table->string('alias_uk-UA', 255);
             $table->text('short_description_uk-UA');
@@ -72,7 +72,7 @@ class CreateProductsTable extends Migration
             $table->string('meta_title_uk-UA', 255);
             $table->text('meta_description_uk-UA');
             $table->text('meta_keyword_uk-UA');
-            
+
             $table->string('name_ru-UA', 255);
             $table->string('alias_ru-UA', 255);
             $table->text('short_description_ru-UA');
@@ -80,7 +80,7 @@ class CreateProductsTable extends Migration
             $table->string('meta_title_ru-UA', 255);
             $table->text('meta_description_ru-UA');
             $table->text('meta_keyword_ru-UA');
-            
+
             $table->string('name_ru-UA', 255);
             $table->string('alias_ru-UA', 255);
             $table->text('short_description_ru-UA');
@@ -88,7 +88,7 @@ class CreateProductsTable extends Migration
             $table->string('meta_title_ru-UA', 255);
             $table->text('meta_description_ru-UA');
             $table->text('meta_keyword_ru-UA');
-            
+
             $table->string('image', 255);
             $table->string('name_langmetadata', 255);
             $table->string('alias_langmetadata', 255);
@@ -97,12 +97,12 @@ class CreateProductsTable extends Migration
             $table->string('meta_title_langmetadata', 255);
             $table->text('meta_description_langmetadata');
             $table->text('meta_keyword_langmetadata');
-            
+
             $table->integer('parent_id');
             $table->integer('currency_id')->default(0);
             $table->integer('access')->default(1);
             $table->integer('add_price_unit_id')->default(0);
-            
+
             // Auction fields
             $table->boolean('use_auction')->default(0);
             $table->boolean('use_buy_now')->default(0);
@@ -113,7 +113,7 @@ class CreateProductsTable extends Migration
             $table->decimal('auction_price', 12, 2);
             $table->integer('auction_id')->default(0);
             $table->decimal('bid_increments', 12, 2);
-            
+
             // Additional fields
             $table->text('characteristics_en-GB');
             $table->text('delivery_kit_en-GB');
@@ -142,14 +142,14 @@ class CreateProductsTable extends Migration
             $table->integer('asset_id');
             $table->datetime('comingsoon_date')->nullable();
             $table->boolean('addon_prod_availability_custom_status');
-            
+
             // Indexes
             $table->index('product_manufacturer_id');
             $table->index('product_price');
             $table->index('product_publish');
             $table->index('hits');
             $table->index('average_rating');
-            
+
             $table->timestamps();
         });
     }

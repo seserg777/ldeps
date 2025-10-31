@@ -18,8 +18,8 @@ class CategoryService
             ->root()
             ->ordered()
             ->withCount('products')
-            ->with(['subcategories' => function($query) {
-                $query->active()->ordered()->with(['parent', 'subcategories' => function($subQuery) {
+            ->with(['subcategories' => function ($query) {
+                $query->active()->ordered()->with(['parent', 'subcategories' => function ($subQuery) {
                     $subQuery->active()->ordered();
                 }]);
             }])
@@ -39,7 +39,7 @@ class CategoryService
         $lastSegment = end($pathSegments);
 
         return Category::active()
-            ->where(function($query) use ($lastSegment) {
+            ->where(function ($query) use ($lastSegment) {
                 $query->where('alias_uk-UA', $lastSegment)
                       ->orWhere('alias_ru-UA', $lastSegment)
                       ->orWhere('alias_en-GB', $lastSegment);
@@ -56,15 +56,15 @@ class CategoryService
     public function getCategoryAndSubcategoryIds(Category $category): array
     {
         $ids = [$category->category_id];
-        
+
         $subcategories = Category::active()
             ->where('category_parent_id', $category->category_id)
             ->get();
-            
+
         foreach ($subcategories as $subcategory) {
             $ids = array_merge($ids, $this->getCategoryAndSubcategoryIds($subcategory));
         }
-        
+
         return $ids;
     }
 }

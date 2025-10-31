@@ -20,7 +20,7 @@ class ContentController extends Controller
         $currentLang = $language === 'ru' ? 'ru-UA' : 'uk-UA';
         $perPage = 12; // Number of articles per page
         $page = $request->get('page', 1);
-        
+
         // For now, return empty array - will be implemented when we have articles table
         $articles = [];
         $pagination = [

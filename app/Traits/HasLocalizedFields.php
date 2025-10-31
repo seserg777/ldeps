@@ -9,7 +9,7 @@ trait HasLocalizedFields
      */
     protected static $localeMap = [
         'uk' => 'uk-UA',
-        'ru' => 'ru-UA', 
+        'ru' => 'ru-UA',
         'en' => 'en-GB'
     ];
 
@@ -18,7 +18,7 @@ trait HasLocalizedFields
      */
     protected static $defaultLocalizedFieldTypes = [
         'name',
-        'alias', 
+        'alias',
         'short_description',
         'description',
         'meta_title',
@@ -32,7 +32,7 @@ trait HasLocalizedFields
     protected static $modelSpecificLocalizedFieldTypes = [
         'Product' => [
             'name',
-            'alias', 
+            'alias',
             'short_description',
             'description',
             'meta_title',
@@ -48,7 +48,7 @@ trait HasLocalizedFields
         ],
         'Category' => [
             'name',
-            'alias', 
+            'alias',
             'short_description',
             'description',
             'meta_title',
@@ -57,7 +57,7 @@ trait HasLocalizedFields
         ],
         'Manufacturer' => [
             'name',
-            'alias', 
+            'alias',
             'short_description',
             'description',
             'meta_title',
@@ -79,11 +79,11 @@ trait HasLocalizedFields
     protected static function getLocalizedFieldTypes(): array
     {
         $modelName = class_basename(static::class);
-        
+
         if (isset(static::$modelSpecificLocalizedFieldTypes[$modelName])) {
             return static::$modelSpecificLocalizedFieldTypes[$modelName];
         }
-        
+
         return static::$defaultLocalizedFieldTypes;
     }
 
@@ -104,12 +104,12 @@ trait HasLocalizedFields
     {
         $locale = app()->getLocale();
         $dbLocale = static::$localeMap[$locale] ?? 'uk-UA';
-        
+
         $fields = [];
         foreach (static::getLocalizedFieldTypes() as $fieldType) {
             $fields[] = "{$fieldType}_{$dbLocale}";
         }
-        
+
         return $fields;
     }
 
@@ -120,7 +120,7 @@ trait HasLocalizedFields
     {
         $baseFields = static::getBaseFields();
         $localizedFields = static::getLocalizedFields();
-        
+
         return array_merge($baseFields, $localizedFields);
     }
 
@@ -148,11 +148,11 @@ trait HasLocalizedFields
     public function getLocalizedField(string $fieldType, ?string $fallback = null): string
     {
         $fieldName = static::getLocalizedFieldName($fieldType);
-        
+
         if (isset($this->attributes[$fieldName]) && !empty($this->attributes[$fieldName])) {
             return $this->attributes[$fieldName];
         }
-        
+
         // Fallback to Ukrainian if current locale field is empty
         if ($fieldType !== 'uk-UA') {
             $fallbackFieldName = "{$fieldType}_uk-UA";
@@ -160,7 +160,7 @@ trait HasLocalizedFields
                 return $this->attributes[$fallbackFieldName];
             }
         }
-        
+
         return $fallback ?? '';
     }
 
@@ -171,17 +171,17 @@ trait HasLocalizedFields
     {
         $dbLocale = static::$localeMap[$locale] ?? 'uk-UA';
         $fieldName = "{$fieldType}_{$dbLocale}";
-        
+
         if (isset($this->attributes[$fieldName]) && !empty($this->attributes[$fieldName])) {
             return $this->attributes[$fieldName];
         }
-        
+
         // Fallback to Ukrainian
         $fallbackFieldName = "{$fieldType}_uk-UA";
         if (isset($this->attributes[$fallbackFieldName]) && !empty($this->attributes[$fallbackFieldName])) {
             return $this->attributes[$fallbackFieldName];
         }
-        
+
         return '';
     }
 }

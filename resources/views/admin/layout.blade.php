@@ -7,25 +7,25 @@
     <?php
         // For admin we always use built assets to avoid dev server URLs in <head>
         $useDev = false;
-        if ($useDev) {
-            // intentionally disabled for admin
-        } else {
-            $manifestPath = public_path('build/manifest.json');
-            if (file_exists($manifestPath)) {
-                $manifest = json_decode(file_get_contents($manifestPath), true);
-                $entry = $manifest['resources/js/app.js'] ?? null;
-                if ($entry) {
-                    // CSS
-                    if (!empty($entry['css'])) {
-                        foreach ($entry['css'] as $css) {
-                            echo '<link rel="stylesheet" href="' . asset('build/' . $css) . '">';
-                        }
+    if ($useDev) {
+        // intentionally disabled for admin
+    } else {
+        $manifestPath = public_path('build/manifest.json');
+        if (file_exists($manifestPath)) {
+            $manifest = json_decode(file_get_contents($manifestPath), true);
+            $entry = $manifest['resources/js/app.js'] ?? null;
+            if ($entry) {
+                // CSS
+                if (!empty($entry['css'])) {
+                    foreach ($entry['css'] as $css) {
+                        echo '<link rel="stylesheet" href="' . asset('build/' . $css) . '">';
                     }
-                    // JS
-                    echo '<script type="module" src="' . asset('build/' . $entry['file']) . '"></script>';
                 }
+                // JS
+                echo '<script type="module" src="' . asset('build/' . $entry['file']) . '"></script>';
             }
         }
+    }
     ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v={{ time() }}">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class MenuType extends Model
 {
     protected $table = 'vjprf_menu_types';
-    
+
     protected $fillable = [
         'asset_id',
         'menutype',

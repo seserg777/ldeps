@@ -51,7 +51,7 @@ class HomeController extends Controller
         // Parse link parameters to determine component
         $linkParams = $this->parseLinkParams($menuItem->link);
         $componentType = $this->getComponentType($linkParams);
-        
+
         // Redirect to specific controllers based on component type (keep SEO URLs for content pages)
         if ($componentType === 'ContentList') {
             return redirect()->route('content.index');
@@ -202,7 +202,7 @@ class HomeController extends Controller
                 // For relative URLs like "index.php?option=com_exussalebanner&view=exussalebanner"
                 $url = parse_url('http://example.com/' . ltrim($link, '/'));
             }
-            
+
             if (!isset($url['query'])) {
                 return null;
             }
@@ -235,11 +235,9 @@ class HomeController extends Controller
                     return 'ExussalebannerList';
                 }
                 return 'Exussalebanner';
-            // Add more mappings as needed
+                // Add more mappings as needed
             default:
                 return null;
         }
     }
 }
-
-

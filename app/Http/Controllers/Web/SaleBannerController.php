@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Exussalebanner;
 use App\Models\ExussalebannerTag;
 use Illuminate\Http\Request;
@@ -25,7 +24,7 @@ class SaleBannerController extends Controller
                 $query->active();
             } elseif ($request->status === 'completed') {
                 $now = now();
-                $query->where(function($q) use ($now) {
+                $query->where(function ($q) use ($now) {
                     $q->where('sale_start', '>', $now)
                       ->orWhere('sale_end', '<', $now);
                 });

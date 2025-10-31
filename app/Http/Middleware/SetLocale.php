@@ -20,7 +20,7 @@ class SetLocale
     {
         // Get locale from session or use default
         $locale = Session::get('locale', config('app.locale'));
-        
+
         // Set the application locale
         App::setLocale($locale);
 

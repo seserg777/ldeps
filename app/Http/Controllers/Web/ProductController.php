@@ -74,7 +74,7 @@ class ProductController extends Controller
             $category = Category::find($request->category);
             if ($category) {
                 $categoryIds = $this->getCategoryAndSubcategoryIds($category);
-                $query->whereHas('categories', function($q) use ($categoryIds) {
+                $query->whereHas('categories', function ($q) use ($categoryIds) {
                     $q->whereIn('vjprf_jshopping_products_to_categories.category_id', $categoryIds);
                 });
             }
@@ -108,7 +108,7 @@ class ProductController extends Controller
         // Get manufacturers for filter with product counts
         $manufacturers = Manufacturer::published()
             ->ordered()
-            ->withCount(['products' => function($query) {
+            ->withCount(['products' => function ($query) {
                 $query->published();
             }])
             ->having('products_count', '>', 0)
@@ -140,8 +140,8 @@ class ProductController extends Controller
             ->root()
             ->ordered()
             ->withCount('products')
-            ->with(['subcategories' => function($query) {
-                $query->active()->ordered()->with(['parent', 'subcategories' => function($subQuery) {
+            ->with(['subcategories' => function ($query) {
+                $query->active()->ordered()->with(['parent', 'subcategories' => function ($subQuery) {
                     $subQuery->active()->ordered();
                 }]);
             }])
@@ -151,11 +151,11 @@ class ProductController extends Controller
         if ($request->get('vue') === '1' || $request->routeIs('products.vue')) {
             return view('front.products.index-vue', compact('products', 'manufacturers', 'priceRange', 'categories'));
         }
-        
+
         return view('front.products.index-new', compact('products', 'manufacturers', 'priceRange', 'categories'));
     }
 
-    
+
 
     /**
      * Display the specified product.
@@ -173,8 +173,8 @@ class ProductController extends Controller
         $product = Product::published()
             ->with(['manufacturer', 'categories', 'productCharacteristics.extraField', 'productCharacteristics.extraFieldValue'])
             ->findOrFail($id);
-        
-        
+
+
         // Increment hits counter
         $product->increment('hits');
 
@@ -192,26 +192,26 @@ class ProductController extends Controller
         // Split path into segments
         $pathSegments = explode('/', $path);
         $productAlias = end($pathSegments);
-        
+
         // Remove product alias from path to get category path
         array_pop($pathSegments);
         $categoryPath = implode('/', $pathSegments);
-        
+
         // Find product by alias
         $locale = app()->getLocale();
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $aliasField = "alias_{$dbLocale}";
-        
+
         $product = Product::published()
             ->with(['manufacturer', 'categories', 'productCharacteristics.extraField', 'productCharacteristics.extraFieldValue'])
             ->where($aliasField, $productAlias)
             ->first();
-            
+
         // If not found by alias, try to find by product ID (fallback for products without aliases)
         if (!$product && is_numeric($productAlias)) {
             $product = Product::published()
@@ -219,12 +219,12 @@ class ProductController extends Controller
                 ->where('product_id', $productAlias)
                 ->first();
         }
-            
+
         if (!$product) {
             abort(404, 'Product not found');
         }
-        
-        
+
+
         // If there's a category path, verify it matches the product's category
         if ($categoryPath) {
             $category = $product->categories()->first();
@@ -233,7 +233,7 @@ class ProductController extends Controller
                 return redirect()->route('products.show-by-path', $product->full_path, 301);
             }
         }
-        
+
         // Increment hits counter
         $product->increment('hits');
 
@@ -242,8 +242,8 @@ class ProductController extends Controller
             ->root()
             ->ordered()
             ->withCount('products')
-            ->with(['subcategories' => function($query) {
-                $query->active()->ordered()->with(['parent', 'subcategories' => function($subQuery) {
+            ->with(['subcategories' => function ($query) {
+                $query->active()->ordered()->with(['parent', 'subcategories' => function ($subQuery) {
                     $subQuery->active()->ordered();
                 }]);
             }])
@@ -263,16 +263,16 @@ class ProductController extends Controller
         // Split path into segments
         $pathSegments = explode('/', $path);
         $lastSegment = end($pathSegments);
-        
+
         // Find category by the last segment (leaf category)
         $category = Category::active()
-            ->where(function($query) use ($lastSegment) {
+            ->where(function ($query) use ($lastSegment) {
                 $query->where('alias_uk-UA', $lastSegment)
                       ->orWhere('alias_ru-UA', $lastSegment)
                       ->orWhere('alias_en-GB', $lastSegment);
             })
             ->firstOrFail();
-        
+
         // Verify the full path matches the category hierarchy
         $expectedPath = $category->full_path;
         if ($path !== $expectedPath) {
@@ -282,9 +282,9 @@ class ProductController extends Controller
 
         // Get products for this category and all its subcategories
         $categoryIds = $this->getCategoryAndSubcategoryIds($category);
-        
+
         $query = Product::published()
-            ->whereHas('categories', function($q) use ($categoryIds) {
+            ->whereHas('categories', function ($q) use ($categoryIds) {
                 $q->whereIn('vjprf_jshopping_products_to_categories.category_id', $categoryIds);
             });
 
@@ -292,18 +292,18 @@ class ProductController extends Controller
         $filterParam = request()->get('f');
         $filteredExtraFieldValue = null;
         $filteredManufacturer = null;
-        
+
         if ($filterParam) {
             if (str_starts_with($filterParam, 'l')) {
                 // Extra field filter (e.g., ?f=l16)
                 $extraFieldValueId = (int) substr($filterParam, 1); // Extract number from l16 -> 16
-                
+
                 // Get extra field value info
                 $filteredExtraFieldValue = \App\Models\ProductExtraFieldValue::with('extraField')->find($extraFieldValueId);
-                
+
                 if ($filteredExtraFieldValue) {
                     // Filter products by characteristic
-                    $query->whereHas('productCharacteristics', function($q) use ($extraFieldValueId) {
+                    $query->whereHas('productCharacteristics', function ($q) use ($extraFieldValueId) {
                         $q->where('extra_field_value', $extraFieldValueId);
                     });
                 }
@@ -311,12 +311,12 @@ class ProductController extends Controller
                 // Manufacturer filter - handle both single and multiple values
                 // Single: ?f=4, Multiple: ?f=4,6,8
                 $manufacturerIds = array_map('intval', explode(',', $filterParam));
-                
+
                 if (count($manufacturerIds) === 1 && $manufacturerIds[0] > 0) {
                     // Single manufacturer - get manufacturer info for display
                     $filteredManufacturer = Manufacturer::find($manufacturerIds[0]);
                 }
-                
+
                 // Filter products by manufacturer(s)
                 $query->whereIn('product_manufacturer_id', $manufacturerIds);
             }
@@ -325,9 +325,9 @@ class ProductController extends Controller
         // Get manufacturers for filter with product counts for current category
         // First, get only manufacturers that have products in current category
         $manufacturersInCategory = Manufacturer::published()
-            ->whereHas('products', function($query) use ($categoryIds) {
+            ->whereHas('products', function ($query) use ($categoryIds) {
                 $query->published()
-                    ->whereHas('categories', function($q) use ($categoryIds) {
+                    ->whereHas('categories', function ($q) use ($categoryIds) {
                         $q->whereIn('vjprf_jshopping_products_to_categories.category_id', $categoryIds);
                     });
             })
@@ -339,47 +339,47 @@ class ProductController extends Controller
                 'vjprf_jshopping_manufacturers.name_en-GB as name_en_GB'
             ])
             ->get();
-            
+
         $tiandyBefore = $manufacturersInCategory->where('manufacturer_id', 269)->first();
         \Log::info('Manufacturers in category before calculation:', [
             'count' => $manufacturersInCategory->count(),
             'tiandy_before' => $tiandyBefore ? (array) $tiandyBefore : null
         ]);
-            
+
         // Now calculate counts with current filters applied
         $manufacturers = collect();
-        
+
         foreach ($manufacturersInCategory as $manufacturer) {
             // Calculate product count for this manufacturer with current filters
             $countQuery = Product::published()
                 ->where('product_manufacturer_id', $manufacturer->manufacturer_id)
-                ->whereHas('categories', function($q) use ($categoryIds) {
+                ->whereHas('categories', function ($q) use ($categoryIds) {
                     $q->whereIn('vjprf_jshopping_products_to_categories.category_id', $categoryIds);
                 });
-            
+
             // Apply extra field filter if present
             if ($filterParam && str_starts_with($filterParam, 'l')) {
                 $extraFieldValueId = (int) substr($filterParam, 1);
-                $countQuery->whereHas('productCharacteristics', function($q) use ($extraFieldValueId) {
+                $countQuery->whereHas('productCharacteristics', function ($q) use ($extraFieldValueId) {
                     $q->where('extra_field_value', $extraFieldValueId);
                 });
             }
-            
+
             // Apply price range filter if present
             if (request()->filled('price_min') || request()->filled('price_max')) {
                 $minPrice = request()->price_min ? (float) request()->price_min : 0;
                 $maxPrice = request()->price_max ? (float) request()->price_max : 999999;
                 $countQuery->whereBetween('product_price', [$minPrice, $maxPrice]);
             }
-            
+
             // Apply special price filter if present
             if (request()->filled('special_price')) {
                 $countQuery->where('product_price', '<', 1000);
             }
-            
+
             // Calculate the count for this manufacturer
             $count = $countQuery->count();
-            
+
             // Debug: Log individual manufacturer count
             if ($manufacturer->manufacturer_id == 269) { // Tiandy
                 \Log::info('Tiandy manufacturer count calculation:', [
@@ -390,7 +390,7 @@ class ProductController extends Controller
                     'bindings' => $countQuery->getBindings()
                 ]);
             }
-            
+
             // Only add manufacturers with products
             if ($count > 0) {
                 // Create a simple object without any relationships
@@ -407,16 +407,16 @@ class ProductController extends Controller
                 $manufacturers->push($newManufacturer);
             }
         }
-            
+
         // Debug: Log manufacturer counts
         \Log::info('Manufacturer counts with filters:', [
             'filterParam' => $filterParam,
             'categoryIds' => $categoryIds,
-            'manufacturer_counts' => $manufacturers->map(function($m) {
+            'manufacturer_counts' => $manufacturers->map(function ($m) {
                 return ['id' => $m->manufacturer_id, 'name' => $m->name, 'count' => $m->products_count];
             })->toArray()
         ]);
-        
+
         // Debug: Check if Tiandy count is correct in final result
         $tiandyInFinal = $manufacturers->where('manufacturer_id', 269)->first();
         if ($tiandyInFinal) {
@@ -426,14 +426,14 @@ class ProductController extends Controller
                 'count' => $tiandyInFinal->products_count
             ]);
         }
-        
+
         // Debug: Check what's being passed to the view
         $tiandyForView = $manufacturers->where('manufacturer_id', 269)->first();
         \Log::info('Manufacturers being passed to view:', [
             'count' => $manufacturers->count(),
             'tiandy_view' => $tiandyForView ? (array) $tiandyForView : null
         ]);
-        
+
         // Debug: Log the main products query count
         \Log::info('Main products query count:', [
             'main_query_count' => $query->count(),
@@ -443,10 +443,10 @@ class ProductController extends Controller
 
         // Get price range for filter for current category (with caching)
         $priceRangeCacheKey = 'price_range_category_' . $category->category_id;
-        
+
         $priceRange = \Cache::remember($priceRangeCacheKey, 1800, function () use ($categoryIds) {
             return Product::published()
-                ->whereHas('categories', function($q) use ($categoryIds) {
+                ->whereHas('categories', function ($q) use ($categoryIds) {
                     $q->whereIn('vjprf_jshopping_products_to_categories.category_id', $categoryIds);
                 })
                 ->selectRaw('MIN(product_price) as min_price, MAX(product_price) as max_price')
@@ -460,14 +460,14 @@ class ProductController extends Controller
 
         // Get child categories for the current category (with caching)
         $childCategoriesCacheKey = 'child_categories_' . $category->category_id;
-        
+
         $childCategories = \Cache::remember($childCategoriesCacheKey, 3600, function () use ($category) {
             $childCategories = Category::active()
                 ->where('category_parent_id', $category->category_id)
                 ->ordered()
                 ->withLocaleFields() // Use optimized locale fields
                 ->get();
-            
+
             // Load subcategories and complexes for each child category
             foreach ($childCategories as $childCategory) {
                 // Get subcategories with optimized locale fields
@@ -476,32 +476,32 @@ class ProductController extends Controller
                     ->orderBy('ordering', 'asc')
                     ->withLocaleFields() // Use optimized locale fields
                     ->get();
-                
+
                 // Get complexes for this category with optimized locale fields
                 $complexes = \App\Models\Complex::where('category_id', $childCategory->category_id)
                     ->where('complex_publish', 1)
                     ->orderBy('ordering', 'asc')
                     ->withLocaleFields() // Use optimized locale fields
                     ->get();
-                
+
                 $childCategory->subcategories = $subcategories;
                 $childCategory->complexes = $complexes;
             }
-            
+
             return $childCategories;
         });
 
         // Get root categories for navigation (with caching)
         $categoriesCacheKey = 'navigation_categories';
-        
+
         $categories = \Cache::remember($categoriesCacheKey, 7200, function () {
             return Category::active()
                 ->root()
                 ->ordered()
                 ->withCount('products')
                 ->withLocaleFields() // Use optimized locale fields
-                ->with(['subcategories' => function($query) {
-                    $query->active()->ordered()->withLocaleFields()->with(['parent', 'subcategories' => function($subQuery) {
+                ->with(['subcategories' => function ($query) {
+                    $query->active()->ordered()->withLocaleFields()->with(['parent', 'subcategories' => function ($subQuery) {
                         $subQuery->active()->ordered()->withLocaleFields();
                     }]);
                 }])
@@ -551,16 +551,16 @@ class ProductController extends Controller
     private function getCategoryAndSubcategoryIds(Category $category): array
     {
         $ids = [$category->category_id];
-        
+
         // Get all subcategories recursively
         $subcategories = Category::active()
             ->where('category_parent_id', $category->category_id)
             ->get();
-            
+
         foreach ($subcategories as $subcategory) {
             $ids = array_merge($ids, $this->getCategoryAndSubcategoryIds($subcategory));
         }
-        
+
         return $ids;
     }
 
@@ -600,7 +600,7 @@ class ProductController extends Controller
             $category = Category::find($request->category);
             if ($category) {
                 $categoryIds = $this->getCategoryAndSubcategoryIds($category);
-                $query->whereHas('categories', function($q) use ($categoryIds) {
+                $query->whereHas('categories', function ($q) use ($categoryIds) {
                     $q->whereIn('vjprf_jshopping_products_to_categories.category_id', $categoryIds);
                 });
             }
@@ -609,7 +609,7 @@ class ProductController extends Controller
         // Sorting
         $sortBy = $request->get('sort', 'date_added');
         $sortDirection = $request->get('direction', 'desc');
-        
+
         switch ($sortBy) {
             case 'price':
                 $query->orderBy('product_price', $sortDirection);
@@ -641,7 +641,7 @@ class ProductController extends Controller
         // Get manufacturers for filter
         $manufacturers = Manufacturer::published()
             ->ordered()
-            ->withCount(['products' => function($query) {
+            ->withCount(['products' => function ($query) {
                 $query->published();
             }])
             ->having('products_count', '>', 0)
@@ -649,7 +649,7 @@ class ProductController extends Controller
 
         // Group products by category for Vue components
         $categories = [];
-        $productsByCategory = $products->groupBy(function($product) {
+        $productsByCategory = $products->groupBy(function ($product) {
             return $product->categories->first() ? $product->categories->first()->category_id : 'uncategorized';
         });
 
@@ -698,7 +698,7 @@ class ProductController extends Controller
      */
     private function formatProductsForVue($products)
     {
-        return $products->map(function($product) {
+        return $products->map(function ($product) {
             return [
                 'product_id' => $product->product_id,
                 'name' => $product->name,
@@ -785,7 +785,7 @@ class ProductController extends Controller
     public function search(Request $request): JsonResponse
     {
         $query = $request->get('q', '');
-        
+
         if (strlen($query) < 2) {
             return response()->json([
                 'products' => [],
@@ -816,7 +816,7 @@ class ProductController extends Controller
         // Search categories
         $categories = Category::active()
             ->withLocaleFields() // Use optimized locale fields
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('name_uk-UA', 'like', "%{$query}%")
                   ->orWhere('name_ru-UA', 'like', "%{$query}%")
                   ->orWhere('name_en-GB', 'like', "%{$query}%")
@@ -837,7 +837,7 @@ class ProductController extends Controller
         // Search manufacturers
         $manufacturers = Manufacturer::published()
             ->withLocaleFields() // Use optimized locale fields
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('name_uk-UA', 'like', "%{$query}%")
                   ->orWhere('name_ru-UA', 'like', "%{$query}%")
                   ->orWhere('name_en-GB', 'like', "%{$query}%")

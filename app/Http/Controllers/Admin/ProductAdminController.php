@@ -57,7 +57,7 @@ class ProductAdminController extends Controller
                 'label' => 'Редактировать',
                 'icon' => 'edit',
                 'class' => 'primary',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.products.edit', $item->product_id);
                 }
             ],
@@ -65,7 +65,7 @@ class ProductAdminController extends Controller
                 'label' => 'Просмотр',
                 'icon' => 'eye',
                 'class' => 'info',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('products.show', $item->product_id);
                 }
             ],
@@ -73,10 +73,10 @@ class ProductAdminController extends Controller
                 'label' => 'Удалить',
                 'icon' => 'trash',
                 'class' => 'danger',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.products.destroy', $item->product_id);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return true; // Add your delete condition here
                 }
             ]
@@ -150,5 +150,3 @@ class ProductAdminController extends Controller
         return redirect()->route('admin.products')->with('success', 'Product deleted successfully');
     }
 }
-
-

@@ -59,7 +59,7 @@ class OrderAdminController extends Controller
                 'key' => 'status',
                 'label' => 'Статус',
                 'sortable' => true,
-                'render' => function($item) {
+                'render' => function ($item) {
                     $statusClasses = [
                         'pending' => 'warning',
                         'processing' => 'info',
@@ -131,5 +131,3 @@ class OrderAdminController extends Controller
         ));
     }
 }
-
-

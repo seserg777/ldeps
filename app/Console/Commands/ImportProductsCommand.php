@@ -30,7 +30,7 @@ class ImportProductsCommand extends Command
     public function handle()
     {
         $file = $this->argument('file');
-        
+
         if (!file_exists($file)) {
             $this->error("File {$file} not found!");
             return 1;
@@ -40,17 +40,17 @@ class ImportProductsCommand extends Command
 
         // Read SQL file
         $sql = file_get_contents($file);
-        
+
         // Extract INSERT statements
         preg_match_all('/INSERT INTO `[^`]+` VALUES \((.*?)\);/s', $sql, $matches);
-        
+
         if (empty($matches[1])) {
             $this->error("No INSERT statements found in the file!");
             return 1;
         }
 
         $this->info("Found " . count($matches[1]) . " INSERT statements");
-        
+
         $progressBar = $this->output->createProgressBar(count($matches[1]));
         $progressBar->start();
 
@@ -61,29 +61,29 @@ class ImportProductsCommand extends Command
             try {
                 // Parse values from INSERT statement
                 $values = $this->parseInsertValues($valuesString);
-                
+
                 if (empty($values)) {
                     continue;
                 }
 
                 // Create product data array
                 $productData = $this->mapValuesToFields($values);
-                
+
                 // Insert into database
                 DB::table('products')->insert($productData);
                 $imported++;
-                
+
             } catch (\Exception $e) {
                 $errors++;
                 $this->warn("Error importing row: " . $e->getMessage());
             }
-            
+
             $progressBar->advance();
         }
 
         $progressBar->finish();
         $this->newLine(2);
-        
+
         $this->info("Import completed!");
         $this->info("Imported: {$imported} products");
         if ($errors > 0) {
@@ -191,26 +191,26 @@ class ImportProductsCommand extends Command
         foreach ($fields as $index => $field) {
             if (isset($values[$index])) {
                 $value = trim($values[$index], "'\"");
-                
+
                 // Handle NULL values
                 if ($value === 'NULL' || $value === '') {
                     $value = null;
                 }
-                
+
                 // Handle datetime fields
                 if (in_array($field, ['product_date_added', 'date_modify', 'auction_start', 'auction_end', 'comingsoon_date']) && $value) {
                     if ($value === '0000-00-00 00:00:00') {
                         $value = null;
                     }
                 }
-                
+
                 // Handle date fields
                 if (in_array($field, ['hit_date', 'start_hit_date']) && $value) {
                     if ($value === '0000-00-00') {
                         $value = null;
                     }
                 }
-                
+
                 $data[$field] = $value;
             }
         }

@@ -44,26 +44,26 @@
     <!-- Vite: dev with robust fallback to build manifest -->
     <?php
         $hotPath = public_path('hot');
-        $manifestPath = public_path('build/manifest.json');
-        $manifest = file_exists($manifestPath) ? json_decode(file_get_contents($manifestPath), true) : null;
-        $entry = $manifest['resources/js/app.js'] ?? null;
+    $manifestPath = public_path('build/manifest.json');
+    $manifest = file_exists($manifestPath) ? json_decode(file_get_contents($manifestPath), true) : null;
+    $entry = $manifest['resources/js/app.js'] ?? null;
 
-        // Preload CSS from build if available (safe to include in dev too)
-        if ($entry && !empty($entry['css'])) {
-            foreach ($entry['css'] as $css) {
-                $cssUrl = url('build/' . $css);
-                echo '<link rel="stylesheet" href="' . $cssUrl . '">';
-            }
+    // Preload CSS from build if available (safe to include in dev too)
+    if ($entry && !empty($entry['css'])) {
+        foreach ($entry['css'] as $css) {
+            $cssUrl = url('build/' . $css);
+            echo '<link rel="stylesheet" href="' . $cssUrl . '">';
         }
+    }
 
-        if (file_exists($hotPath)) {
-            $url = trim(file_get_contents($hotPath));
-            $buildJs = $entry ? url('build/' . $entry['file']) : '';
-            echo '<script type="module">(async()=>{try{await import("' . $url . '/@vite/client");await import("' . $url . '/resources/js/app.js");}catch(e){' . ($buildJs ? 'await import("' . $buildJs . '");' : '') . '}})();</script>';
-        } else if ($entry) {
-            $buildJs = url('build/' . $entry['file']);
-            echo '<script type="module">import("' . $buildJs . '")</script>';
-        }
+    if (file_exists($hotPath)) {
+        $url = trim(file_get_contents($hotPath));
+        $buildJs = $entry ? url('build/' . $entry['file']) : '';
+        echo '<script type="module">(async()=>{try{await import("' . $url . '/@vite/client");await import("' . $url . '/resources/js/app.js");}catch(e){' . ($buildJs ? 'await import("' . $buildJs . '");' : '') . '}})();</script>';
+    } elseif ($entry) {
+        $buildJs = url('build/' . $entry['file']);
+        echo '<script type="module">import("' . $buildJs . '")</script>';
+    }
     ?>
 
     <!-- Google Fonts - Rubik with display=swap for better performance -->

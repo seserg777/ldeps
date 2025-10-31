@@ -125,7 +125,7 @@ class ContentController extends Controller
                 'label' => 'View',
                 'icon' => 'eye',
                 'class' => 'info',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.content.show', $item);
                 }
             ],
@@ -133,7 +133,7 @@ class ContentController extends Controller
                 'label' => 'Edit',
                 'icon' => 'edit',
                 'class' => 'warning',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.content.edit', $item);
                 }
             ],
@@ -141,10 +141,10 @@ class ContentController extends Controller
                 'label' => 'Publish',
                 'icon' => 'eye',
                 'class' => 'success',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.content.toggle-published', $item);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->state == 0;
                 }
             ],
@@ -152,10 +152,10 @@ class ContentController extends Controller
                 'label' => 'Unpublish',
                 'icon' => 'eye-slash',
                 'class' => 'secondary',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.content.toggle-published', $item);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->state == 1;
                 }
             ],
@@ -163,10 +163,10 @@ class ContentController extends Controller
                 'label' => 'Archive',
                 'icon' => 'archive',
                 'class' => 'warning',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.content.archive', $item);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->state != 2;
                 }
             ],
@@ -174,10 +174,10 @@ class ContentController extends Controller
                 'label' => 'Move to Trash',
                 'icon' => 'trash',
                 'class' => 'danger',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.content.trash', $item);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->state != -2;
                 }
             ],
@@ -185,7 +185,7 @@ class ContentController extends Controller
                 'label' => 'Delete Permanently',
                 'icon' => 'times',
                 'class' => 'danger',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.content.destroy', $item);
                 }
             ]
@@ -274,7 +274,7 @@ class ContentController extends Controller
     public function create(): View
     {
         $categories = Category::orderBy('lft')->get();
-        
+
         return view('admin.content.create', compact('categories'));
     }
 
@@ -302,7 +302,7 @@ class ContentController extends Controller
     public function show(Content $content): View
     {
         $content->load(['category']);
-        
+
         return view('admin.content.show', compact('content'));
     }
 
@@ -312,7 +312,7 @@ class ContentController extends Controller
     public function edit(Content $content): View
     {
         $categories = Category::orderBy('lft')->get();
-        
+
         return view('admin.content.edit', compact('content', 'categories'));
     }
 

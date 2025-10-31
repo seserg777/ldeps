@@ -131,7 +131,7 @@ Route::prefix('auth')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('auth.login');
     Route::post('/login', [AuthController::class, 'login'])->name('auth.login.submit');
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
-    
+
     // Protected routes for users
     Route::middleware(['custom.auth'])->group(function () {
         Route::get('/dashboard', function () {
@@ -184,7 +184,7 @@ Route::prefix('admin')
         Route::get('/categories/{id}/edit', [CategoryAdminController::class, 'edit'])->name('admin.categories.edit');
         Route::put('/categories/{id}', [CategoryAdminController::class, 'update'])->name('admin.categories.update');
         Route::delete('/categories/{id}', [CategoryAdminController::class, 'destroy'])->name('admin.categories.destroy');
-        
+
         Route::get('/manufacturers', [ManufacturerAdminController::class, 'index'])->name('admin.manufacturers');
         Route::get('/manufacturers/create', [ManufacturerAdminController::class, 'create'])->name('admin.manufacturers.create');
         Route::post('/manufacturers', [ManufacturerAdminController::class, 'store'])->name('admin.manufacturers.store');

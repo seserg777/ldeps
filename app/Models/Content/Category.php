@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     protected $table = 'vjprf_categories';
-    
+
     protected $fillable = [
         'asset_id',
         'parent_id',

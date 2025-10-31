@@ -30,7 +30,7 @@ class CategoryAdminController extends Controller
                 'key' => 'parent.name',
                 'label' => 'Родительская категория',
                 'sortable' => true,
-                'render' => function($item) {
+                'render' => function ($item) {
                     return $item->parent ? $item->parent->name : '<span class="text-muted">Корневая</span>';
                 }
             ],
@@ -54,7 +54,7 @@ class CategoryAdminController extends Controller
                 'label' => 'Редактировать',
                 'icon' => 'edit',
                 'class' => 'primary',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.categories.edit', $item->category_id);
                 }
             ],
@@ -62,7 +62,7 @@ class CategoryAdminController extends Controller
                 'label' => 'Просмотр',
                 'icon' => 'eye',
                 'class' => 'info',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('category.show', $item->category_id);
                 }
             ],
@@ -70,10 +70,10 @@ class CategoryAdminController extends Controller
                 'label' => 'Удалить',
                 'icon' => 'trash',
                 'class' => 'danger',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.categories.destroy', $item->category_id);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->children->count() === 0; // Only delete if no children
                 }
             ]
@@ -169,5 +169,3 @@ class CategoryAdminController extends Controller
             ->with('success', 'Category deleted successfully.');
     }
 }
-
-

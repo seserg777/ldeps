@@ -87,7 +87,7 @@ class ProductRepository
     public function getByCategoryIds(array $categoryIds, array $filters = []): Builder
     {
         $query = Product::published()
-            ->whereHas('categories', function($q) use ($categoryIds) {
+            ->whereHas('categories', function ($q) use ($categoryIds) {
                 $q->whereIn('vjprf_jshopping_products_to_categories.category_id', $categoryIds);
             });
 
@@ -115,8 +115,8 @@ class ProductRepository
 
         // Manufacturer filter
         if (isset($filters['manufacturer']) && !empty($filters['manufacturer'])) {
-            $manufacturerIds = is_array($filters['manufacturer']) 
-                ? $filters['manufacturer'] 
+            $manufacturerIds = is_array($filters['manufacturer'])
+                ? $filters['manufacturer']
                 : [$filters['manufacturer']];
             $query->whereIn('product_manufacturer_id', $manufacturerIds);
         }

@@ -29,14 +29,14 @@ class ManufacturerAdminController extends Controller
                 'key' => 'description',
                 'label' => 'Описание',
                 'searchable' => true,
-                'render' => function($item) {
+                'render' => function ($item) {
                     return $item->description ? \Str::limit($item->description, 50) : '-';
                 }
             ],
             [
                 'key' => 'website',
                 'label' => 'Сайт',
-                'render' => function($item) {
+                'render' => function ($item) {
                     return $item->website ? '<a href="' . $item->website . '" target="_blank" class="text-decoration-none">' . \Str::limit($item->website, 30) . '</a>' : '-';
                 }
             ],
@@ -54,7 +54,7 @@ class ManufacturerAdminController extends Controller
                 'label' => 'Редактировать',
                 'icon' => 'edit',
                 'class' => 'primary',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.manufacturers.edit', $item->manufacturer_id);
                 }
             ],
@@ -62,7 +62,7 @@ class ManufacturerAdminController extends Controller
                 'label' => 'Просмотр товаров',
                 'icon' => 'box',
                 'class' => 'info',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.products', ['manufacturer' => $item->manufacturer_id]);
                 }
             ],
@@ -70,10 +70,10 @@ class ManufacturerAdminController extends Controller
                 'label' => 'Удалить',
                 'icon' => 'trash',
                 'class' => 'danger',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.manufacturers.destroy', $item->manufacturer_id);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return true; // Add your delete condition here
                 }
             ]
@@ -159,5 +159,3 @@ class ManufacturerAdminController extends Controller
             ->with('success', 'Manufacturer deleted successfully.');
     }
 }
-
-

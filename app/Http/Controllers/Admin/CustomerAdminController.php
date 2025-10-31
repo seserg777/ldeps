@@ -36,14 +36,14 @@ class CustomerAdminController extends Controller
                 'key' => 'name',
                 'label' => 'Имя',
                 'searchable' => true,
-                'render' => function($item) {
+                'render' => function ($item) {
                     return $item->profiles->first()->first_name ?? '-';
                 }
             ],
             [
                 'key' => 'groups',
                 'label' => 'Группы',
-                'render' => function($item) {
+                'render' => function ($item) {
                     $groups = $item->groups->pluck('title')->toArray();
                     return $groups ? implode(', ', $groups) : '<span class="text-muted">Нет групп</span>';
                 }
@@ -52,7 +52,7 @@ class CustomerAdminController extends Controller
                 'key' => 'block',
                 'label' => 'Статус',
                 'sortable' => true,
-                'render' => function($item) {
+                'render' => function ($item) {
                     $statusClass = $item->block ? 'danger' : 'success';
                     $statusText = $item->block ? 'Заблокирован' : 'Активен';
                     return '<span class="badge bg-' . $statusClass . '">' . $statusText . '</span>';
@@ -134,5 +134,3 @@ class CustomerAdminController extends Controller
         ));
     }
 }
-
-

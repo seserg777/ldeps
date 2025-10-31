@@ -32,24 +32,24 @@ class ClearProductCache extends Command
 
         // Clear product extra fields cache
         $this->clearCacheByPattern('product_extra_fields_*');
-        
+
         // Clear products with characteristics cache
         $this->clearCacheByPattern('products_with_characteristics_*');
-        
+
         // Clear child categories cache
         $this->clearCacheByPattern('child_categories_*');
-        
+
         // Clear navigation categories cache
         Cache::forget('navigation_categories');
-        
+
         // Clear manufacturers cache
         Cache::forget('manufacturers_with_counts');
-        
+
         // Clear price range cache
         Cache::forget('price_range_global');
 
         $this->info('Product cache cleared successfully!');
-        
+
         return 0;
     }
 
@@ -62,7 +62,7 @@ class ClearProductCache extends Command
     private function clearCacheByPattern(string $pattern)
     {
         $keys = Cache::getRedis()->keys($pattern);
-        
+
         if (!empty($keys)) {
             Cache::getRedis()->del($keys);
             $this->line("Cleared " . count($keys) . " cache entries matching pattern: {$pattern}");

@@ -11,7 +11,8 @@ use App\Models\User\UserProfile;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens;
+    use Notifiable;
 
     /**
      * The table associated with the model.

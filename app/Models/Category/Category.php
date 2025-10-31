@@ -11,7 +11,8 @@ use App\Models\Complex;
 
 class Category extends Model
 {
-    use HasFactory, HasLocalizedFields;
+    use HasFactory;
+    use HasLocalizedFields;
 
     protected $table = 'vjprf_jshopping_categories';
     protected $primaryKey = 'category_id';
@@ -82,21 +83,21 @@ class Category extends Model
     public function getNameAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         // Map locale to database field format
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
-        
+
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $nameField = "name_{$dbLocale}";
-        
+
         if (isset($this->attributes[$nameField]) && !empty($this->attributes[$nameField])) {
             return $this->attributes[$nameField];
         }
-        
+
         // Fallback to Ukrainian name
         return $this->attributes['name_uk-UA'] ?? 'Без назви';
     }
@@ -107,21 +108,21 @@ class Category extends Model
     public function getAliasAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         // Map locale to database field format
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
-        
+
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $aliasField = "alias_{$dbLocale}";
-        
+
         if (isset($this->attributes[$aliasField]) && !empty($this->attributes[$aliasField])) {
             return $this->attributes[$aliasField];
         }
-        
+
         // Fallback to Ukrainian alias
         return $this->attributes['alias_uk-UA'] ?? 'category';
     }
@@ -132,21 +133,21 @@ class Category extends Model
     public function getShortDescriptionAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         // Map locale to database field format
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
-        
+
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $descriptionField = "short_description_{$dbLocale}";
-        
+
         if (isset($this->attributes[$descriptionField]) && !empty($this->attributes[$descriptionField])) {
             return $this->attributes[$descriptionField];
         }
-        
+
         // Fallback to Ukrainian description
         return $this->attributes['short_description_uk-UA'] ?? '';
     }
@@ -158,13 +159,13 @@ class Category extends Model
     {
         $path = [];
         $current = $this;
-        
+
         // Build path from current category to root
         while ($current) {
             $path[] = $current->alias;
             $current = $current->parent;
         }
-        
+
         // Reverse to get root -> current order
         return implode('/', array_reverse($path));
     }

@@ -10,7 +10,8 @@ use App\Models\Category\Category;
 
 class Complex extends Model
 {
-    use HasFactory, HasLocalizedFields;
+    use HasFactory;
+    use HasLocalizedFields;
 
     protected $table = 'vjprf_jshopping_complex';
     protected $primaryKey = 'complex_id';
@@ -63,21 +64,21 @@ class Complex extends Model
     public function getNameAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         // Map locale to database field format
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
-        
+
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $nameField = "name_{$dbLocale}";
-        
+
         if (isset($this->attributes[$nameField]) && !empty($this->attributes[$nameField])) {
             return $this->attributes[$nameField];
         }
-        
+
         // Fallback to Ukrainian name
         return $this->attributes['name_uk-UA'] ?? 'Без назви';
     }

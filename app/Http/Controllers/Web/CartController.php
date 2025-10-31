@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Product\Product;
 use App\Models\Category\Category;
 use Illuminate\Http\Request;
@@ -21,18 +20,18 @@ class CartController extends Controller
     {
         // Get cart from session
         $cart = session('cart', []);
-        
+
         // Get products from cart
         $products = Product::published()
             ->whereIn('product_id', array_keys($cart))
             ->get()
-            ->map(function($product) use ($cart) {
+            ->map(function ($product) use ($cart) {
                 $product->quantity = $cart[$product->product_id] ?? 1;
                 return $product;
             });
 
         // Calculate totals
-        $subtotal = $products->sum(function($product) {
+        $subtotal = $products->sum(function ($product) {
             return $product->product_price * $product->quantity;
         });
 
@@ -41,8 +40,8 @@ class CartController extends Controller
             ->root()
             ->ordered()
             ->withCount('products')
-            ->with(['subcategories' => function($query) {
-                $query->active()->ordered()->with(['parent', 'subcategories' => function($subQuery) {
+            ->with(['subcategories' => function ($query) {
+                $query->active()->ordered()->with(['parent', 'subcategories' => function ($subQuery) {
                     $subQuery->active()->ordered();
                 }]);
             }])
@@ -61,7 +60,7 @@ class CartController extends Controller
     {
         $productId = $request->input('product_id');
         $quantity = $request->input('quantity', 1);
-        
+
         if (!$productId) {
             return response()->json(['success' => false, 'message' => 'Product ID is required']);
         }
@@ -74,14 +73,14 @@ class CartController extends Controller
 
         // Get current cart
         $cart = session('cart', []);
-        
+
         // Add to cart
         if (isset($cart[$productId])) {
             $cart[$productId] += $quantity;
         } else {
             $cart[$productId] = $quantity;
         }
-        
+
         session(['cart' => $cart]);
 
         return response()->json([
@@ -101,20 +100,20 @@ class CartController extends Controller
     {
         $productId = $request->input('product_id');
         $quantity = $request->input('quantity', 1);
-        
+
         if (!$productId) {
             return response()->json(['success' => false, 'message' => 'Product ID is required']);
         }
 
         // Get current cart
         $cart = session('cart', []);
-        
+
         if ($quantity <= 0) {
             unset($cart[$productId]);
         } else {
             $cart[$productId] = $quantity;
         }
-        
+
         session(['cart' => $cart]);
 
         return response()->json([
@@ -133,17 +132,17 @@ class CartController extends Controller
     public function remove(Request $request): JsonResponse
     {
         $productId = $request->input('product_id');
-        
+
         if (!$productId) {
             return response()->json(['success' => false, 'message' => 'Product ID is required']);
         }
 
         // Get current cart
         $cart = session('cart', []);
-        
+
         // Remove from cart
         unset($cart[$productId]);
-        
+
         session(['cart' => $cart]);
 
         return response()->json([
@@ -177,7 +176,7 @@ class CartController extends Controller
     public function count(): JsonResponse
     {
         $cart = session('cart', []);
-        
+
         return response()->json(['count' => array_sum($cart)]);
     }
 
@@ -189,12 +188,12 @@ class CartController extends Controller
     public function modal(): JsonResponse
     {
         $cart = session('cart', []);
-        
+
         // Get products from cart
         $products = Product::published()
             ->whereIn('product_id', array_keys($cart))
             ->get()
-            ->map(function($product) use ($cart) {
+            ->map(function ($product) use ($cart) {
                 return [
                     'product_id' => $product->product_id,
                     'name' => $product->name,
@@ -204,7 +203,7 @@ class CartController extends Controller
                 ];
             });
 
-        $total = $products->sum(function($product) {
+        $total = $products->sum(function ($product) {
             return $product['price'] * $product['quantity'];
         });
 

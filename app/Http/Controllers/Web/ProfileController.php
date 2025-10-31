@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\User\User;
 use App\Models\User\UserProfile;
 use Illuminate\Http\Request;
@@ -21,7 +20,7 @@ class ProfileController extends Controller
     public function index()
     {
         $user = Auth::guard('custom')->user();
-        
+
         // Get profile data
         $profileData = [];
         foreach ($user->profiles as $profile) {
@@ -39,7 +38,7 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = Auth::guard('custom')->user();
-        
+
         // Get profile data
         $profileData = [];
         foreach ($user->profiles as $profile) {

@@ -108,7 +108,7 @@ class CategoryController extends Controller
                 'label' => 'Content',
                 'icon' => 'file-alt',
                 'class' => 'info',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.content.index', ['category' => $item->id]);
                 }
             ],
@@ -116,7 +116,7 @@ class CategoryController extends Controller
                 'label' => 'Edit',
                 'icon' => 'edit',
                 'class' => 'warning',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.categories.edit', $item);
                 }
             ],
@@ -124,10 +124,10 @@ class CategoryController extends Controller
                 'label' => 'Publish',
                 'icon' => 'eye',
                 'class' => 'success',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.categories.toggle-published', $item);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->published == 0;
                 }
             ],
@@ -135,10 +135,10 @@ class CategoryController extends Controller
                 'label' => 'Unpublish',
                 'icon' => 'eye-slash',
                 'class' => 'secondary',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.categories.toggle-published', $item);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->published == 1;
                 }
             ],
@@ -146,7 +146,7 @@ class CategoryController extends Controller
                 'label' => 'Delete',
                 'icon' => 'trash',
                 'class' => 'danger',
-                'url' => function($item) {
+                'url' => function ($item) {
                     return route('admin.categories.destroy', $item);
                 }
             ]
@@ -218,7 +218,7 @@ class CategoryController extends Controller
     public function create(): View
     {
         $parentCategories = Category::where('level', '<', 3)->orderBy('lft')->get();
-        
+
         return view('admin.content.categories.create', compact('parentCategories'));
     }
 
@@ -245,7 +245,7 @@ class CategoryController extends Controller
     public function show(Category $category): View
     {
         $category->load(['parent', 'children', 'content']);
-        
+
         return view('admin.content.categories.show', compact('category'));
     }
 

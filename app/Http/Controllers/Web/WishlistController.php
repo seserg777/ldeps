@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Product\Product;
 use App\Models\Category\Category;
 use Illuminate\Http\Request;
@@ -21,7 +20,7 @@ class WishlistController extends Controller
     {
         // Get wishlist from session
         $wishlist = session('wishlist', []);
-        
+
         // Get products from wishlist
         $products = Product::published()
             ->whereIn('product_id', $wishlist)
@@ -32,8 +31,8 @@ class WishlistController extends Controller
             ->root()
             ->ordered()
             ->withCount('products')
-            ->with(['subcategories' => function($query) {
-                $query->active()->ordered()->with(['parent', 'subcategories' => function($subQuery) {
+            ->with(['subcategories' => function ($query) {
+                $query->active()->ordered()->with(['parent', 'subcategories' => function ($subQuery) {
                     $subQuery->active()->ordered();
                 }]);
             }])
@@ -51,7 +50,7 @@ class WishlistController extends Controller
     public function add(Request $request): JsonResponse
     {
         $productId = $request->input('product_id');
-        
+
         if (!$productId) {
             return response()->json(['success' => false, 'message' => 'Product ID is required']);
         }
@@ -64,7 +63,7 @@ class WishlistController extends Controller
 
         // Get current wishlist
         $wishlist = session('wishlist', []);
-        
+
         // Add to wishlist if not already there
         if (!in_array($productId, $wishlist)) {
             $wishlist[] = $productId;
@@ -87,19 +86,19 @@ class WishlistController extends Controller
     public function remove(Request $request): JsonResponse
     {
         $productId = $request->input('product_id');
-        
+
         if (!$productId) {
             return response()->json(['success' => false, 'message' => 'Product ID is required']);
         }
 
         // Get current wishlist
         $wishlist = session('wishlist', []);
-        
+
         // Remove from wishlist
-        $wishlist = array_filter($wishlist, function($id) use ($productId) {
+        $wishlist = array_filter($wishlist, function ($id) use ($productId) {
             return $id != $productId;
         });
-        
+
         session(['wishlist' => array_values($wishlist)]);
 
         return response()->json([
@@ -117,7 +116,7 @@ class WishlistController extends Controller
     public function count(): JsonResponse
     {
         $wishlist = session('wishlist', []);
-        
+
         return response()->json(['count' => count($wishlist)]);
     }
 }

@@ -14,7 +14,7 @@ trait BuildsMenus
      */
     protected function buildMenus(array $menuTypes): array
     {
-        $extractParams = function($item) {
+        $extractParams = function ($item) {
             // Params may already be an array or a JSON string
             if (is_array($item->params)) {
                 return $item->params;
@@ -26,7 +26,7 @@ trait BuildsMenus
             return [];
         };
 
-        $shouldShow = function($item) use ($extractParams) {
+        $shouldShow = function ($item) use ($extractParams) {
             $params = $extractParams($item);
             // default: show if not specified
             return (int)($params['menu_show'] ?? 1) !== 0;
@@ -129,5 +129,3 @@ trait BuildsMenus
         return $menus;
     }
 }
-
-

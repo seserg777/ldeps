@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Content extends Model
 {
     protected $table = 'vjprf_content';
-    
+
     protected $fillable = [
         'asset_id',
         'title',

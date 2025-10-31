@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share categories with all views
         View::composer('*', CategoryComposer::class);
-        
+
         // Debug: Log that AppServiceProvider is booting
         \Log::info('AppServiceProvider: Boot method called');
     }

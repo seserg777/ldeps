@@ -19,5 +19,3 @@ class JContent extends Model
         return $query->where('state', 1);
     }
 }
-
-

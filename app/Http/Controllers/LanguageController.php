@@ -19,7 +19,7 @@ class LanguageController extends Controller
     {
         // Validate locale
         $supportedLocales = ['uk', 'ru', 'en'];
-        
+
         if (!in_array($locale, $supportedLocales)) {
             $locale = 'uk'; // Default to Ukrainian
         }

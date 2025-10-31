@@ -20,8 +20,8 @@ class CategoryComposer
             ->root()
             ->ordered()
             ->withCount('products')
-            ->with(['subcategories' => function($query) {
-                $query->active()->ordered()->with(['parent', 'subcategories' => function($subQuery) {
+            ->with(['subcategories' => function ($query) {
+                $query->active()->ordered()->with(['parent', 'subcategories' => function ($subQuery) {
                     $subQuery->active()->ordered();
                 }]);
             }])

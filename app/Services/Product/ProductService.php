@@ -30,15 +30,15 @@ class ProductService
 
         // Manufacturer filter
         if (isset($filters['manufacturer']) && !empty($filters['manufacturer'])) {
-            $manufacturerIds = is_array($filters['manufacturer']) 
-                ? $filters['manufacturer'] 
+            $manufacturerIds = is_array($filters['manufacturer'])
+                ? $filters['manufacturer']
                 : [$filters['manufacturer']];
             $query->whereIn('product_manufacturer_id', $manufacturerIds);
         }
 
         // Category filter
         if (isset($filters['category_ids']) && !empty($filters['category_ids'])) {
-            $query->whereHas('categories', function($q) use ($filters) {
+            $query->whereHas('categories', function ($q) use ($filters) {
                 $q->whereIn('vjprf_jshopping_products_to_categories.category_id', $filters['category_ids']);
             });
         }
@@ -72,7 +72,7 @@ class ProductService
     {
         return Manufacturer::published()
             ->ordered()
-            ->withCount(['products' => function($query) {
+            ->withCount(['products' => function ($query) {
                 $query->published();
             }])
             ->having('products_count', '>', 0)

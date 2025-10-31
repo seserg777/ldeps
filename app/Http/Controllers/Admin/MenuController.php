@@ -17,7 +17,7 @@ class MenuController extends Controller
     public function index(Request $request, $menutype): View
     {
         $menuType = MenuType::where('menutype', $menutype)->firstOrFail();
-        
+
         $query = Menu::ofType($menutype)->with('parent');
 
         // Search
@@ -108,7 +108,7 @@ class MenuController extends Controller
                 'label' => 'View',
                 'icon' => 'eye',
                 'class' => 'info',
-                'url' => function($item) use ($menuType) {
+                'url' => function ($item) use ($menuType) {
                     return route('admin.menu.items.show', [$menuType->menutype, $item]);
                 }
             ],
@@ -116,7 +116,7 @@ class MenuController extends Controller
                 'label' => 'Edit',
                 'icon' => 'edit',
                 'class' => 'warning',
-                'url' => function($item) use ($menuType) {
+                'url' => function ($item) use ($menuType) {
                     return route('admin.menu.items.edit', [$menuType->menutype, $item]);
                 }
             ],
@@ -124,10 +124,10 @@ class MenuController extends Controller
                 'label' => 'Publish',
                 'icon' => 'eye',
                 'class' => 'success',
-                'url' => function($item) use ($menuType) {
+                'url' => function ($item) use ($menuType) {
                     return route('admin.menu.items.toggle-published', [$menuType->menutype, $item]);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->published == 0;
                 }
             ],
@@ -135,10 +135,10 @@ class MenuController extends Controller
                 'label' => 'Unpublish',
                 'icon' => 'eye-slash',
                 'class' => 'secondary',
-                'url' => function($item) use ($menuType) {
+                'url' => function ($item) use ($menuType) {
                     return route('admin.menu.items.toggle-published', [$menuType->menutype, $item]);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->published == 1;
                 }
             ],
@@ -146,10 +146,10 @@ class MenuController extends Controller
                 'label' => 'Move to Trash',
                 'icon' => 'trash',
                 'class' => 'warning',
-                'url' => function($item) use ($menuType) {
+                'url' => function ($item) use ($menuType) {
                     return route('admin.menu.items.trash', [$menuType->menutype, $item]);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->published != -2;
                 }
             ],
@@ -157,10 +157,10 @@ class MenuController extends Controller
                 'label' => 'Restore',
                 'icon' => 'undo',
                 'class' => 'info',
-                'url' => function($item) use ($menuType) {
+                'url' => function ($item) use ($menuType) {
                     return route('admin.menu.items.restore', [$menuType->menutype, $item]);
                 },
-                'condition' => function($item) {
+                'condition' => function ($item) {
                     return $item->published == -2;
                 }
             ],
@@ -168,7 +168,7 @@ class MenuController extends Controller
                 'label' => 'Delete Permanently',
                 'icon' => 'times',
                 'class' => 'danger',
-                'url' => function($item) use ($menuType) {
+                'url' => function ($item) use ($menuType) {
                     return route('admin.menu.items.destroy', [$menuType->menutype, $item]);
                 }
             ]
@@ -236,7 +236,7 @@ class MenuController extends Controller
     {
         $menuType = MenuType::where('menutype', $menutype)->firstOrFail();
         $parentItems = Menu::ofType($menutype)->where('level', '<', 2)->orderBy('lft')->get();
-        
+
         return view('admin.menu.items.create', compact('menuType', 'parentItems'));
     }
 

@@ -13,7 +13,8 @@ use App\Models\ProductCategory;
 
 class Product extends Model
 {
-    use HasFactory, HasLocalizedFields;
+    use HasFactory;
+    use HasLocalizedFields;
 
     protected $table = 'vjprf_jshopping_products';
     protected $primaryKey = 'product_id';
@@ -70,7 +71,7 @@ class Product extends Model
         'basic_price_unit_id',
         'label_id',
         'vendor_id',
-        
+
         // Multi-language fields - EN
         'name_en-GB',
         'alias_en-GB',
@@ -79,7 +80,7 @@ class Product extends Model
         'meta_title_en-GB',
         'meta_description_en-GB',
         'meta_keyword_en-GB',
-        
+
         // Multi-language fields - UK
         'name_uk-UA',
         'alias_uk-UA',
@@ -88,7 +89,7 @@ class Product extends Model
         'meta_title_uk-UA',
         'meta_description_uk-UA',
         'meta_keyword_uk-UA',
-        
+
         // Multi-language fields - RU
         'name_ru-UA',
         'alias_ru-UA',
@@ -97,7 +98,7 @@ class Product extends Model
         'meta_title_ru-UA',
         'meta_description_ru-UA',
         'meta_keyword_ru-UA',
-        
+
         // Additional fields
         'image',
         'name_langmetadata',
@@ -111,7 +112,7 @@ class Product extends Model
         'currency_id',
         'access',
         'add_price_unit_id',
-        
+
         // Auction fields
         'use_auction',
         'use_buy_now',
@@ -122,7 +123,7 @@ class Product extends Model
         'auction_price',
         'auction_id',
         'bid_increments',
-        
+
         // Additional content fields
         'characteristics_en-GB',
         'delivery_kit_en-GB',
@@ -166,7 +167,7 @@ class Product extends Model
      */
     public function scopeSearch(Builder $query, string $search): Builder
     {
-        return $query->where(function($q) use ($search) {
+        return $query->where(function ($q) use ($search) {
             $q->where('name_ru-UA', 'like', "%{$search}%")
               ->orWhere('name_uk-UA', 'like', "%{$search}%")
               ->orWhere('name_en-GB', 'like', "%{$search}%")
@@ -263,21 +264,21 @@ class Product extends Model
     public function getNameAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         // Map locale to database field format
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
-        
+
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $nameField = "name_{$dbLocale}";
-        
+
         if (isset($this->attributes[$nameField]) && !empty($this->attributes[$nameField])) {
             return $this->attributes[$nameField];
         }
-        
+
         // Fallback to Ukrainian name
         return $this->attributes['name_uk-UA'] ?? 'Без назви';
     }
@@ -324,7 +325,7 @@ class Product extends Model
             \Log::info("Product {$this->product_id}: extra_fields is string, returning empty array");
             return [];
         }
-        
+
         // Additional safety check - if this method returns a string, return empty array
         try {
             $result = $this->getCachedExtraFields();
@@ -338,51 +339,51 @@ class Product extends Model
             return [];
         }
     }
-    
+
     /**
      * Get cached extra fields
      */
     private function getCachedExtraFields(): array
     {
         $cacheKey = "product_extra_fields_{$this->product_id}";
-        
+
         return \Cache::remember($cacheKey, 3600, function () {
             $extraFields = [];
-            
+
             try {
                 // Check if productCharacteristics relationship is loaded
                 if (!$this->relationLoaded('productCharacteristics')) {
                     \Log::info("Product {$this->product_id}: productCharacteristics not loaded");
                     return $extraFields;
                 }
-                
+
                 // Check if productCharacteristics exist and is a collection
                 if (!$this->productCharacteristics || is_string($this->productCharacteristics)) {
                     \Log::info("Product {$this->product_id}: productCharacteristics is null or string");
                     return $extraFields;
                 }
-                
+
                 // Additional check - ensure it's a collection
                 if (!method_exists($this->productCharacteristics, 'count')) {
                     \Log::warning("Product {$this->product_id}: productCharacteristics is not a collection");
                     return $extraFields;
                 }
-                
+
                 \Log::info("Product {$this->product_id}: processing " . $this->productCharacteristics->count() . " characteristics");
-                
+
                 foreach ($this->productCharacteristics as $characteristic) {
                     // Try to get field name and value
                     $fieldName = 'Unknown Field';
                     $fieldValue = 'Unknown Value';
-                    
+
                     if ($characteristic->extraField) {
                         $fieldName = $characteristic->extraField->name ?? 'Unknown Field';
                     }
-                    
+
                     if ($characteristic->extraFieldValue) {
                         $fieldValue = $characteristic->extraFieldValue->name ?? 'Unknown Value';
                     }
-                    
+
                     $extraFields[] = [
                         'field_name' => $fieldName,
                         'field_value' => $fieldValue,
@@ -390,11 +391,11 @@ class Product extends Model
                         'value_id' => $characteristic->extra_field_value ?? null
                     ];
                 }
-                
+
             } catch (\Exception $e) {
                 \Log::error("Product {$this->product_id}: error in getCachedExtraFields - " . $e->getMessage());
             }
-            
+
             \Log::info("Product {$this->product_id}: returning " . count($extraFields) . " extra fields");
             return $extraFields;
         });
@@ -443,19 +444,19 @@ class Product extends Model
     public function getShortDescriptionAttribute()
     {
         $locale = app()->getLocale();
-        
+
         if ($locale === 'uk' && !empty($this->attributes['short_description_uk-UA'])) {
             return $this->attributes['short_description_uk-UA'];
         }
-        
+
         if ($locale === 'ru' && !empty($this->attributes['short_description_ru-UA'])) {
             return $this->attributes['short_description_ru-UA'];
         }
-        
+
         if ($locale === 'en' && !empty($this->attributes['short_description_en-GB'])) {
             return $this->attributes['short_description_en-GB'];
         }
-        
+
         return $this->attributes['short_description_uk-UA'] ?? 'Опис відсутній';
     }
 
@@ -465,19 +466,19 @@ class Product extends Model
     public function getDescriptionAttribute()
     {
         $locale = app()->getLocale();
-        
+
         if ($locale === 'uk' && !empty($this->attributes['full_description_uk-UA'])) {
             return $this->attributes['full_description_uk-UA'];
         }
-        
+
         if ($locale === 'ru' && !empty($this->attributes['full_description_ru-UA'])) {
             return $this->attributes['full_description_ru-UA'];
         }
-        
+
         if ($locale === 'en' && !empty($this->attributes['full_description_en-GB'])) {
             return $this->attributes['full_description_en-GB'];
         }
-        
+
         // Fallback to Ukrainian description
         return $this->attributes['full_description_uk-UA'] ?? 'Опис відсутній';
     }
@@ -498,7 +499,7 @@ class Product extends Model
         if (!$this->hasDiscount()) {
             return 0;
         }
-        
+
         return round((($this->product_old_price - $this->product_price) / $this->product_old_price) * 100);
     }
 
@@ -535,19 +536,19 @@ class Product extends Model
     public function getCharacteristicsAttribute()
     {
         $locale = app()->getLocale();
-        
+
         if ($locale === 'uk' && !empty($this->attributes['characteristics_uk-UA'])) {
             return $this->attributes['characteristics_uk-UA'];
         }
-        
+
         if ($locale === 'ru' && !empty($this->attributes['characteristics_ru-UA'])) {
             return $this->attributes['characteristics_ru-UA'];
         }
-        
+
         if ($locale === 'en' && !empty($this->attributes['characteristics_en-GB'])) {
             return $this->attributes['characteristics_en-GB'];
         }
-        
+
         // Fallback to Russian characteristics
         return $this->attributes['characteristics_ru-UA'] ?? 'Характеристики не указаны';
     }
@@ -569,21 +570,21 @@ class Product extends Model
     public function getAliasAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         // Map locale to database field format
         $localeMap = [
             'uk' => 'uk-UA',
-            'ru' => 'ru-UA', 
+            'ru' => 'ru-UA',
             'en' => 'en-GB'
         ];
-        
+
         $dbLocale = $localeMap[$locale] ?? 'uk-UA';
         $aliasField = "alias_{$dbLocale}";
-        
+
         if (isset($this->attributes[$aliasField]) && !empty($this->attributes[$aliasField])) {
             return $this->attributes[$aliasField];
         }
-        
+
         // Fallback to product ID if no alias
         return (string) $this->product_id;
     }
@@ -594,16 +595,16 @@ class Product extends Model
     public function getFullPathAttribute(): string
     {
         $categoryPath = '';
-        
+
         // Get the first category (products can belong to multiple categories)
         $category = $this->categories()->first();
-        
+
         if ($category) {
             $categoryPath = $category->full_path;
         }
-        
+
         $productAlias = $this->alias;
-        
+
         return $categoryPath ? $categoryPath . '/' . $productAlias : $productAlias;
     }
 

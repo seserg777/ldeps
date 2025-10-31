@@ -26,7 +26,7 @@ class UpdateProductViews implements ShouldQueue
     {
         try {
             $event->product->increment('hits');
-            
+
             Log::info('Product view updated', [
                 'product_id' => $event->product->product_id,
                 'hits' => $event->product->hits

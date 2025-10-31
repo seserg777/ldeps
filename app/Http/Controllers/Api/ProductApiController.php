@@ -30,7 +30,7 @@ class ProductApiController extends Controller
     public function index(ProductFilterRequest $request): JsonResponse
     {
         $filters = $request->validatedWithDefaults();
-        
+
         $products = $this->productRepository
             ->getPublishedProducts($filters)
             ->paginate($filters['per_page']);
