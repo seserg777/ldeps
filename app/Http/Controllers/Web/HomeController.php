@@ -25,9 +25,26 @@ class HomeController extends Controller
         $siteDescription = 'Лучшие товары по доступным ценам';
         $language = app()->getLocale();
 
+        // Render SSR menu HTML for Blade-only frontend
+        $menuTopHtml = view('share.menu.html', [
+            'items' => $menuItemsTop,
+            'language' => $language,
+            'maxLevels' => 4,
+        ])->render();
+
+        $menuMainHtml = view('share.menu.html', [
+            'items' => $menuItemsMain,
+            'language' => $language,
+            'maxLevels' => 4,
+        ])->render();
+
+        // Placeholder homepage content area (can be replaced by widgets/partials)
+        $homepageHtml = '';
+
         return view('front.homepage', compact(
-            'menuItemsTop',
-            'menuItemsMain',
+            'menuTopHtml',
+            'menuMainHtml',
+            'homepageHtml',
             'siteName',
             'siteDescription',
             'language'
@@ -114,19 +131,20 @@ class HomeController extends Controller
         $siteDescription = 'Лучшие товары по доступным ценам';
         $language = app()->getLocale();
 
-        $pageData = [
-            'menuItemsTop' => $menuItemsTop,
-            'menuItemsMain' => $menuItemsMain,
-            'siteName' => $siteName,
-            'siteDescription' => $siteDescription,
+        $menuTopHtml = view('share.menu.html', [
+            'items' => $menuItemsTop,
             'language' => $language,
-            'componentType' => 'default',
-            'menuItem' => $menuItem->toArray(),
-            'linkParams' => $linkParams,
-            'additionalData' => []
-        ];
+            'maxLevels' => 4,
+        ])->render();
+        $menuMainHtml = view('share.menu.html', [
+            'items' => $menuItemsMain,
+            'language' => $language,
+            'maxLevels' => 4,
+        ])->render();
 
-        return view('front.page', compact('pageData'));
+        $pageContentHtml = '';
+
+        return view('front.page', compact('menuTopHtml', 'menuMainHtml', 'pageContentHtml', 'siteName', 'siteDescription', 'language'));
     }
 
     /**
