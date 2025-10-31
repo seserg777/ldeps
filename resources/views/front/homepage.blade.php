@@ -7,15 +7,28 @@
 @section('title', 'Главная страница')
 @section('description', 'Интернет-магазин с широким ассортиментом качественных товаров')
 
-@push('vue-components')
-<homepage-component
-    menu-items-top='@json($menuItemsTop ?? [], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)'
-    menu-items-main='@json($menuItemsMain ?? [], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)'
-    language="{{ app()->getLocale() === 'uk' ? 'uk' : 'ru' }}"
-    site-name="{{ $siteName }}"
-    site-description="{{ $siteDescription }}"
-></homepage-component>
-@endpush
+@section('content')
+  <div class="page home">
+    {{-- Top menu SSR --}}
+    <nav class="site-menu menu-top">
+      {!! $menuTopHtml ?? '' !!}
+    </nav>
+
+    {{-- Main menu SSR --}}
+    <nav class="site-menu menu-main">
+      {!! $menuMainHtml ?? '' !!}
+    </nav>
+
+    {{-- Homepage content --}}
+    <main>
+      {!! $homepageHtml ?? '' !!}
+    </main>
+
+    @isset($footerHtml)
+      <footer>{!! $footerHtml !!}</footer>
+    @endisset
+  </div>
+@endsection
 
 @push('scripts')
 <script>
