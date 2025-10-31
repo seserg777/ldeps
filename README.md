@@ -1,6 +1,6 @@
 # ldeps
 
-Laravel + Vue (Composition API) project for e‑commerce and content. The frontend uses PHP‑SSR (Blade) for initial HTML and Vue hydration for interactivity. Menus and several widgets are rendered server‑side for SEO. Full page shells (`Homepage`, `Page`) and feature widgets hydrate on the client.
+Laravel + Alpine.js project for e‑commerce and content. The frontend uses PHP‑SSR (Blade) for initial HTML and Alpine for progressive enhancement. Menus and widgets are rendered server‑side for SEO; client JS adds small interactions only.
 
 ## Features
 
@@ -9,10 +9,10 @@ Laravel + Vue (Composition API) project for e‑commerce and content. The fronte
 - **Content Management System** with categories and articles
 - **Menu Management** with types and hierarchical items
 - **User System** with access groups and authentication
-- **Shopping Cart** and Wishlist with Vue.js components
-- **Vue.js Frontend** with Composition API and Vite build system
-- **PHP‑SSR + Hydration** for menus and modules
-- **Islands architecture**: `Homepage.vue`, `Page.vue`, universal `Content.vue`
+- **Shopping Cart** and Wishlist with lightweight Alpine.js behaviors
+- **Alpine.js Frontend** with Vite build system
+- **PHP‑SSR** for menus and modules; Alpine for enhancement
+- **Blade-first architecture** with SSR fragments
 - **JoomShopping integration**: root category landings and product grids for sub‑categories
 - **Multilingual Support** (Russian, Ukrainian, English)
 - **Modular Architecture** following Laravel best practices
@@ -25,7 +25,7 @@ app/
 ├── Http/
 │   ├── Controllers/
 │   │   ├── Web/                  # Frontend controllers (PHP‑SSR)
-│   │   │   ├── ProductController.php       # product pages + category pages (render Page.vue)
+│   │   │   ├── ProductController.php       # product pages + category pages (SSR Blade)
 │   │   │   ├── JshoppingController.php     # JSON for JoomShopping categories/complexes
 │   │   │   ├── CartController.php
 │   │   │   ├── AuthController.php
@@ -76,19 +76,14 @@ app/
 resources/
 ├── views/
 │   ├── front/
-│   │   ├── homepage.blade.php   # mounts Homepage.vue
-│   │   └── page.blade.php       # mounts Page.vue
+│   │   ├── homepage.blade.php   # SSR homepage content
+│   │   └── page.blade.php       # SSR generic page content
 │   └── share/
 │       ├── menu/html.blade.php       # SSR menu HTML
 │       └── products/module.blade.php # SSR product module HTML
 ├── js/
-│   ├── app.js                         # registers and mounts Vue islands
-│   └── features/
-│       ├── homepage/components/Homepage.vue
-│       ├── page/components/Page.vue
-│       ├── content/components/Content.vue
-│       ├── jshopping/components/JshoppingCategory.vue
-│       └── catalog/components/{ProductsModule.vue,SearchModule.vue}
+│   ├── app.js                    # Alpine init + cart actions
+│   └── features/                 # (legacy removed)
 └── css/
 
 routes/
