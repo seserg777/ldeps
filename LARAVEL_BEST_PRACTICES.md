@@ -15,3 +15,5 @@
 - Naming: Use explicit route names and descriptive controller/view names.
 - Error handling: Return meaningful HTTP status codes/messages; avoid swallowing exceptions.
 - Logging: Log unexpected states with enough context (IDs, user, URL).
+
+- Factories: Use `Sequence` in Laravel model factories to override attributes with per-iteration logic when generating test or seed data.
