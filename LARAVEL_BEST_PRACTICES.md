@@ -17,3 +17,5 @@
 - Logging: Log unexpected states with enough context (IDs, user, URL).
 
 - Factories: Use `Sequence` in Laravel model factories to override attributes with per-iteration logic when generating test or seed data.
+
+- Scheduler callbacks: Use Scheduler `onSuccess`/`onFailure` callbacks (or listen to `ScheduledTaskFinished`/`ScheduledTaskFailed` events) to run follow-up actions based on task results, e.g., log failures, notify, or trigger related workflows.
