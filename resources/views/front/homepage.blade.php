@@ -44,6 +44,7 @@
     {{-- Homepage content --}}
     <main>
       {!! $homepageHtml ?? '' !!}
+      @include('share.layouts.partials.products_module', ['type' => 'random', 'limit' => 3])
     </main>
 
     @isset($footerHtml)
