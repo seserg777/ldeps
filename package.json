@@ -16,7 +16,6 @@
     "vite": "^5.1.0"
   },
   "dependencies": {
-    "alpinejs": "^3.14.0",
-    "tinymce": "^8.2.0"
+    "alpinejs": "^3.14.0"
   }
 }

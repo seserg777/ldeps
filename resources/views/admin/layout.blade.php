@@ -26,12 +26,6 @@
                 // JS
                 echo '<script type="module" src="' . asset('build/' . $entry['file']) . '"></script>';
             }
-            
-            // Load TinyMCE if needed (for forms with .tinymce-editor class)
-            $tinymceEntry = $manifest['resources/js/tinymce.js'] ?? null;
-            if ($tinymceEntry) {
-                echo '<script type="module" src="' . asset('build/' . $tinymceEntry['file']) . '"></script>';
-            }
         }
     }
     ?>

@@ -7,11 +7,5 @@
     "css": [
       "assets/app-CSttdZb7.css"
     ]
-  },
-  "resources/js/tinymce.js": {
-    "file": "assets/tinymce-VOzhcoJL.js",
-    "name": "tinymce",
-    "src": "resources/js/tinymce.js",
-    "isEntry": true
   }
 }
