@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Models\Product\Product;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductAttribute extends Model
 {
+    use HasFactory;
     /**
      * The table associated with the model.
      *
