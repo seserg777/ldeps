@@ -182,7 +182,7 @@ class ProductController extends Controller
         $product->increment('hits');
 
         // Get menus and modules for this page
-        $menuData = MenuRenderer::getMenusForPage(null);
+        $menuData = MenuRenderer::getMenusForPage(null, ['main-menu-add', 'mainmenu-rus']);
         $menuTopHtml = $menuData['menuTopHtml'];
         $menuMainHtml = $menuData['menuMainHtml'];
         $language = app()->getLocale();
