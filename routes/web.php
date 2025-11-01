@@ -232,15 +232,15 @@ Route::prefix('admin')
 
         // Content Management
         Route::prefix('content')->group(function () {
-            // Categories
-            Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
-            Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
-            Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
-            Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('admin.categories.show');
-            Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
-            Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
-            Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
-            Route::post('/categories/{category}/toggle-published', [CategoryController::class, 'togglePublished'])->name('admin.categories.toggle-published');
+            // Content Categories (for articles/content)
+            Route::get('/categories', [CategoryController::class, 'index'])->name('admin.content.categories.index');
+            Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.content.categories.create');
+            Route::post('/categories', [CategoryController::class, 'store'])->name('admin.content.categories.store');
+            Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('admin.content.categories.show');
+            Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.content.categories.edit');
+            Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.content.categories.update');
+            Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.content.categories.destroy');
+            Route::post('/categories/{category}/toggle-published', [CategoryController::class, 'togglePublished'])->name('admin.content.categories.toggle-published');
 
             // Content
             Route::get('/', [ContentController::class, 'index'])->name('admin.content.index');

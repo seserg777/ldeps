@@ -156,8 +156,8 @@
                         All Content
                     </a>
                     
-                    <a href="{{ route('admin.categories.index') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium text-gray-400 rounded-md hover:bg-gray-800 hover:text-white transition-colors duration-200 {{ request()->routeIs('admin.categories.*') ? 'bg-gray-800 text-white' : '' }}">
+                    <a href="{{ route('admin.content.categories.index') }}" 
+                       class="flex items-center px-3 py-2 text-sm font-medium text-gray-400 rounded-md hover:bg-gray-800 hover:text-white transition-colors duration-200 {{ request()->routeIs('admin.content.categories.*') ? 'bg-gray-800 text-white' : '' }}">
                         <i class="fas fa-folder mr-2 text-xs"></i>
                         Categories
                     </a>

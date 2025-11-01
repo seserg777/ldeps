@@ -10,7 +10,7 @@
                     <p class="mt-1 text-sm text-gray-600">Manage content categories in the system</p>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <a href="{{ route('admin.categories.create') }}" 
+                    <a href="{{ route('admin.content.categories.create') }}" 
                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         <i class="fas fa-plus mr-2"></i>
                         Create Category
