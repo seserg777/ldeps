@@ -39,11 +39,11 @@
                     </div>
 
                     <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700">Описание</label>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Описание</label>
                         <textarea name="description" 
                                   id="description" 
-                                  rows="4"
-                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('description') border-red-300 @enderror">{{ old('description', $manufacturer->description) }}</textarea>
+                                  rows="10"
+                                  class="tinymce-editor @error('description') border-red-300 @enderror">{{ old('description', $manufacturer->description) }}</textarea>
                         @error('description')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -91,3 +91,32 @@
         </div>
     </div>
 @endsection
+
+@push('scripts-head')
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+@endpush
+
+@push('scripts')
+<script>
+    tinymce.init({
+        selector: '.tinymce-editor',
+        height: 400,
+        menubar: false,
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image | code | help',
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; }',
+        language: 'ru',
+        branding: false,
+        promotion: false,
+        setup: function(editor) {
+            editor.on('change', function() {
+                editor.save();
+            });
+        }
+    });
+</script>
+@endpush
