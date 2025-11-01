@@ -184,10 +184,20 @@ class ProductController extends Controller
         $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
         $menuItemsTop = $menus['main-menu-add'] ?? [];
         $menuItemsMain = $menus['mainmenu-rus'] ?? [];
+        $language = app()->getLocale();
 
         // Render menu HTML
-        $menuTopHtml = view('share.menu.html', ['items' => $menuItemsTop])->render();
-        $menuMainHtml = view('share.menu.html', ['items' => $menuItemsMain])->render();
+        $menuTopHtml = view('share.menu.html', [
+            'items' => $menuItemsTop,
+            'language' => $language,
+            'maxLevels' => 4,
+        ])->render();
+        
+        $menuMainHtml = view('share.menu.html', [
+            'items' => $menuItemsMain,
+            'language' => $language,
+            'maxLevels' => 4,
+        ])->render();
 
         $pageData = [
             'language' => app()->getLocale(),
@@ -271,13 +281,23 @@ class ProductController extends Controller
         $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
         $menuItemsTop = $menus['main-menu-add'] ?? [];
         $menuItemsMain = $menus['mainmenu-rus'] ?? [];
+        $language = app()->getLocale();
 
         // Render menu HTML
-        $menuTopHtml = view('share.menu.html', ['items' => $menuItemsTop])->render();
-        $menuMainHtml = view('share.menu.html', ['items' => $menuItemsMain])->render();
+        $menuTopHtml = view('share.menu.html', [
+            'items' => $menuItemsTop,
+            'language' => $language,
+            'maxLevels' => 4,
+        ])->render();
+        
+        $menuMainHtml = view('share.menu.html', [
+            'items' => $menuItemsMain,
+            'language' => $language,
+            'maxLevels' => 4,
+        ])->render();
 
         $pageData = [
-            'language' => app()->getLocale(),
+            'language' => $language,
             'siteName' => config('app.name', 'Site'),
             'siteDescription' => $product->short_description,
             'menuItem' => [
