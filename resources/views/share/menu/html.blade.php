@@ -16,6 +16,7 @@
         })->values()->all();
     };
     $items = $filter($items ?? [], $language ?? null);
+    $maxLevels = $maxLevels ?? 5; // Default to 5 levels if not provided
     $render = function($nodes, $level = 1) use (&$render, $maxLevels) {
         if (empty($nodes) || $level > $maxLevels) return '';
         $html = '<ul class="menu-level level-' . $level . '">';
