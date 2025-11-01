@@ -63,7 +63,9 @@
                     @endif
                     
                     {{-- Dynamic content based on component type --}}
-                    @if($componentType === 'Content' || $componentType === 'ContentList')
+                    @if($componentType === 'Product' && isset($product))
+                        @include('front.products.partials.product-detail', ['product' => $product])
+                    @elseif($componentType === 'Content' || $componentType === 'ContentList')
                         <div class="content-area">
                             {!! $pageData['additionalData']['content'] ?? '' !!}
                         </div>

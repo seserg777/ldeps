@@ -180,7 +180,35 @@ class ProductController extends Controller
         // Increment hits counter
         $product->increment('hits');
 
-        return view('front.products.show', compact('product'));
+        // Build menus for page layout
+        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
+        $menuItemsTop = $menus['main-menu-add'] ?? [];
+        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
+
+        // Render menu HTML
+        $menuTopHtml = view('share.menu.html', ['items' => $menuItemsTop])->render();
+        $menuMainHtml = view('share.menu.html', ['items' => $menuItemsMain])->render();
+
+        $pageData = [
+            'language' => app()->getLocale(),
+            'siteName' => config('app.name', 'Site'),
+            'siteDescription' => $product->short_description,
+            'menuItem' => [
+                'id' => null,
+                'title' => $product->name,
+                'alias' => $product->alias,
+                'path' => $product->full_path,
+            ],
+            'componentType' => 'Product',
+            'additionalData' => [
+                'product' => $product
+            ],
+        ];
+
+        $activeMenuId = null;
+        $componentClass = 'product';
+
+        return view('front.page', compact('pageData', 'menuItemsTop', 'menuItemsMain', 'activeMenuId', 'componentClass', 'menuTopHtml', 'menuMainHtml', 'product'));
     }
 
     /**
@@ -239,19 +267,35 @@ class ProductController extends Controller
         // Increment hits counter
         $product->increment('hits');
 
-        // Get categories for navigation
-        $categories = Category::active()
-            ->root()
-            ->ordered()
-            ->withCount('products')
-            ->with(['subcategories' => function ($query) {
-                $query->active()->ordered()->with(['parent', 'subcategories' => function ($subQuery) {
-                    $subQuery->active()->ordered();
-                }]);
-            }])
-            ->get();
+        // Build menus for page layout
+        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
+        $menuItemsTop = $menus['main-menu-add'] ?? [];
+        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
 
-        return view('front.products.show', compact('product', 'categories'));
+        // Render menu HTML
+        $menuTopHtml = view('share.menu.html', ['items' => $menuItemsTop])->render();
+        $menuMainHtml = view('share.menu.html', ['items' => $menuItemsMain])->render();
+
+        $pageData = [
+            'language' => app()->getLocale(),
+            'siteName' => config('app.name', 'Site'),
+            'siteDescription' => $product->short_description,
+            'menuItem' => [
+                'id' => null,
+                'title' => $product->name,
+                'alias' => $product->alias,
+                'path' => $product->full_path,
+            ],
+            'componentType' => 'Product',
+            'additionalData' => [
+                'product' => $product
+            ],
+        ];
+
+        $activeMenuId = null;
+        $componentClass = 'product';
+
+        return view('front.page', compact('pageData', 'menuItemsTop', 'menuItemsMain', 'activeMenuId', 'componentClass', 'menuTopHtml', 'menuMainHtml', 'product'));
     }
 
     /**
