@@ -173,7 +173,7 @@ class ProductController extends Controller
         }
 
         $product = Product::published()
-            ->with(['manufacturer', 'categories', 'productCharacteristics.extraField', 'productCharacteristics.extraFieldValue'])
+            ->with(['manufacturer', 'categories', 'productCharacteristics.extraField', 'productCharacteristics.extraFieldValue', 'productAttributes'])
             ->findOrFail($id);
 
 

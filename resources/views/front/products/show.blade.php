@@ -286,6 +286,9 @@
             </div>
         </div>
 
+        {{-- Product Modifications Table --}}
+        @include('front.products.partials.modifications', ['product' => $product])
+
         <!-- Product Details Tabs -->
         <div class="row mt-4">
             <div class="col-12">
