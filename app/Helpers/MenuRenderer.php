@@ -15,7 +15,7 @@ class MenuRenderer
      * @param array $defaultMenuTypes Default menu types to load if no modules found
      * @return array
      */
-    public static function getMenusForPage(?int $activeMenuId = null, array $defaultMenuTypes = ['main-menu-add', 'mainmenu-rus']): array
+    public static function getMenusForPage(?int $activeMenuId = null): array
     {
         $language = app()->getLocale();
         $result = [
@@ -25,32 +25,34 @@ class MenuRenderer
             'activeMenuId' => $activeMenuId,
         ];
 
-        // Get modules for this menu item ID
-        $modules = collect();
+        // Get all published menu modules (without menu restriction or for specific menu)
+        $query = Module::published()
+            ->where('module', 'mod_menu')
+            ->ordered();
         
         if ($activeMenuId) {
+            // Get modules for this specific menu item OR modules without menu restrictions
             $modules = Module::published()
-                ->whereHas('menuItems', function($query) use ($activeMenuId) {
-                    $query->where('id', $activeMenuId);
+                ->where('module', 'mod_menu')
+                ->where(function($q) use ($activeMenuId) {
+                    $q->whereHas('menuItems', function($query) use ($activeMenuId) {
+                        $query->where('id', $activeMenuId);
+                    })
+                    ->orWhereDoesntHave('menuItems'); // Modules without menu restrictions (show everywhere)
                 })
+                ->ordered()
+                ->get();
+        } else {
+            // Get modules without menu restrictions (show on all pages)
+            $modules = Module::published()
+                ->where('module', 'mod_menu')
+                ->whereDoesntHave('menuItems')
                 ->ordered()
                 ->get();
         }
         
-        // If no modules found or no activeMenuId, use default menus
+        // If no modules found, return empty menus
         if ($modules->isEmpty()) {
-            $menus = static::buildMenus($defaultMenuTypes);
-            
-            $result['menuTopHtml'] = static::renderMenu(
-                $menus[$defaultMenuTypes[0]] ?? [],
-                $language
-            );
-            
-            $result['menuMainHtml'] = static::renderMenu(
-                $menus[$defaultMenuTypes[1]] ?? [],
-                $language
-            );
-            
             return $result;
         }
 
@@ -85,34 +87,10 @@ class MenuRenderer
             }
         }
 
-        // If no menu modules, use defaults
-        if (empty($topMenu) && empty($mainMenu)) {
-            $menus = static::buildMenus($defaultMenuTypes);
-            $topMenu = $menus[$defaultMenuTypes[0]] ?? [];
-            $mainMenu = $menus[$defaultMenuTypes[1]] ?? [];
-        }
-
         // Render menus
         $result['menuTopHtml'] = static::renderMenu($topMenu, $language);
         $result['menuMainHtml'] = static::renderMenu($mainMenu, $language);
 
-        return $result;
-    }
-
-    /**
-     * Build menu items from database.
-     *
-     * @param array $menuTypes
-     * @return array
-     */
-    protected static function buildMenus(array $menuTypes): array
-    {
-        $result = [];
-        
-        foreach ($menuTypes as $type) {
-            $result[$type] = static::getMenuItems($type);
-        }
-        
         return $result;
     }
 
