@@ -61,6 +61,18 @@
             </a>
         </div>
 
+        <!-- Modules -->
+        <div class="space-y-1 mt-6">
+            <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 py-2">
+                MODULES
+            </div>
+            <a href="{{ route('admin.modules.index') }}" 
+               class="flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-800 hover:text-white transition-colors duration-200 {{ request()->routeIs('admin.modules*') ? 'bg-gray-800 text-white' : '' }}">
+                <i class="fas fa-cube mr-3 text-gray-400"></i>
+                Modules
+            </a>
+        </div>
+
         <!-- Menu Management -->
         <div class="space-y-1 mt-6">
             <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 py-2">

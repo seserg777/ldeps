@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\MenuTypeController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ContentController;
+use App\Http\Controllers\Admin\ModuleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -195,6 +196,14 @@ Route::prefix('admin')
         // Sales
         Route::get('/orders', [OrderAdminController::class, 'index'])->name('admin.orders');
         Route::get('/customers', [CustomerAdminController::class, 'index'])->name('admin.customers');
+
+        // Modules
+        Route::get('/modules', [ModuleController::class, 'index'])->name('admin.modules.index');
+        Route::get('/modules/create', [ModuleController::class, 'create'])->name('admin.modules.create');
+        Route::post('/modules', [ModuleController::class, 'store'])->name('admin.modules.store');
+        Route::get('/modules/{id}/edit', [ModuleController::class, 'edit'])->name('admin.modules.edit');
+        Route::put('/modules/{id}', [ModuleController::class, 'update'])->name('admin.modules.update');
+        Route::delete('/modules/{id}', [ModuleController::class, 'destroy'])->name('admin.modules.destroy');
 
         // Menu Management
         Route::prefix('menu')->group(function () {
