@@ -265,24 +265,11 @@ class ProductController extends Controller
         // Increment hits counter
         $product->increment('hits');
 
-        // Build menus for page layout
-        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
-        $menuItemsTop = $menus['main-menu-add'] ?? [];
-        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
+        // Get menus and modules for this page
+        $menuData = MenuRenderer::getMenusForPage(null, ['main-menu-add', 'mainmenu-rus']);
+        $menuTopHtml = $menuData['menuTopHtml'];
+        $menuMainHtml = $menuData['menuMainHtml'];
         $language = app()->getLocale();
-
-        // Render menu HTML
-        $menuTopHtml = view('share.menu.html', [
-            'items' => $menuItemsTop,
-            'language' => $language,
-            'maxLevels' => 4,
-        ])->render();
-        
-        $menuMainHtml = view('share.menu.html', [
-            'items' => $menuItemsMain,
-            'language' => $language,
-            'maxLevels' => 4,
-        ])->render();
 
         $pageData = [
             'language' => $language,
