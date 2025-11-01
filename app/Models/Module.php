@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Menu\Menu;
 use Illuminate\Database\Eloquent\Model;
 
 class Module extends Model
@@ -76,7 +77,7 @@ class Module extends Model
     public function menuItems()
     {
         return $this->belongsToMany(
-            \App\Models\Menu\Menu::class,
+            Menu::class,
             'vjprf_modules_menu',
             'moduleid',
             'menuid',

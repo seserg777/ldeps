@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\BuildsMenus;
 use App\Models\Exussalebanner;
+use App\Models\Menu\Menu;
+use App\Models\JContent;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -57,7 +59,7 @@ class HomeController extends Controller
     public function showPage(string $path)
     {
         // Find menu item by alias/path
-        $menuItem = \App\Models\Menu\Menu::where('alias', $path)
+        $menuItem = Menu::where('alias', $path)
             ->where('published', 1)
             ->first();
 
@@ -74,7 +76,7 @@ class HomeController extends Controller
             return redirect()->route('content.index');
         } elseif ($componentType === 'Content' && isset($linkParams['id'])) {
             // Keep /about.html (or any SEO path) and render article here
-            $record = \App\Models\JContent::published()->find((int) $linkParams['id']);
+            $record = JContent::published()->find((int) $linkParams['id']);
             if (!$record) {
                 abort(404, 'Article not found');
             }
@@ -161,7 +163,7 @@ class HomeController extends Controller
      */
     public function pageMeta(string $path)
     {
-        $menuItem = \App\Models\Menu\Menu::where('alias', $path)
+        $menuItem = Menu::where('alias', $path)
             ->where('published', 1)
             ->first();
 
@@ -186,7 +188,7 @@ class HomeController extends Controller
         ];
 
         if ($componentType === 'Content' && isset($linkParams['id'])) {
-            $record = \App\Models\JContent::published()->find((int) $linkParams['id']);
+            $record = JContent::published()->find((int) $linkParams['id']);
             if ($record) {
                 $payload['additionalData']['article'] = [
                     'id' => $record->id,

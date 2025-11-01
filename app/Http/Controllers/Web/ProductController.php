@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Product\Product;
 use App\Models\Category\Category;
 use App\Models\Manufacturer;
+use App\Models\ProductExtraFieldValue;
+use App\Models\Complex;
 use App\Services\Product\ProductService;
 use App\Services\Category\CategoryService;
 use App\Services\Product\SearchService;
@@ -299,7 +301,7 @@ class ProductController extends Controller
                 $extraFieldValueId = (int) substr($filterParam, 1); // Extract number from l16 -> 16
 
                 // Get extra field value info
-                $filteredExtraFieldValue = \App\Models\ProductExtraFieldValue::with('extraField')->find($extraFieldValueId);
+                $filteredExtraFieldValue = ProductExtraFieldValue::with('extraField')->find($extraFieldValueId);
 
                 if ($filteredExtraFieldValue) {
                     // Filter products by characteristic
@@ -478,7 +480,7 @@ class ProductController extends Controller
                     ->get();
 
                 // Get complexes for this category with optimized locale fields
-                $complexes = \App\Models\Complex::where('category_id', $childCategory->category_id)
+                $complexes = Complex::where('category_id', $childCategory->category_id)
                     ->where('complex_publish', 1)
                     ->orderBy('ordering', 'asc')
                     ->withLocaleFields() // Use optimized locale fields

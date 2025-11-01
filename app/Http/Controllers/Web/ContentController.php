@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\BuildsMenus;
+use App\Models\JContent;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -81,7 +82,7 @@ class ContentController extends Controller
         $language = app()->getLocale();
 
         // Load article from vjprf_content
-        $record = \App\Models\JContent::published()->find($id);
+        $record = JContent::published()->find($id);
         if (!$record) {
             abort(404, 'Article not found');
         }
