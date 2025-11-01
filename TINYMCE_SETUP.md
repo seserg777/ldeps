@@ -22,7 +22,18 @@ The free tier includes:
 
 ## Applying Your API Key
 
-Replace `YOUR_API_KEY_HERE` with your actual API key in these files:
+### Method 1: Using .env file (Recommended)
+
+Add your TinyMCE API key to the `.env` file:
+
+```bash
+# TinyMCE Editor API Key
+TINYMCE_API_KEY=your_api_key_here
+```
+
+The views will automatically use this key via `{{ env('TINYMCE_API_KEY') }}`.
+
+### Method 2: Direct replacement (Not recommended)
 
 ### 1. Manufacturer Forms
 - `resources/views/admin/manufacturers/create.blade.php`

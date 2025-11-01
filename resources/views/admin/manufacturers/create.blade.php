@@ -93,7 +93,7 @@
 
 @push('scripts-head')
 {{-- TinyMCE: Get free API key at https://www.tiny.cloud/auth/signup/ --}}
-<script src="https://cdn.tiny.cloud/1/YOUR_API_KEY_HERE/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY', 'no-api-key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 @endpush
 
 @push('scripts')
