@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
             selector: '.tinymce-editor',
             height: 400,
             menubar: false,
+            // Open source license agreement
+            license_key: 'gpl',
             plugins: [
                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
@@ -41,8 +43,9 @@ document.addEventListener('DOMContentLoaded', function() {
             content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; }',
             branding: false,
             promotion: false,
-            skin_url: '/build/tinymce/skins/ui/oxide',
-            content_css: '/build/tinymce/skins/content/default/content.min.css',
+            // Use bundled skin and content CSS from node_modules
+            skin: false,
+            content_css: false,
             setup: function(editor) {
                 editor.on('change', function() {
                     editor.save();
