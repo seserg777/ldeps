@@ -4,7 +4,7 @@
     $menuType = $params['menutype'] ?? 'mainmenu';
     
     // Get menu items for this menu type
-    $menuItems = \App\Models\MenuItem::where('menutype', $menuType)
+    $menuItems = \App\Models\Menu\Menu::where('menutype', $menuType)
         ->where('published', 1)
         ->where('parent_id', 0)
         ->orderBy('lft')

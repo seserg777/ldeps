@@ -76,7 +76,7 @@ class Module extends Model
     public function menuItems()
     {
         return $this->belongsToMany(
-            MenuItem::class,
+            \App\Models\Menu\Menu::class,
             'vjprf_modules_menu',
             'moduleid',
             'menuid',

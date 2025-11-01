@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Module;
-use App\Models\MenuItem;
+use App\Models\Menu\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -32,7 +32,7 @@ class ModuleController extends Controller
      */
     public function create()
     {
-        $menuItems = MenuItem::orderBy('title')->get();
+        $menuItems = Menu::orderBy('title')->get();
         $positions = $this->getAvailablePositions();
         
         return view('admin.modules.create', compact('menuItems', 'positions'));
@@ -116,7 +116,7 @@ class ModuleController extends Controller
     public function edit($id)
     {
         $module = Module::with('menuItems')->findOrFail($id);
-        $menuItems = MenuItem::orderBy('title')->get();
+        $menuItems = Menu::orderBy('title')->get();
         $positions = $this->getAvailablePositions();
         
         return view('admin.modules.edit', compact('module', 'menuItems', 'positions'));

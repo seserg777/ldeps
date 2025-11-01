@@ -3,7 +3,7 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Request;
-use App\Models\MenuItem;
+use App\Models\Menu\Menu;
 
 class ModuleHelper
 {
@@ -17,7 +17,7 @@ class ModuleHelper
         $currentPath = Request::path();
         
         // Try to find menu item by link/alias
-        $menuItem = MenuItem::where('published', 1)
+        $menuItem = Menu::where('published', 1)
             ->where(function ($query) use ($currentPath) {
                 $query->where('link', 'like', "%{$currentPath}%")
                       ->orWhere('alias', $currentPath);
