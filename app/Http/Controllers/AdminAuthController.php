@@ -15,6 +15,11 @@ class AdminAuthController extends Controller
      */
     public function showLoginForm()
     {
+        // Redirect to dashboard if already logged in
+        if (Auth::guard('custom')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+        
         return view('admin.auth.login');
     }
 
