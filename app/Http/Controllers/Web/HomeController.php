@@ -7,6 +7,7 @@ use App\Http\Controllers\Concerns\BuildsMenus;
 use App\Models\Exussalebanner;
 use App\Models\Menu\Menu;
 use App\Models\JContent;
+use App\Helpers\MenuRenderer;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -18,27 +19,11 @@ class HomeController extends Controller
      */
     public function index(): View
     {
-        // Build required menus. We can add more types later as needed.
-        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
-        $menuItemsTop = $menus['main-menu-add'] ?? [];
-        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
-
-        $siteName = config('app.name', 'Интернет-магазин');
-        $siteDescription = 'Лучшие товары по доступным ценам';
-        $language = app()->getLocale();
-
-        // Render SSR menu HTML for Blade-only frontend
-        $menuTopHtml = view('share.menu.html', [
-            'items' => $menuItemsTop,
-            'language' => $language,
-            'maxLevels' => 4,
-        ])->render();
-
-        $menuMainHtml = view('share.menu.html', [
-            'items' => $menuItemsMain,
-            'language' => $language,
-            'maxLevels' => 4,
-        ])->render();
+        // Get menus and modules for homepage
+        $activeMenuId = MenuRenderer::detectActiveMenuId();
+        $menuData = MenuRenderer::getMenusForPage($activeMenuId);
+        $menuTopHtml = $menuData['menuTopHtml'];
+        $menuMainHtml = $menuData['menuMainHtml'];
 
         // Placeholder homepage content area (can be replaced by widgets/partials)
         $homepageHtml = '';
