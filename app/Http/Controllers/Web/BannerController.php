@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\BuildsMenus;
 use App\Models\Exussalebanner;
+use App\Helpers\MenuRenderer;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -49,13 +50,11 @@ class BannerController extends Controller
             'has_more' => $page < ceil($totalBanners / $perPage)
         ];
 
-        // Build menus
-        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
-        $menuItemsTop = $menus['main-menu-add'] ?? [];
-        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
-
-        $siteName = config('app.name', 'Интернет-магазин');
-        $siteDescription = 'Лучшие товары по доступным ценам';
+        // Get menus and modules for this page
+        $activeMenuId = MenuRenderer::detectActiveMenuId();
+        $menuData = MenuRenderer::getMenusForPage($activeMenuId);
+        $menuTopHtml = $menuData['menuTopHtml'];
+        $menuMainHtml = $menuData['menuMainHtml'];
 
         // Prepare data for the component
         $pageData = [
@@ -82,7 +81,7 @@ class BannerController extends Controller
             ]
         ];
 
-        return view('front.page', compact('pageData'));
+        return view('front.page', compact('pageData', 'menuTopHtml', 'menuMainHtml'));
     }
 
     /**
@@ -119,13 +118,11 @@ class BannerController extends Controller
             'created' => $banner->created ? $banner->created->format('Y-m-d H:i:s') : null,
         ];
 
-        // Build menus
-        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
-        $menuItemsTop = $menus['main-menu-add'] ?? [];
-        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
-
-        $siteName = config('app.name', 'Интернет-магазин');
-        $siteDescription = 'Лучшие товары по доступным ценам';
+        // Get menus and modules for this page
+        $activeMenuId = MenuRenderer::detectActiveMenuId();
+        $menuData = MenuRenderer::getMenusForPage($activeMenuId);
+        $menuTopHtml = $menuData['menuTopHtml'];
+        $menuMainHtml = $menuData['menuMainHtml'];
 
         // Prepare data for the component
         $pageData = [
@@ -151,6 +148,6 @@ class BannerController extends Controller
             ]
         ];
 
-        return view('front.page', compact('pageData'));
+        return view('front.page', compact('pageData', 'menuTopHtml', 'menuMainHtml'));
     }
 }

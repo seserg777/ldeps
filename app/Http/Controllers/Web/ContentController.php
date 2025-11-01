@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\BuildsMenus;
 use App\Models\JContent;
+use App\Helpers\MenuRenderer;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -32,13 +33,11 @@ class ContentController extends Controller
             'has_more' => false
         ];
 
-        // Build menus
-        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
-        $menuItemsTop = $menus['main-menu-add'] ?? [];
-        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
-
-        $siteName = config('app.name', 'Интернет-магазин');
-        $siteDescription = 'Лучшие товары по доступным ценам';
+        // Get menus and modules for this page
+        $activeMenuId = MenuRenderer::detectActiveMenuId();
+        $menuData = MenuRenderer::getMenusForPage($activeMenuId);
+        $menuTopHtml = $menuData['menuTopHtml'];
+        $menuMainHtml = $menuData['menuMainHtml'];
 
         // Prepare data for the component
         $pageData = [
@@ -65,7 +64,7 @@ class ContentController extends Controller
             ]
         ];
 
-        return view('front.page', compact('pageData'));
+        return view('front.page', compact('pageData', 'menuTopHtml', 'menuMainHtml'));
     }
 
     /**
@@ -97,13 +96,11 @@ class ContentController extends Controller
             'created' => optional($record->created)->format('Y-m-d H:i:s'),
         ];
 
-        // Build menus
-        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
-        $menuItemsTop = $menus['main-menu-add'] ?? [];
-        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
-
-        $siteName = config('app.name', 'Интернет-магазин');
-        $siteDescription = 'Лучшие товары по доступным ценам';
+        // Get menus and modules for this page
+        $activeMenuId = MenuRenderer::detectActiveMenuId();
+        $menuData = MenuRenderer::getMenusForPage($activeMenuId);
+        $menuTopHtml = $menuData['menuTopHtml'];
+        $menuMainHtml = $menuData['menuMainHtml'];
 
         // Prepare data for the component
         $pageData = [
@@ -130,6 +127,6 @@ class ContentController extends Controller
             ]
         ];
 
-        return view('front.page', compact('pageData'));
+        return view('front.page', compact('pageData', 'menuTopHtml', 'menuMainHtml'));
     }
 }
