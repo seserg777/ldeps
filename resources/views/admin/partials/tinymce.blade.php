@@ -21,6 +21,8 @@
             language: 'ru',
             branding: false,
             promotion: false,
+            // Disable TinyMCE usage analytics/telemetry
+            usage_tracking: false,
             setup: function(editor) {
                 editor.on('change', function() {
                     editor.save();
