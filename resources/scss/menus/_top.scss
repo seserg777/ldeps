@@ -1,0 +1,22 @@
+@import '../base/variables';
+
+// Styles for top menu (menutype: main-menu-add)
+.menu-top.menu-main-menu-add {
+  background: #f8fafc; // light bg
+  .menu-level.level-1 {
+    gap: 28px;
+  }
+  .menu-link {
+    position: relative;
+    &:after {
+      content: '';
+      display: inline-block;
+      margin-left: 6px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid #9ca3af;
+    }
+  }
+}
+
+

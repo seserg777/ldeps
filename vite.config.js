@@ -9,6 +9,7 @@ export default defineConfig({
       refresh: true,
     }),
   ],
+  // PostCSS will be picked up automatically from postcss.config.cjs
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'resources/js'),

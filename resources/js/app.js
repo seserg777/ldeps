@@ -1,4 +1,5 @@
 // Global styles
+import '../scss/app.scss'
 import '../css/app.css'
 import Alpine from 'alpinejs'
 

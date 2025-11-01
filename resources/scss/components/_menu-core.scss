@@ -1,0 +1,41 @@
+@import '../base/variables';
+
+.site-menu {
+  position: relative;
+  .menu-level {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .menu-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 8px;
+    color: $menu-text;
+    font-weight: 600;
+    &:hover { color: $menu-accent; }
+  }
+  // dropdowns
+  .menu-level .menu-level {
+    display: none;
+    position: absolute;
+    background: $menu-bg;
+    border: 1px solid $menu-border;
+    border-radius: 8px;
+    box-shadow: $shadow-lg;
+    min-width: 220px;
+    padding: 10px 0;
+    z-index: 4500;
+    flex-direction: column;
+  }
+  .menu-item { position: relative; }
+  .menu-item:hover > .menu-level { display: block; }
+  .menu-level.level-1 > .menu-item > .menu-level { top: 100%; left: 0; }
+  .menu-level.level-2 > .menu-item > .menu-level { top: 0; left: 100%; }
+
+  // allow 3-4 level cascading
+  .menu-level.level-3 > .menu-item > .menu-level { top: 0; left: 100%; }
+  .menu-level.level-4 > .menu-item > .menu-level { top: 0; left: 100%; }
+}
+
+

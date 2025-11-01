@@ -43,8 +43,21 @@
 
     {{-- Homepage content --}}
     <main>
-      {!! $homepageHtml ?? '' !!}
-      @include('share.layouts.partials.products_module', ['type' => 'random', 'limit' => 3])
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    {!! $homepageHtml ?? '' !!}
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    @include('share.layouts.partials.products_module', ['type' => 'random', 'limit' => 3])
+                </div>
+            </div>
+        </div>
     </main>
 
     @isset($footerHtml)
