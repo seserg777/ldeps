@@ -27,6 +27,11 @@ class HomeController extends Controller
 
         // Placeholder homepage content area (can be replaced by widgets/partials)
         $homepageHtml = '';
+        
+        // Site metadata
+        $siteName = config('app.name', 'LDEPS');
+        $siteDescription = 'Laboratory and Diagnostic Equipment, Parts and Supplies';
+        $language = app()->getLocale();
 
         return view('front.homepage', compact(
             'menuTopHtml',

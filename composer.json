@@ -19,6 +19,7 @@
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.10",
+        "nunomaduro/larastan": "^1.0",
         "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {
@@ -38,7 +39,11 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
-        "pre-commit": "php-cs-fixer fix .",
+        "pre-commit": [
+            "vendor/bin/phpstan analyse --memory-limit=2G --error-format=table || true",
+            "php-cs-fixer fix ."
+        ],
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=2G",
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
