@@ -16,6 +16,7 @@ use App\DTOs\ProductFilterDTO;
 use App\Events\ProductViewed;
 use App\Http\Requests\ProductFilterRequest;
 use App\Http\Requests\SearchRequest;
+use App\Helpers\MenuRenderer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -180,27 +181,14 @@ class ProductController extends Controller
         // Increment hits counter
         $product->increment('hits');
 
-        // Build menus for page layout
-        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
-        $menuItemsTop = $menus['main-menu-add'] ?? [];
-        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
+        // Get menus and modules for this page
+        $menuData = MenuRenderer::getMenusForPage(null);
+        $menuTopHtml = $menuData['menuTopHtml'];
+        $menuMainHtml = $menuData['menuMainHtml'];
         $language = app()->getLocale();
 
-        // Render menu HTML
-        $menuTopHtml = view('share.menu.html', [
-            'items' => $menuItemsTop,
-            'language' => $language,
-            'maxLevels' => 4,
-        ])->render();
-        
-        $menuMainHtml = view('share.menu.html', [
-            'items' => $menuItemsMain,
-            'language' => $language,
-            'maxLevels' => 4,
-        ])->render();
-
         $pageData = [
-            'language' => app()->getLocale(),
+            'language' => $language,
             'siteName' => config('app.name', 'Site'),
             'siteDescription' => $product->short_description,
             'menuItem' => [
@@ -215,10 +203,10 @@ class ProductController extends Controller
             ],
         ];
 
-        $activeMenuId = null;
+        $activeMenuId = $menuData['activeMenuId'];
         $componentClass = 'product';
 
-        return view('front.page', compact('pageData', 'menuItemsTop', 'menuItemsMain', 'activeMenuId', 'componentClass', 'menuTopHtml', 'menuMainHtml', 'product'));
+        return view('front.page', compact('pageData', 'activeMenuId', 'componentClass', 'menuTopHtml', 'menuMainHtml', 'product'));
     }
 
     /**
@@ -312,10 +300,10 @@ class ProductController extends Controller
             ],
         ];
 
-        $activeMenuId = null;
+        $activeMenuId = $menuData['activeMenuId'];
         $componentClass = 'product';
 
-        return view('front.page', compact('pageData', 'menuItemsTop', 'menuItemsMain', 'activeMenuId', 'componentClass', 'menuTopHtml', 'menuMainHtml', 'product'));
+        return view('front.page', compact('pageData', 'activeMenuId', 'componentClass', 'menuTopHtml', 'menuMainHtml', 'product'));
     }
 
     /**
