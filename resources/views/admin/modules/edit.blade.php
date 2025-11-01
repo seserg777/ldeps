@@ -150,8 +150,8 @@
             </label>
             <textarea name="content" 
                       id="content" 
-                      rows="6"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('content', $module->content) }}</textarea>
+                      rows="10"
+                      class="tinymce-editor">{{ old('content', $module->content) }}</textarea>
         </div>
 
         <!-- Menu Items -->
@@ -238,4 +238,6 @@
     </div>
 </form>
 @endsection
+
+@include('admin.partials.tinymce')
 

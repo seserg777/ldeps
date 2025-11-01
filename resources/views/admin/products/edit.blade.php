@@ -96,13 +96,13 @@
                 </div>
 
                 <div>
-                    <label for="product_description" class="block text-sm font-medium text-gray-700">
+                    <label for="product_description" class="block text-sm font-medium text-gray-700 mb-2">
                         Описание
                     </label>
                     <textarea name="product_description" 
                               id="product_description" 
-                              rows="4"
-                              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">{{ old('product_description', $product->product_description) }}</textarea>
+                              rows="10"
+                              class="tinymce-editor">{{ old('product_description', $product->product_description) }}</textarea>
                 </div>
 
                 <div class="flex items-center">
@@ -132,3 +132,5 @@
         </form>
     </div>
 @endsection
+
+@include('admin.partials.tinymce')
