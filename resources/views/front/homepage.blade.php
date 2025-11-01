@@ -15,6 +15,9 @@
             <nav class="site-menu menu-top menu-main-menu-add">
                 {!! $menuTopHtml ?? '' !!}
             </nav>
+            
+            {{-- Modules: Top position --}}
+            @include('share.layouts.partials.modules_position', ['position' => 'top'])
         </div>
     </section>
     
@@ -38,11 +41,19 @@
                     @include('share.layouts.partials.search')
                 </div>
             </div>
+            
+            {{-- Modules: Header position --}}
+            @include('share.layouts.partials.modules_position', ['position' => 'header'])
         </div>
     </header>
 
     {{-- Homepage content --}}
     <main>
+        {{-- Modules: Content-top position --}}
+        <div class="container">
+            @include('share.layouts.partials.modules_position', ['position' => 'content-top'])
+        </div>
+        
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -58,11 +69,28 @@
                 </div>
             </div>
         </div>
+        
+        {{-- Modules: Content-bottom position --}}
+        <div class="container">
+            @include('share.layouts.partials.modules_position', ['position' => 'content-bottom'])
+        </div>
     </main>
 
     @isset($footerHtml)
-      <footer>{!! $footerHtml !!}</footer>
+      <footer>
+        {!! $footerHtml !!}
+        
+        {{-- Modules: Footer position --}}
+        <div class="container">
+            @include('share.layouts.partials.modules_position', ['position' => 'footer'])
+        </div>
+      </footer>
     @endisset
+    
+    {{-- Modules: Bottom position --}}
+    <div class="container">
+        @include('share.layouts.partials.modules_position', ['position' => 'bottom'])
+    </div>
   </div>
 @endsection
 
