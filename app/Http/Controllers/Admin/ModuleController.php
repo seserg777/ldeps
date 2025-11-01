@@ -30,7 +30,7 @@ class ModuleController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(): \Illuminate\View\View
     {
         $menuItems = Menu::orderBy('title')->get();
         $positions = $this->getAvailablePositions();
@@ -44,7 +44,7 @@ class ModuleController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $validated = $request->validate([
             'title' => 'required|string|max:100',
@@ -113,7 +113,7 @@ class ModuleController extends Controller
      * @param int $id
      * @return \Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(int $id): \Illuminate\View\View
     {
         $module = Module::with('menuItems')->findOrFail($id);
         $menuItems = Menu::orderBy('title')->get();
@@ -129,7 +129,7 @@ class ModuleController extends Controller
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): \Illuminate\Http\RedirectResponse
     {
         $module = Module::findOrFail($id);
 
@@ -200,7 +200,7 @@ class ModuleController extends Controller
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(int $id): \Illuminate\Http\RedirectResponse
     {
         try {
             $module = Module::findOrFail($id);
@@ -224,7 +224,7 @@ class ModuleController extends Controller
      *
      * @return array
      */
-    private function getAvailablePositions()
+    private function getAvailablePositions(): array
     {
         return [
             'top' => 'Top',
