@@ -35,7 +35,7 @@ class BannerController extends Controller
                     'description' => $banner->{"introtext_{$currentLang}"} ?: $banner->introtext,
                     'image' => $banner->{"image_{$currentLang}"} ?: $banner->image,
                     'link' => null, // Banners don't have direct links
-                    'created' => $banner->created?->format('Y-m-d H:i:s'),
+                    'created' => $banner->created ? $banner->created->format('Y-m-d H:i:s') : null,
                     'sale_start' => $banner->sale_start,
                     'sale_end' => $banner->sale_end,
                 ];
@@ -116,7 +116,7 @@ class BannerController extends Controller
             'image' => $banner->{"image_{$currentLang}"} ?: $banner->image,
             'sale_start' => $banner->sale_start,
             'sale_end' => $banner->sale_end,
-            'created' => $banner->created?->format('Y-m-d H:i:s'),
+            'created' => $banner->created ? $banner->created->format('Y-m-d H:i:s') : null,
         ];
 
         // Build menus
