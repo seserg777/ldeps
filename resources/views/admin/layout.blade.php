@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="connect-src 'self' https://cdn.tiny.cloud https://cdnjs.cloudflare.com https://unpkg.com; img-src 'self' data: https:;">
     <title>Admin - @yield('title', 'Dashboard')</title>
     <?php
         // For admin we always use built assets to avoid dev server URLs in <head>
