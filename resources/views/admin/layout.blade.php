@@ -13,6 +13,8 @@
         $manifestPath = public_path('build/manifest.json');
         if (file_exists($manifestPath)) {
             $manifest = json_decode(file_get_contents($manifestPath), true);
+            
+            // Load main app.js
             $entry = $manifest['resources/js/app.js'] ?? null;
             if ($entry) {
                 // CSS
@@ -23,6 +25,12 @@
                 }
                 // JS
                 echo '<script type="module" src="' . asset('build/' . $entry['file']) . '"></script>';
+            }
+            
+            // Load TinyMCE if needed (for forms with .tinymce-editor class)
+            $tinymceEntry = $manifest['resources/js/tinymce.js'] ?? null;
+            if ($tinymceEntry) {
+                echo '<script type="module" src="' . asset('build/' . $tinymceEntry['file']) . '"></script>';
             }
         }
     }
