@@ -1,11 +1,17 @@
 {
   "resources/js/app.js": {
-    "file": "assets/app-D5bYOauQ.js",
+    "file": "assets/app-DbWpMgoz.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [
-      "assets/app-povEY_-l.css"
+      "assets/app-CSttdZb7.css"
     ]
+  },
+  "resources/js/tinymce.js": {
+    "file": "assets/tinymce-DkY_yxkI.js",
+    "name": "tinymce",
+    "src": "resources/js/tinymce.js",
+    "isEntry": true
   }
 }
