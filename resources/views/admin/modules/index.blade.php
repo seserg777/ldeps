@@ -65,7 +65,10 @@
                             {{ $module->id }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $module->title }}</div>
+                            <a href="{{ route('admin.modules.edit', $module->id) }}" 
+                               class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
+                                {{ $module->title }}
+                            </a>
                             @if($module->note)
                                 <div class="text-sm text-gray-500">{{ $module->note }}</div>
                             @endif
@@ -114,11 +117,12 @@
                             {{ $module->ordering }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div class="flex justify-end space-x-2">
+                            <div class="flex justify-end items-center space-x-3">
                                 <a href="{{ route('admin.modules.edit', $module->id) }}" 
-                                   class="text-blue-600 hover:text-blue-900"
-                                   title="Edit">
-                                    <i class="fas fa-edit"></i>
+                                   class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition"
+                                   title="Edit module">
+                                    <i class="fas fa-edit mr-1.5"></i>
+                                    Edit
                                 </a>
                                 <form action="{{ route('admin.modules.destroy', $module->id) }}" 
                                       method="POST" 
@@ -127,9 +131,10 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" 
-                                            class="text-red-600 hover:text-red-900"
-                                            title="Delete">
-                                        <i class="fas fa-trash"></i>
+                                            class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded transition"
+                                            title="Delete module">
+                                        <i class="fas fa-trash mr-1.5"></i>
+                                        Delete
                                     </button>
                                 </form>
                             </div>
