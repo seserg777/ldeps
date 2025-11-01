@@ -264,7 +264,7 @@
             
             {{-- Attributes Tab --}}
             <div x-show="activeTab === 'attributes'" class="px-6 py-6">
-                <p class="text-gray-500 italic">Attributes section - coming soon</p>
+                @include('admin.products.partials.attributes', ['product' => $product])
             </div>
 
             {{-- Characteristics Tab --}}

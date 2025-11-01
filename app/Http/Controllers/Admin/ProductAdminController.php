@@ -131,7 +131,7 @@ class ProductAdminController extends Controller
      */
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with(['productCharacteristics', 'productAttributes'])->findOrFail($id);
         return view('admin.products.edit', compact('product'));
     }
 
@@ -204,6 +204,39 @@ class ProductAdminController extends Controller
                 Log::info('Product characteristics updated', [
                     'product_id' => $product->product_id,
                     'characteristics' => $request->input('characteristics')
+                ]);
+            }
+            
+            // Update attributes (variations)
+            if ($request->has('attributes')) {
+                // Delete old attributes that are not in request
+                $keepIds = [];
+                
+                foreach ($request->input('attributes') as $attrData) {
+                    if (!empty($attrData['product_attr_id'])) {
+                        $keepIds[] = $attrData['product_attr_id'];
+                    }
+                }
+                
+                \App\Models\ProductAttribute::where('product_id', $product->product_id)
+                    ->whereNotIn('product_attr_id', $keepIds)
+                    ->delete();
+                
+                // Create or update attributes
+                foreach ($request->input('attributes') as $attrData) {
+                    if (!empty($attrData['product_attr_id'])) {
+                        // Update existing
+                        \App\Models\ProductAttribute::where('product_attr_id', $attrData['product_attr_id'])
+                            ->update(array_merge($attrData, ['product_id' => $product->product_id]));
+                    } else {
+                        // Create new
+                        \App\Models\ProductAttribute::create(array_merge($attrData, ['product_id' => $product->product_id]));
+                    }
+                }
+                
+                Log::info('Product attributes updated', [
+                    'product_id' => $product->product_id,
+                    'attributes_count' => count($request->input('attributes'))
                 ]);
             }
             

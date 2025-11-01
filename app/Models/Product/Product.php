@@ -316,6 +316,16 @@ class Product extends Model
     }
 
     /**
+     * Get product attributes (variations).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function productAttributes()
+    {
+        return $this->hasMany(\App\Models\ProductAttribute::class, 'product_id', 'product_id');
+    }
+
+    /**
      * Get product extra fields as array with caching
      */
     public function getProductExtraFieldsAttribute(): array
