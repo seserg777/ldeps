@@ -39,10 +39,15 @@ class ContentController extends Controller
         $menuTopHtml = $menuData['menuTopHtml'];
         $menuMainHtml = $menuData['menuMainHtml'];
 
+        // Site metadata
+        $siteName = config('app.name', 'LDEPS');
+        $siteDescription = 'Laboratory and Diagnostic Equipment, Parts and Supplies';
+        $language = app()->getLocale();
+
         // Prepare data for the component
         $pageData = [
-            'menuItemsTop' => $menuItemsTop,
-            'menuItemsMain' => $menuItemsMain,
+            'menuTopHtml' => $menuTopHtml,
+            'menuMainHtml' => $menuMainHtml,
             'siteName' => $siteName,
             'siteDescription' => $siteDescription,
             'language' => $language,
@@ -102,10 +107,15 @@ class ContentController extends Controller
         $menuTopHtml = $menuData['menuTopHtml'];
         $menuMainHtml = $menuData['menuMainHtml'];
 
+        // Site metadata
+        $siteName = config('app.name', 'LDEPS');
+        $siteDescription = 'Laboratory and Diagnostic Equipment, Parts and Supplies';
+        $language = app()->getLocale();
+
         // Prepare data for the component
         $pageData = [
-            'menuItemsTop' => $menuItemsTop,
-            'menuItemsMain' => $menuItemsMain,
+            'menuTopHtml' => $menuTopHtml,
+            'menuMainHtml' => $menuMainHtml,
             'siteName' => $siteName,
             'siteDescription' => $siteDescription,
             'language' => $language,

@@ -72,8 +72,8 @@ class HomeController extends Controller
             }
 
             $menus = $this->buildMenus([]);
-            $menuItemsTop = $menus ?? [];
-            $menuItemsMain = $menus ?? [];
+            $menuItemsTop = $menus;
+            $menuItemsMain = $menus;
 
             $siteName = config('app.name', 'Интернет-магазин');
             $siteDescription = 'Лучшие товары по доступным ценам';

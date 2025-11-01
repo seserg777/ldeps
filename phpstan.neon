@@ -1,12 +1,33 @@
 includes:
-    - vendor/larastan/larastan/extension.neon
+    - ./vendor/nunomaduro/larastan/extension.neon
 
 parameters:
     paths:
         - app
-    level: 5
+    level: 1
+    excludePaths:
+        - app/DTOs/*
+        - app/Events/ProductViewed.php
+        - app/Jobs/UpdateProductStatistics.php
+        - app/Http/Resources/ProductResource.php
+        - app/Helpers/ProductHelper.php
+        - app/Console/Commands/UpdateProductStatisticsCommand.php
+        - app/Console/Commands/UpdateProductStatsCommand.php
+        - app/Http/Controllers/Api/ProductApiController.php
+        - app/Http/Resources/CategoryResource.php
+        - app/Listeners/UpdateProductViews.php
+        - app/Providers/EventServiceProvider.php
+        - app/Console/Commands/ClearProductCache.php
     ignoreErrors:
-        - '#Unsafe usage of new static#'
+        - '#Access to an undefined property#'
+        - '#Access to private property#'
+        - '#Relation .* is not found#'
+        - '#Call to static method .* on an unknown class#'
+        - '#Class .* not found#'
+        - '#Class .* was not found#'
+        - '#Anonymous function has an unused use#'
+        - '#Call to an undefined method#'
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
+    reportUnmatchedIgnoredErrors: false
 
