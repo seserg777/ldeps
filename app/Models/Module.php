@@ -92,7 +92,7 @@ class Module extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopePublished($query)
+    public function scopePublished(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->where('published', 1);
     }
@@ -103,7 +103,7 @@ class Module extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOrdered($query)
+    public function scopeOrdered(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->orderBy('ordering', 'asc');
     }
@@ -115,7 +115,7 @@ class Module extends Model
      * @param string $position
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopePosition($query, $position)
+    public function scopePosition(\Illuminate\Database\Eloquent\Builder $query, string $position): \Illuminate\Database\Eloquent\Builder
     {
         return $query->where('position', $position);
     }
@@ -127,7 +127,7 @@ class Module extends Model
      * @param int $clientId
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeClientId($query, $clientId)
+    public function scopeClientId(\Illuminate\Database\Eloquent\Builder $query, int $clientId): \Illuminate\Database\Eloquent\Builder
     {
         return $query->where('client_id', $clientId);
     }
@@ -137,7 +137,7 @@ class Module extends Model
      *
      * @return array
      */
-    public function getParamsArrayAttribute()
+    public function getParamsArrayAttribute(): array
     {
         if (empty($this->params)) {
             return [];
