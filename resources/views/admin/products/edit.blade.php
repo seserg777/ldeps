@@ -27,27 +27,35 @@
             </div>
             
             <div class="px-6 py-4 space-y-6">
+                {{-- Product Name (multilang) --}}
+                @include('admin.components.multilang-field', [
+                    'name' => 'name',
+                    'label' => 'Product Name',
+                    'type' => 'text',
+                    'value' => $product,
+                    'required' => true
+                ])
+                
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div>
-                        <label for="product_name" class="block text-sm font-medium text-gray-700">
-                            Название товара *
-                        </label>
-                        <input type="text" 
-                               name="product_name" 
-                               id="product_name" 
-                               value="{{ old('product_name', $product->product_name) }}"
-                               required
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    </div>
-                    
-                    <div>
                         <label for="product_code" class="block text-sm font-medium text-gray-700">
-                            Код товара
+                            Product Code
                         </label>
                         <input type="text" 
                                name="product_code" 
                                id="product_code"
                                value="{{ old('product_code', $product->product_code) }}"
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    
+                    <div>
+                        <label for="product_ean" class="block text-sm font-medium text-gray-700">
+                            EAN / Barcode
+                        </label>
+                        <input type="text" 
+                               name="product_ean" 
+                               id="product_ean"
+                               value="{{ old('product_ean', $product->product_ean) }}"
                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
                 </div>
@@ -95,15 +103,23 @@
                     </div>
                 </div>
 
-                <div>
-                    <label for="product_description" class="block text-sm font-medium text-gray-700 mb-2">
-                        Описание
-                    </label>
-                    <textarea name="product_description" 
-                              id="product_description" 
-                              rows="10"
-                              class="tinymce-editor">{{ old('product_description', $product->product_description) }}</textarea>
-                </div>
+                {{-- Short Description (multilang) --}}
+                @include('admin.components.multilang-field', [
+                    'name' => 'short_description',
+                    'label' => 'Short Description',
+                    'type' => 'textarea',
+                    'value' => $product,
+                    'rows' => 3
+                ])
+                
+                {{-- Full Description (multilang with TinyMCE) --}}
+                @include('admin.components.multilang-field', [
+                    'name' => 'description',
+                    'label' => 'Full Description',
+                    'type' => 'tinymce',
+                    'value' => $product,
+                    'rows' => 10
+                ])
 
                 <div class="flex items-center">
                     <input type="checkbox" 
