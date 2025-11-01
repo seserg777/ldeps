@@ -12,7 +12,7 @@ class ModuleHelper
      *
      * @return int|null
      */
-    public static function getActiveMenuId()
+    public static function getActiveMenuId(): ?int
     {
         $currentPath = Request::path();
         
@@ -48,7 +48,7 @@ class ModuleHelper
      * @param int|null $menuId
      * @return void
      */
-    public static function setActiveMenuId($menuId)
+    public static function setActiveMenuId(?int $menuId): void
     {
         if ($menuId) {
             session(['active_menu_id' => (int) $menuId]);

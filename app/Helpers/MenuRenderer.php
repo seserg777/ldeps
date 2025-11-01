@@ -15,7 +15,7 @@ class MenuRenderer
      * @param array $defaultMenuTypes Default menu types to load if no modules found
      * @return array
      */
-    public static function getMenusForPage($activeMenuId = null, $defaultMenuTypes = [])
+    public static function getMenusForPage(?int $activeMenuId = null, array $defaultMenuTypes = []): array
     {
         $language = app()->getLocale();
         $result = [

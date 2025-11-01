@@ -93,7 +93,7 @@ class ProductAttribute extends Model
      *
      * @return array
      */
-    public function getAttributeValues()
+    public function getAttributeValues(): array
     {
         $values = [];
         

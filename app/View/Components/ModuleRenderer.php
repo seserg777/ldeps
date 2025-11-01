@@ -18,7 +18,7 @@ class ModuleRenderer extends Component
      * @param int|null $activeMenuId
      * @return void
      */
-    public function __construct($position, $activeMenuId = null)
+    public function __construct(string $position, ?int $activeMenuId = null)
     {
         $this->position = $position;
         $this->activeMenuId = $activeMenuId;
@@ -30,7 +30,7 @@ class ModuleRenderer extends Component
      *
      * @return \Illuminate\Support\Collection
      */
-    protected function loadModules()
+    protected function loadModules(): \Illuminate\Support\Collection
     {
         $query = Module::published()
             ->position($this->position)
