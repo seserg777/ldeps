@@ -29,7 +29,7 @@ class HomeController extends Controller
         $homepageHtml = '';
         
         // Site metadata
-        $siteName = config('app.name', 'LDEPS');
+        $siteName = config('app.name', 'DEPS');
         $siteDescription = 'Laboratory and Diagnostic Equipment, Parts and Supplies';
         $language = app()->getLocale();
 
@@ -71,9 +71,9 @@ class HomeController extends Controller
                 abort(404, 'Article not found');
             }
 
-            $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
-            $menuItemsTop = $menus['main-menu-add'] ?? [];
-            $menuItemsMain = $menus['mainmenu-rus'] ?? [];
+            $menus = $this->buildMenus([]);
+            $menuItemsTop = $menus ?? [];
+            $menuItemsMain = $menus ?? [];
 
             $siteName = config('app.name', 'Интернет-магазин');
             $siteDescription = 'Лучшие товары по доступным ценам';
