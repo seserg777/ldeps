@@ -134,15 +134,21 @@
                 </div>
             </div>
 
+            {{-- Characteristics Section --}}
+            <div class="px-6 py-4 border-t border-gray-200 mt-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Характеристики</h3>
+                @include('admin.products.partials.characteristics', ['product' => $product])
+            </div>
+
             <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3">
                 <a href="{{ route('admin.products') }}" 
                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Отмена
+                    Cancel
                 </a>
                 <button type="submit" 
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     <i class="fas fa-save mr-2"></i>
-                    Сохранить изменения
+                    Save Changes
                 </button>
             </div>
         </form>

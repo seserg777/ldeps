@@ -143,7 +143,7 @@ class ManufacturerAdminController extends Controller
         $manufacturer = Manufacturer::findOrFail($id);
         $manufacturer->update($request->all());
 
-        return redirect()->route('admin.manufacturers')
+        return redirect()->back()
             ->with('success', 'Manufacturer updated successfully.');
     }
 

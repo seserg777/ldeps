@@ -184,8 +184,7 @@ class ModuleController extends Controller
 
             DB::commit();
 
-            return redirect()
-                ->route('admin.modules.index')
+            return redirect()->back()
                 ->with('success', 'Module updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
