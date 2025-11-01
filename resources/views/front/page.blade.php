@@ -58,10 +58,6 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    @if($menuItem)
-                        <h1>{{ $menuItem['title'] }}</h1>
-                    @endif
-                    
                     {{-- Dynamic content based on component type --}}
                     @if($componentType === 'Product' && isset($product))
                         @include('front.products.partials.product-detail', ['product' => $product])
@@ -74,6 +70,9 @@
                             {{-- Banners content --}}
                         </div>
                     @else
+                        @if($menuItem)
+                            <h1>{{ $menuItem['title'] }}</h1>
+                        @endif
                         <div class="page-content">
                             {!! $pageContentHtml ?? '' !!}
                         </div>
