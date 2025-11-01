@@ -4,15 +4,84 @@ namespace App\Helpers;
 
 use App\Models\Module;
 use App\Models\Menu\Menu;
+use App\Models\Category\Category;
+use App\Models\Product\Product;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Request;
 
 class MenuRenderer
 {
     /**
+     * Detect active menu ID from current request context.
+     *
+     * @param mixed $entity Optional entity (Product, Category, Content, etc.)
+     * @return int|null
+     */
+    public static function detectActiveMenuId($entity = null): ?int
+    {
+        // If entity is provided, try to find menu by entity
+        if ($entity) {
+            // Product
+            if ($entity instanceof Product && $entity->categories->count() > 0) {
+                $category = $entity->categories->first();
+                return static::findMenuByCategory($category);
+            }
+            
+            // Category
+            if ($entity instanceof Category) {
+                return static::findMenuByCategory($entity);
+            }
+        }
+        
+        // Try to detect from URL
+        $currentPath = Request::path();
+        
+        // Try to find menu item by current path or alias
+        $menuItem = Menu::where('published', 1)
+            ->where(function ($query) use ($currentPath) {
+                $query->where('link', 'like', "%{$currentPath}%")
+                      ->orWhere('alias', $currentPath)
+                      ->orWhere('path', $currentPath);
+            })
+            ->first();
+        
+        if ($menuItem) {
+            return $menuItem->id;
+        }
+        
+        // Check session for stored active menu
+        if (session()->has('active_menu_id')) {
+            return (int) session('active_menu_id');
+        }
+        
+        return null;
+    }
+
+    /**
+     * Find menu item by category.
+     *
+     * @param Category $category
+     * @return int|null
+     */
+    protected static function findMenuByCategory(Category $category): ?int
+    {
+        $menuItem = Menu::where('published', 1)
+            ->where(function ($query) use ($category) {
+                $query->where('link', 'like', '%category_id=' . $category->category_id . '%')
+                      ->orWhere('alias', $category->alias)
+                      ->orWhere('alias', $category->{'alias_uk-UA'})
+                      ->orWhere('alias', $category->{'alias_ru-UA'})
+                      ->orWhere('alias', $category->{'alias_en-GB'});
+            })
+            ->first();
+        
+        return $menuItem ? $menuItem->id : null;
+    }
+
+    /**
      * Get menus and modules for current page.
      *
      * @param int|null $activeMenuId
-     * @param array $defaultMenuTypes Default menu types to load if no modules found
      * @return array
      */
     public static function getMenusForPage(?int $activeMenuId = null): array

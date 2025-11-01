@@ -181,24 +181,8 @@ class ProductController extends Controller
         // Increment hits counter
         $product->increment('hits');
 
-        // Try to find active menu item for this product
-        $activeMenuId = null;
-        if ($product->categories->count() > 0) {
-            $category = $product->categories->first();
-            // Try to find menu item by category path or link
-            $menuItem = \App\Models\Menu\Menu::where('published', 1)
-                ->where(function ($query) use ($category) {
-                    $query->where('link', 'like', '%category_id=' . $category->category_id . '%')
-                          ->orWhere('alias', $category->alias)
-                          ->orWhere('alias', $category->{'alias_uk-UA'})
-                          ->orWhere('alias', $category->{'alias_ru-UA'});
-                })
-                ->first();
-            
-            if ($menuItem) {
-                $activeMenuId = $menuItem->id;
-            }
-        }
+        // Detect active menu ID from product context
+        $activeMenuId = MenuRenderer::detectActiveMenuId($product);
 
         // Get menus and modules for this page (based on activeMenuId)
         $menuData = MenuRenderer::getMenusForPage($activeMenuId);
@@ -284,24 +268,8 @@ class ProductController extends Controller
         // Increment hits counter
         $product->increment('hits');
 
-        // Try to find active menu item for this product
-        $activeMenuId = null;
-        if ($product->categories->count() > 0) {
-            $category = $product->categories->first();
-            // Try to find menu item by category path or link
-            $menuItem = \App\Models\Menu\Menu::where('published', 1)
-                ->where(function ($query) use ($category) {
-                    $query->where('link', 'like', '%category_id=' . $category->category_id . '%')
-                          ->orWhere('alias', $category->alias)
-                          ->orWhere('alias', $category->{'alias_uk-UA'})
-                          ->orWhere('alias', $category->{'alias_ru-UA'});
-                })
-                ->first();
-            
-            if ($menuItem) {
-                $activeMenuId = $menuItem->id;
-            }
-        }
+        // Detect active menu ID from product context
+        $activeMenuId = MenuRenderer::detectActiveMenuId($product);
 
         // Get menus and modules for this page (based on activeMenuId)
         $menuData = MenuRenderer::getMenusForPage($activeMenuId);
