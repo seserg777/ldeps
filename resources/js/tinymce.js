@@ -25,6 +25,9 @@ import 'tinymce/plugins/table'
 import 'tinymce/plugins/help'
 import 'tinymce/plugins/wordcount'
 
+// Set base URL to prevent relative path issues
+tinymce.baseURL = window.location.origin
+
 // Initialize TinyMCE when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     if (document.querySelector('.tinymce-editor')) {
@@ -34,6 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
             menubar: false,
             // Open source license agreement
             license_key: 'gpl',
+            // Prevent TinyMCE from trying to load plugins/skins from relative URLs
+            base_url: window.location.origin,
+            suffix: '.min',
             plugins: [
                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
