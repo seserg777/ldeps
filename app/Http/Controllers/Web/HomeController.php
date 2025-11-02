@@ -74,17 +74,19 @@ class HomeController extends Controller
                 abort(404, 'Article not found');
             }
 
-            $menus = $this->buildMenus([]);
-            $menuItemsTop = $menus;
-            $menuItemsMain = $menus;
+            // Get menus and modules for this page
+            $activeMenuId = MenuRenderer::detectActiveMenuId();
+            $pageModules = MenuRenderer::getModulesForPage($activeMenuId, true);
+            $menuModules = MenuRenderer::getMenuModules($pageModules);
+            $renderedMenus = MenuRenderer::renderMenuModules($menuModules);
 
             $siteName = config('app.name', 'Интернет-магазин');
             $siteDescription = 'Лучшие товары по доступным ценам';
             $language = app()->getLocale();
 
             $pageData = [
-                'menuItemsTop' => $menuItemsTop,
-                'menuItemsMain' => $menuItemsMain,
+                'renderedMenus' => $renderedMenus,
+                'activeMenuId' => $activeMenuId,
                 'siteName' => $siteName,
                 'siteDescription' => $siteDescription,
                 'language' => $language,
@@ -98,6 +100,7 @@ class HomeController extends Controller
                 ],
                 'linkParams' => $linkParams,
                 'additionalData' => [
+                    'content' => $record->introtext . $record->fulltext,
                     'article' => [
                         'id' => $record->id,
                         'title' => $record->title,
@@ -110,7 +113,7 @@ class HomeController extends Controller
                 ]
             ];
 
-            return view('front.page', compact('pageData'));
+            return view('front.page', compact('pageData', 'activeMenuId', 'renderedMenus'));
         } elseif ($componentType === 'ExussalebannerList') {
             return redirect()->route('banners.index');
         } elseif ($componentType === 'Exussalebanner' && isset($linkParams['id'])) {
@@ -118,28 +121,33 @@ class HomeController extends Controller
         }
 
         // For other types, show generic page
-        $menus = $this->buildMenus(['main-menu-add', 'mainmenu-rus']);
-        $menuItemsTop = $menus['main-menu-add'] ?? [];
-        $menuItemsMain = $menus['mainmenu-rus'] ?? [];
+        $activeMenuId = MenuRenderer::detectActiveMenuId();
+        $pageModules = MenuRenderer::getModulesForPage($activeMenuId, true);
+        $menuModules = MenuRenderer::getMenuModules($pageModules);
+        $renderedMenus = MenuRenderer::renderMenuModules($menuModules);
 
         $siteName = config('app.name', 'Интернет-магазин');
         $siteDescription = 'Лучшие товары по доступным ценам';
         $language = app()->getLocale();
 
-        $menuTopHtml = view('share.menu.html', [
-            'items' => $menuItemsTop,
+        $pageData = [
+            'renderedMenus' => $renderedMenus,
+            'activeMenuId' => $activeMenuId,
+            'siteName' => $siteName,
+            'siteDescription' => $siteDescription,
             'language' => $language,
-            'maxLevels' => 4,
-        ])->render();
-        $menuMainHtml = view('share.menu.html', [
-            'items' => $menuItemsMain,
-            'language' => $language,
-            'maxLevels' => 4,
-        ])->render();
+            'componentType' => 'page',
+            'menuItem' => [
+                'title' => $menuItem->title,
+                'alias' => $menuItem->alias,
+                'path' => $menuItem->alias,
+                'link' => $menuItem->link,
+                'level' => $menuItem->level,
+            ],
+            'linkParams' => $linkParams,
+        ];
 
-        $pageContentHtml = '';
-
-        return view('front.page', compact('menuTopHtml', 'menuMainHtml', 'pageContentHtml', 'siteName', 'siteDescription', 'language'));
+        return view('front.page', compact('pageData', 'activeMenuId', 'renderedMenus'));
     }
 
     /**
