@@ -21,8 +21,22 @@ class HomeController extends Controller
     {
         // Get menus and modules for homepage
         $activeMenuId = MenuRenderer::detectActiveMenuId();
-        $pageModules = MenuRenderer::getModulesForPage($activeMenuId, false); // Only page-specific modules
+        $pageModules = MenuRenderer::getModulesForPage($activeMenuId, true); // Include global modules
         $menuModules = MenuRenderer::getMenuModules($pageModules);
+        
+        // Debug: show menu types on homepage
+        $menuTypes = $menuModules->map(function($module) {
+            $hasPages = $module->pages()->exists();
+            return [
+                'id' => $module->id,
+                'title' => $module->title,
+                'position' => $module->position,
+                'menutype' => $module->params_array['menutype'] ?? null,
+                'is_global' => !$hasPages, // true if not assigned to specific pages
+            ];
+        })->toArray();
+        
+        //dd($activeMenuId, $menuTypes);
         
         // Render menus for each module
         $renderedMenus = MenuRenderer::renderMenuModules($menuModules);

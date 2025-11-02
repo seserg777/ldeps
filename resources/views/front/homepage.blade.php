@@ -12,7 +12,7 @@
     <section class="top">
         <div class="container">
             {{-- Top menu - dynamic based on modules --}}
-            <x-menu name="top" :menus="$renderedMenus ?? []" class="menu-top" />
+            <x-menu name="main-menu-add" :menus="$renderedMenus ?? []" class="menu-top" />
             
             {{-- Modules: Top position --}}
             @include('share.layouts.partials.modules_position', ['position' => 'top'])

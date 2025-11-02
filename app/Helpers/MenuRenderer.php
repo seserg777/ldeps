@@ -253,9 +253,11 @@ class MenuRenderer
         $cacheKey = "menu_items_{$menuType}";
         
         return Cache::remember($cacheKey, 3600, function() use ($menuType) {
+            // Get root level menu items (level = 1) instead of parent_id = 0
+            // because some menus have a hidden root node
             $items = Menu::where('menutype', $menuType)
                 ->where('published', 1)
-                ->where('parent_id', 0)
+                ->where('level', 1)
                 ->orderBy('lft')
                 ->get();
 
