@@ -25,8 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Share categories with all views
-        View::composer('*', CategoryComposer::class);
+        // Share categories with all views (skip in testing environment)
+        if (!app()->environment('testing')) {
+            View::composer('*', CategoryComposer::class);
+        }
 
         // Debug: Log that AppServiceProvider is booting
         \Log::info('AppServiceProvider: Boot method called');

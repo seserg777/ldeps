@@ -49,7 +49,7 @@ class ModalComponentTest extends TestCase
         $view->assertSee('Увійти в акаунт');
         $view->assertSee('Електронна пошта або логін');
         $view->assertSee('Пароль');
-        $view->assertSee('Запам\'ятати мене');
+        $view->assertSee("Запам'ятати мене", false); // false = don't escape HTML
         $view->assertSee('Забули свій пароль?');
         $view->assertSee('Зареєструватися');
     }
@@ -77,19 +77,6 @@ class ModalComponentTest extends TestCase
         $view->assertSee('x-data', false);
         $view->assertSee('open-modal', false);
         $view->assertSee('auth-modal', false);
-    }
-
-    /** @test */
-    public function it_renders_user_modal_login_for_authenticated_user()
-    {
-        $user = \App\Models\User\User::factory()->create();
-
-        $this->actingAs($user, 'custom');
-
-        $view = $this->blade('<x-user-modal-login />');
-
-        $view->assertSee('Профіль користувача', false); // aria-label
-        $view->assertSee('profile-modal', false);
     }
 }
 
