@@ -129,4 +129,33 @@ class Menu extends Model
     {
         return $this->home == 1;
     }
+
+    /**
+     * Scope a query to only include home page menu items.
+     */
+    public function scopeHome($query, ?string $language = null)
+    {
+        $query->where('home', 1);
+        
+        if ($language) {
+            $query->where('language', $language);
+        }
+        
+        return $query;
+    }
+
+    /**
+     * Get home page menu item ID for a specific language.
+     *
+     * @param string|null $language
+     * @return int|null
+     */
+    public static function getHomeMenuId(?string $language = null): ?int
+    {
+        $language = $language ?: app()->getLocale();
+        
+        $homeMenu = static::home($language)->published()->first();
+        
+        return $homeMenu ? $homeMenu->id : null;
+    }
 }

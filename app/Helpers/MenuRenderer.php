@@ -36,6 +36,12 @@ class MenuRenderer
         // Try to detect from URL
         $currentPath = Request::path();
         
+        // Check if this is homepage
+        if ($currentPath === '/' || empty($currentPath)) {
+            $language = app()->getLocale();
+            return Menu::getHomeMenuId($language);
+        }
+        
         // Try to find menu item by current path or alias
         $menuItem = Menu::where('published', 1)
             ->where(function ($query) use ($currentPath) {
@@ -54,7 +60,9 @@ class MenuRenderer
             return (int) session('active_menu_id');
         }
         
-        return null;
+        // Fallback to home menu ID for current language
+        $language = app()->getLocale();
+        return Menu::getHomeMenuId($language);
     }
 
     /**
