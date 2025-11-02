@@ -74,8 +74,11 @@ class ContentController extends Controller
 
     /**
      * Display the specified article
+     * 
+     * @param int|string $id Article ID
+     * @param string|null $path Optional SEO path (e.g., 'about' from about.html)
      */
-    public function show(Request $request, $id): View
+    public function show($id, ?string $path = null): View
     {
         // Validate and convert ID to integer
         $id = (int) $id;
@@ -122,8 +125,8 @@ class ContentController extends Controller
             'componentType' => 'Content',
             'menuItem' => [
                 'title' => $article['title'],
-                'alias' => $article['alias'] ?: 'article-'.$id,
-                'path' => 'articles',
+                'alias' => $path ?: ($article['alias'] ?: 'article-'.$id),
+                'path' => $path ?: 'articles',
                 'link' => null,
                 'level' => 1
             ],
@@ -133,6 +136,7 @@ class ContentController extends Controller
                 'id' => $id
             ],
             'additionalData' => [
+                'content' => $record->introtext . $record->fulltext,
                 'article' => $article
             ]
         ];

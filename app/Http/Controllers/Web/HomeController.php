@@ -64,56 +64,12 @@ class HomeController extends Controller
         $linkParams = $this->parseLinkParams($menuItem->link);
         $componentType = $this->getComponentType($linkParams);
 
-        // Redirect to specific controllers based on component type (keep SEO URLs for content pages)
+        // Redirect to specific controllers based on component type
         if ($componentType === 'ContentList') {
             return redirect()->route('content.index');
         } elseif ($componentType === 'Content' && isset($linkParams['id'])) {
-            // Keep /about.html (or any SEO path) and render article here
-            $record = JContent::published()->find((int) $linkParams['id']);
-            if (!$record) {
-                abort(404, 'Article not found');
-            }
-
-            // Get menus and modules for this page
-            $activeMenuId = MenuRenderer::detectActiveMenuId();
-            $pageModules = MenuRenderer::getModulesForPage($activeMenuId, true);
-            $menuModules = MenuRenderer::getMenuModules($pageModules);
-            $renderedMenus = MenuRenderer::renderMenuModules($menuModules);
-
-            $siteName = config('app.name', 'Интернет-магазин');
-            $siteDescription = 'Лучшие товары по доступным ценам';
-            $language = app()->getLocale();
-
-            $pageData = [
-                'renderedMenus' => $renderedMenus,
-                'activeMenuId' => $activeMenuId,
-                'siteName' => $siteName,
-                'siteDescription' => $siteDescription,
-                'language' => $language,
-                'componentType' => 'Content',
-                'menuItem' => [
-                    'title' => $record->title,
-                    'alias' => $record->alias,
-                    'path' => $menuItem->alias,
-                    'link' => $menuItem->link,
-                    'level' => $menuItem->level,
-                ],
-                'linkParams' => $linkParams,
-                'additionalData' => [
-                    'content' => $record->introtext . $record->fulltext,
-                    'article' => [
-                        'id' => $record->id,
-                        'title' => $record->title,
-                        'alias' => $record->alias,
-                        'description' => $record->introtext,
-                        'fulltext' => $record->fulltext,
-                        'image' => null,
-                        'created' => optional($record->created)->format('Y-m-d H:i:s'),
-                    ]
-                ]
-            ];
-
-            return view('front.page', compact('pageData', 'activeMenuId', 'renderedMenus'));
+            // Redirect to ContentController for proper handling with SEO URL
+            return app(WebContentController::class)->show($linkParams['id'], $path);
         } elseif ($componentType === 'ExussalebannerList') {
             return redirect()->route('banners.index');
         } elseif ($componentType === 'Exussalebanner' && isset($linkParams['id'])) {
