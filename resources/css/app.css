@@ -4,17 +4,27 @@
 
 /* Header actions styles */
 .header-actions {
-    @apply flex items-center gap-4;
+    @apply flex items-center gap-2;
 }
 
 /* User menu styles */
+.user-menu {
+    @apply inline-flex;
+}
+
 .user-menu button {
     @apply relative inline-flex items-center justify-center;
     @apply transition-all duration-200;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.user-menu button svg {
+    @apply w-8 h-8;
 }
 
 .user-menu button:hover {
-    @apply transform scale-110;
+    @apply transform scale-105;
 }
 
 /* Modal backdrop blur effect */

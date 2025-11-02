@@ -36,6 +36,7 @@
 
                 <div class="col-3">
                     @include('share.layouts.partials.search')
+                    <x-user-modal-login class="ml-4" />
                 </div>
             </div>
             
