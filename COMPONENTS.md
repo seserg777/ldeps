@@ -6,12 +6,12 @@
 
 **Component:** `<x-modal>`
 
-Базовый компонент модального окна с поддержкой Alpine.js анимаций.
+Base modal window component with Alpine.js animations support.
 
 #### Props:
-- `name` (required) - уникальное имя модального окна
-- `title` (optional) - заголовок модального окна
-- `maxWidth` (optional) - максимальная ширина: 'sm', 'md', 'lg', 'xl', '2xl' (default: '2xl')
+- `name` (required) - unique modal window identifier
+- `title` (optional) - modal window title
+- `maxWidth` (optional) - maximum width: 'sm', 'md', 'lg', 'xl', '2xl' (default: '2xl')
 
 #### Usage:
 
@@ -37,7 +37,7 @@ $dispatch('close-modal', 'my-modal')
 
 **Component:** `<x-auth-modal>`
 
-Модальное окно авторизации, расширяющее базовый компонент модального окна.
+Authentication modal window extending the base modal component.
 
 #### Features:
 - Login form with username/email and password fields
@@ -68,7 +68,7 @@ $dispatch('close-modal', 'my-modal')
 
 **Component:** `<x-profile-modal>`
 
-Модальное окно профиля для авторизованных пользователей.
+User profile modal window for authenticated users.
 
 #### Props:
 - `user` (required) - authenticated user object
@@ -90,11 +90,11 @@ $dispatch('close-modal', 'my-modal')
 
 ---
 
-### User Menu Component
+### User Modal Login Component
 
-**Component:** `<x-user-menu>`
+**Component:** `<x-user-modal-login>`
 
-Компонент меню пользователя с динамическими иконками и модальными окнами.
+User menu component with dynamic icons and modal windows.
 
 #### Features:
 - **Unauthorized users**: User icon with lock → opens auth modal
@@ -105,7 +105,7 @@ $dispatch('close-modal', 'my-modal')
 #### Usage:
 
 ```blade
-<x-user-menu class="ml-4" />
+<x-user-modal-login class="ml-4" />
 ```
 
 #### Icons:
@@ -118,12 +118,12 @@ $dispatch('close-modal', 'my-modal')
 
 **Component:** `<x-menu>`
 
-Компонент для динамического отображения меню на основе модулей.
+Component for dynamic menu rendering based on modules.
 
 #### Props:
-- `name` (required) - ключ меню (menutype, position или normalized title)
-- `menus` (required) - массив рендеренных меню HTML
-- `class` (optional) - дополнительные CSS классы
+- `name` (required) - menu key (menutype, position or normalized title)
+- `menus` (required) - array of rendered menu HTML
+- `class` (optional) - additional CSS classes
 
 #### Usage:
 
@@ -251,7 +251,7 @@ $dispatch('close-modal', 'modal-name')
             <div class="col-3">
                 <div class="header-actions">
                     @include('share.layouts.partials.search')
-                    <x-user-menu class="ml-4" />
+                    <x-user-modal-login class="ml-4" />
                 </div>
             </div>
         </div>
