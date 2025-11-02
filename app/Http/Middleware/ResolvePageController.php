@@ -62,6 +62,13 @@ class ResolvePageController
                     return redirect()->route('banners.show', $linkParams['id']);
                 }
                 break;
+                
+            case 'Jshopping':
+                // JСhopping pages - handle categories, products, etc.
+                // Store jshopping info in request for controller
+                $request->attributes->set('jshopping_params', $linkParams);
+                $request->attributes->set('menu_item', $menuItem);
+                break;
         }
 
         // Continue to default handler if no specific controller matched
