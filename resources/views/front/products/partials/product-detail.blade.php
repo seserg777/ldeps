@@ -229,3 +229,8 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-12">
+        @include('front.products.partials.also_bought_products', ['product' => $product])
+    </div>
+</div>

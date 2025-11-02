@@ -77,9 +77,6 @@ Route::get('/api/filters', [ProductController::class, 'getFilters'])->name('filt
 Route::get('/api/search', [ProductController::class, 'search'])->name('search.api');
 Route::get('/api/jshopping/category/{id}', [JshoppingController::class, 'category'])->name('api.jshopping.category');
 
-// Vue products page
-Route::get('/products-vue', [ProductController::class, 'index'])->name('products.vue');
-
 // Server-rendered menu HTML for hydration/SEO
 Route::get('/menu/html/{menutype}', [WebMenuController::class, 'html'])->name('menu.html');
 

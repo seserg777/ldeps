@@ -326,6 +326,23 @@ class Product extends Model
     }
 
     /**
+     * Get "also bought" products through pivot table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function alsoBoughtProducts()
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'vjprf_jshopping_products_alsos',
+            'product_id',
+            'product_also_id',
+            'product_id',
+            'product_id'
+        )->where('vjprf_jshopping_products.product_publish', 1);
+    }
+
+    /**
      * Get product extra fields as array with caching
      */
     public function getProductExtraFieldsAttribute(): array

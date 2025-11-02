@@ -150,11 +150,6 @@ class ProductController extends Controller
             }])
             ->get();
 
-        // Check if Vue version is requested
-        if ($request->get('vue') === '1' || $request->routeIs('products.vue')) {
-            return view('front.products.index-vue', compact('products', 'manufacturers', 'priceRange', 'categories'));
-        }
-
         return view('front.products.index-new', compact('products', 'manufacturers', 'priceRange', 'categories'));
     }
 
