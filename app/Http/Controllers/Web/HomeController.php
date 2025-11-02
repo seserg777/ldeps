@@ -25,6 +25,8 @@ class HomeController extends Controller
         $menuTopHtml = $menuData['menuTopHtml'];
         $menuMainHtml = $menuData['menuMainHtml'];
 
+        dd($activeMenuId, $menuData);
+
         // Placeholder homepage content area (can be replaced by widgets/partials)
         $homepageHtml = '';
         

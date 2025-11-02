@@ -88,6 +88,7 @@ class MenuRenderer
 
     /**
      * Get menus and modules for current page.
+     * Retrieves modules linked to specific menu item via vjprf_modules_menu table.
      *
      * @param int|null $activeMenuId
      * @return array
@@ -102,27 +103,28 @@ class MenuRenderer
             'activeMenuId' => $activeMenuId,
         ];
 
-        // Get all published menu modules (without menu restriction or for specific menu)
-        $query = Module::published()
-            ->where('module', 'mod_menu')
-            ->ordered();
-        
         if ($activeMenuId) {
-            // Get modules for this specific menu item OR modules without menu restrictions
+            // Get modules for this specific menu item via pivot table
+            // SELECT m.* FROM vjprf_modules m 
+            // INNER JOIN vjprf_modules_menu mm ON m.id = mm.moduleid 
+            // WHERE mm.menuid = $activeMenuId AND m.published = 1
             $modules = Module::published()
-                ->where('module', 'mod_menu')
-                ->where(function($q) use ($activeMenuId) {
-                    $q->whereHas('menuItems', function($query) use ($activeMenuId) {
-                        $query->where('id', $activeMenuId);
-                    })
-                    ->orWhereDoesntHave('menuItems'); // Modules without menu restrictions (show everywhere)
+                ->whereHas('menuItems', function($query) use ($activeMenuId) {
+                    $query->where('vjprf_menu.id', $activeMenuId);
                 })
                 ->ordered()
                 ->get();
+                
+            // Also get modules without menu restrictions (show everywhere)
+            $globalModules = Module::published()
+                ->whereDoesntHave('menuItems')
+                ->ordered()
+                ->get();
+                
+            $modules = $modules->merge($globalModules)->unique('id')->sortBy('ordering');
         } else {
             // Get modules without menu restrictions (show on all pages)
             $modules = Module::published()
-                ->where('module', 'mod_menu')
                 ->whereDoesntHave('menuItems')
                 ->ordered()
                 ->get();
