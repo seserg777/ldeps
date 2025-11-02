@@ -154,7 +154,16 @@ class Menu extends Model
     {
         $language = $language ?: app()->getLocale();
         
-        $homeMenu = static::home($language)->published()->first();
+        // Map short locale to full database format
+        $localeMap = [
+            'uk' => 'uk-UA',
+            'ru' => 'ru-UA',
+            'en' => 'en-GB'
+        ];
+        
+        $dbLanguage = $localeMap[$language] ?? $language;
+        
+        $homeMenu = static::home($dbLanguage)->published()->first();
         
         return $homeMenu ? $homeMenu->id : null;
     }
