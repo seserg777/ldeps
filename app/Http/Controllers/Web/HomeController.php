@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\BuildsMenus;
+use App\Http\Controllers\Web\ContentController;
 use App\Models\Exussalebanner;
 use App\Models\Menu\Menu;
 use App\Models\JContent;
@@ -55,7 +56,7 @@ class HomeController extends Controller
     {
         // Check if middleware resolved this to a content page
         if ($request->attributes->has('content_id')) {
-            return app(WebContentController::class)->show(
+            return app(ContentController::class)->show(
                 $request->attributes->get('content_id'),
                 $request->attributes->get('seo_path')
             );
