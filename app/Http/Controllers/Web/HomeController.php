@@ -8,6 +8,7 @@ use App\Models\Exussalebanner;
 use App\Models\Menu\Menu;
 use App\Models\JContent;
 use App\Helpers\MenuRenderer;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -48,10 +49,18 @@ class HomeController extends Controller
 
     /**
      * Show generic page by SEO path.
-     * Note: Specific content types (articles, banners) are handled by ResolvePageController middleware.
+     * Note: ResolvePageController middleware may have set attributes for specific content types.
      */
-    public function showPage(string $path): View
+    public function showPage(Request $request, string $path)
     {
+        // Check if middleware resolved this to a content page
+        if ($request->attributes->has('content_id')) {
+            return app(WebContentController::class)->show(
+                $request->attributes->get('content_id'),
+                $request->attributes->get('seo_path')
+            );
+        }
+        
         // Find menu item by alias/path
         $menuItem = Menu::where('alias', $path)
             ->where('published', 1)

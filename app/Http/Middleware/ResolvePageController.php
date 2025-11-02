@@ -47,7 +47,10 @@ class ResolvePageController
                 
             case 'Content':
                 if (isset($linkParams['id'])) {
-                    return app(ContentController::class)->show($linkParams['id'], $path);
+                    // Store content info in request for controller
+                    $request->attributes->set('content_id', $linkParams['id']);
+                    $request->attributes->set('seo_path', $path);
+                    $request->attributes->set('menu_item', $menuItem);
                 }
                 break;
                 
