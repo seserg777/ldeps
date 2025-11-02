@@ -1,12 +1,15 @@
 @php
     // Get also bought products using the relationship
+    $locale = app()->getLocale();
+    $localeSuffix = $locale === 'en' ? 'en-GB' : ($locale === 'uk' ? 'uk-UA' : 'ru-UA');
+    
     $alsoBoughtProducts = $product->alsoBoughtProducts()
         ->select([
             'vjprf_jshopping_products.product_id',
-            'vjprf_jshopping_products.name_' . app()->getLocale() . '-' . (app()->getLocale() === 'en' ? 'GB' : 'UA') . ' as name',
-            'vjprf_jshopping_products.product_thumb_image as image',
+            'vjprf_jshopping_products.name_' . $localeSuffix,
+            'vjprf_jshopping_products.product_thumb_image',
             'vjprf_jshopping_products.product_price',
-            'vjprf_jshopping_products.alias_' . app()->getLocale() . '-' . (app()->getLocale() === 'en' ? 'GB' : 'UA') . ' as alias',
+            'vjprf_jshopping_products.alias_' . $localeSuffix,
         ])
         ->limit(12)
         ->get();
@@ -39,10 +42,10 @@
                             <a href="{{ route('products.show', $alsoProduct->product_id) }}" class="text-decoration-none">
                                 {{-- Product Image --}}
                                 <div class="product-image-wrapper mb-3">
-                                    @if($alsoProduct->image)
+                                    @if($alsoProduct->product_thumb_image)
                                         <img 
-                                            src="{{ asset('images/product/thumb/' . $alsoProduct->image) }}" 
-                                            alt="{{ $alsoProduct->name }}"
+                                            src="{{ asset('images/product/thumb/' . $alsoProduct->product_thumb_image) }}" 
+                                            alt="{{ $alsoProduct->{'name_' . $localeSuffix} ?? 'Product' }}"
                                             class="img-fluid rounded"
                                             loading="lazy"
                                         >
@@ -55,7 +58,7 @@
 
                                 {{-- Product Name --}}
                                 <h6 class="product-title text-dark mb-2">
-                                    {{ Str::limit($alsoProduct->name, 60) }}
+                                    {{ Str::limit($alsoProduct->{'name_' . $localeSuffix} ?? 'Без назви', 60) }}
                                 </h6>
 
                                 {{-- Product Price --}}
