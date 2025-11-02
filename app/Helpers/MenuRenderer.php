@@ -96,32 +96,30 @@ class MenuRenderer
      */
     public static function getModulesForPage(?int $activeMenuId = null)
     {
-        if ($activeMenuId) {
-            // Get modules assigned to this specific page via pivot table
-            // SELECT m.* FROM vjprf_modules m 
-            // INNER JOIN vjprf_modules_menu mm ON m.id = mm.moduleid 
-            // WHERE mm.menuid = $activeMenuId AND m.published = 1
-            $modules = Module::published()
-                ->whereHas('pages', function($query) use ($activeMenuId) {
-                    $query->where('vjprf_menu.id', $activeMenuId);
-                })
-                ->ordered()
-                ->get();
-                
-            // Also get global modules (not assigned to specific pages - show everywhere)
-            $globalModules = Module::published()
-                ->whereDoesntHave('pages')
-                ->ordered()
-                ->get();
-                
-            return $modules->merge($globalModules)->unique('id')->sortBy('ordering')->values();
-        }
-        
-        // Get global modules only (not assigned to specific pages - show on all pages)
-        return Module::published()
+        // Get global modules (not assigned to any specific page - show everywhere)
+        $globalModules = Module::published()
             ->whereDoesntHave('pages')
             ->ordered()
             ->get();
+        
+        if (!$activeMenuId) {
+            // No active menu - return only global modules
+            return $globalModules;
+        }
+        
+        // Get modules assigned to this specific page via pivot table
+        // SELECT m.* FROM vjprf_modules m 
+        // INNER JOIN vjprf_modules_menu mm ON m.id = mm.moduleid 
+        // WHERE mm.menuid = $activeMenuId AND m.published = 1
+        $pageModules = Module::published()
+            ->whereHas('pages', function($query) use ($activeMenuId) {
+                $query->where('vjprf_menu.id', $activeMenuId);
+            })
+            ->ordered()
+            ->get();
+        
+        // Merge page-specific modules with global modules
+        return $pageModules->merge($globalModules)->unique('id')->sortBy('ordering')->values();
     }
 
     /**
