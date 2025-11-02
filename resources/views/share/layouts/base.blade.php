@@ -103,18 +103,27 @@
     </style>
 </head>
 @php
-    // Determine active menu item id based on current SEO alias (first path segment, without .html)
-    $activeMenuId = null;
-    try {
-        $path = request()->path();
-        $first = $path === '/' || $path === '' ? '' : explode('/', $path)[0];
-        if ($first) {
-            $alias = preg_replace('/\.html$/', '', $first);
-            $active = \App\Models\Menu\Menu::where('alias', $alias)->where('published', 1)->first();
-            if ($active) { $activeMenuId = (int) $active->id; }
-        }
-    } catch (\Throwable $e) {
+    // Use provided activeMenuId or determine from current URL
+    if (!isset($activeMenuId)) {
         $activeMenuId = null;
+        try {
+            $path = request()->path();
+            // Check if this is homepage
+            if ($path === '/' || $path === '') {
+                $language = app()->getLocale();
+                $activeMenuId = \App\Models\Menu\Menu::getHomeMenuId($language);
+            } else {
+                // Determine from first path segment (without .html)
+                $first = explode('/', $path)[0];
+                if ($first) {
+                    $alias = preg_replace('/\.html$/', '', $first);
+                    $active = \App\Models\Menu\Menu::where('alias', $alias)->where('published', 1)->first();
+                    if ($active) { $activeMenuId = (int) $active->id; }
+                }
+            }
+        } catch (\Throwable $e) {
+            $activeMenuId = null;
+        }
     }
 @endphp
 <body class="controller-{{ strtolower(class_basename(request()->route()->getController())) }} component-{{ $componentClass ?? 'default' }}{{ $activeMenuId ? ' itemid-' . $activeMenuId : '' }}">

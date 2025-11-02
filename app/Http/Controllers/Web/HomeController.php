@@ -34,6 +34,7 @@ class HomeController extends Controller
         $language = app()->getLocale();
 
         return view('front.homepage', compact(
+            'activeMenuId',
             'menuTopHtml',
             'menuMainHtml',
             'homepageHtml',
