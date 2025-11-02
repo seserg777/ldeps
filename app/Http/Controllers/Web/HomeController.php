@@ -47,9 +47,10 @@ class HomeController extends Controller
     }
 
     /**
-     * Show page by SEO path
+     * Show generic page by SEO path.
+     * Note: Specific content types (articles, banners) are handled by ResolvePageController middleware.
      */
-    public function showPage(string $path)
+    public function showPage(string $path): View
     {
         // Find menu item by alias/path
         $menuItem = Menu::where('alias', $path)
@@ -60,23 +61,10 @@ class HomeController extends Controller
             abort(404, 'Page not found');
         }
 
-        // Parse link parameters to determine component
+        // Parse link parameters
         $linkParams = $this->parseLinkParams($menuItem->link);
-        $componentType = $this->getComponentType($linkParams);
 
-        // Redirect to specific controllers based on component type
-        if ($componentType === 'ContentList') {
-            return redirect()->route('content.index');
-        } elseif ($componentType === 'Content' && isset($linkParams['id'])) {
-            // Redirect to ContentController for proper handling with SEO URL
-            return app(WebContentController::class)->show($linkParams['id'], $path);
-        } elseif ($componentType === 'ExussalebannerList') {
-            return redirect()->route('banners.index');
-        } elseif ($componentType === 'Exussalebanner' && isset($linkParams['id'])) {
-            return redirect()->route('banners.show', $linkParams['id']);
-        }
-
-        // For other types, show generic page
+        // Get menus and modules for this page
         $activeMenuId = MenuRenderer::detectActiveMenuId();
         $pageModules = MenuRenderer::getModulesForPage($activeMenuId, true);
         $menuModules = MenuRenderer::getMenuModules($pageModules);

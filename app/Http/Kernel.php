@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'setlocale' => \App\Http\Middleware\SetLocale::class,
         'custom.auth' => \App\Http\Middleware\CustomAuthenticate::class,
         'admin' => \App\Http\Middleware\AdminOnly::class,
+        'resolve.page' => \App\Http\Middleware\ResolvePageController::class,
     ];
 }

@@ -53,7 +53,10 @@ Route::get('/banner/{id}', [BannerController::class, 'show'])->name('banners.sho
 Route::get('/{category}/{id}.html', [HomeController::class, 'showBanner'])->name('banner.show')->where('category', '[a-zA-Z0-9\-_]+')->where('id', '[0-9]+');
 
 // SEO-friendly URLs for menu items
-Route::get('/{path}.html', [HomeController::class, 'showPage'])->name('page.show')->where('path', '[a-zA-Z0-9\-_]+');
+Route::get('/{path}.html', [HomeController::class, 'showPage'])
+    ->middleware('resolve.page')
+    ->name('page.show')
+    ->where('path', '[a-zA-Z0-9\-_]+');
 
 // Product routes
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
