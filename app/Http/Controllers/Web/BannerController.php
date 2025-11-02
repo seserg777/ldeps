@@ -52,9 +52,9 @@ class BannerController extends Controller
 
         // Get menus and modules for this page
         $activeMenuId = MenuRenderer::detectActiveMenuId();
-        $menuData = MenuRenderer::getMenusForPage($activeMenuId);
-        $menuTopHtml = $menuData['menuTopHtml'];
-        $menuMainHtml = $menuData['menuMainHtml'];
+        $pageModules = MenuRenderer::getModulesForPage($activeMenuId, true);
+        $menuModules = MenuRenderer::getMenuModules($pageModules);
+        $renderedMenus = MenuRenderer::renderMenuModules($menuModules);
 
         // Site metadata
         $siteName = config('app.name', 'LDEPS');
@@ -62,8 +62,8 @@ class BannerController extends Controller
 
         // Prepare data for the component
         $pageData = [
-            'menuTopHtml' => $menuTopHtml,
-            'menuMainHtml' => $menuMainHtml,
+            'renderedMenus' => $renderedMenus,
+            'activeMenuId' => $activeMenuId,
             'siteName' => $siteName,
             'siteDescription' => $siteDescription,
             'language' => $language,
@@ -85,7 +85,7 @@ class BannerController extends Controller
             ]
         ];
 
-        return view('front.page', compact('pageData', 'menuTopHtml', 'menuMainHtml'));
+        return view('front.page', compact('pageData', 'renderedMenus', 'activeMenuId'));
     }
 
     /**
@@ -124,9 +124,9 @@ class BannerController extends Controller
 
         // Get menus and modules for this page
         $activeMenuId = MenuRenderer::detectActiveMenuId();
-        $menuData = MenuRenderer::getMenusForPage($activeMenuId);
-        $menuTopHtml = $menuData['menuTopHtml'];
-        $menuMainHtml = $menuData['menuMainHtml'];
+        $pageModules = MenuRenderer::getModulesForPage($activeMenuId, true);
+        $menuModules = MenuRenderer::getMenuModules($pageModules);
+        $renderedMenus = MenuRenderer::renderMenuModules($menuModules);
 
         // Site metadata
         $siteName = config('app.name', 'LDEPS');
@@ -134,8 +134,8 @@ class BannerController extends Controller
 
         // Prepare data for the component
         $pageData = [
-            'menuTopHtml' => $menuTopHtml,
-            'menuMainHtml' => $menuMainHtml,
+            'renderedMenus' => $renderedMenus,
+            'activeMenuId' => $activeMenuId,
             'siteName' => $siteName,
             'siteDescription' => $siteDescription,
             'language' => $language,
@@ -156,6 +156,6 @@ class BannerController extends Controller
             ]
         ];
 
-        return view('front.page', compact('pageData', 'menuTopHtml', 'menuMainHtml'));
+        return view('front.page', compact('pageData', 'renderedMenus', 'activeMenuId'));
     }
 }

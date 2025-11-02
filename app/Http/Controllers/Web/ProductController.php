@@ -185,12 +185,14 @@ class ProductController extends Controller
         $activeMenuId = MenuRenderer::detectActiveMenuId($product);
 
         // Get menus and modules for this page (based on activeMenuId)
-        $menuData = MenuRenderer::getMenusForPage($activeMenuId);
-        $menuTopHtml = $menuData['menuTopHtml'];
-        $menuMainHtml = $menuData['menuMainHtml'];
+        $pageModules = MenuRenderer::getModulesForPage($activeMenuId, true);
+        $menuModules = MenuRenderer::getMenuModules($pageModules);
+        $renderedMenus = MenuRenderer::renderMenuModules($menuModules);
         $language = app()->getLocale();
 
         $pageData = [
+            'renderedMenus' => $renderedMenus,
+            'activeMenuId' => $activeMenuId,
             'language' => $language,
             'siteName' => config('app.name', 'Site'),
             'siteDescription' => $product->short_description,
@@ -206,10 +208,9 @@ class ProductController extends Controller
             ],
         ];
 
-        $activeMenuId = $menuData['activeMenuId'];
         $componentClass = 'product';
 
-        return view('front.page', compact('pageData', 'activeMenuId', 'componentClass', 'menuTopHtml', 'menuMainHtml', 'product'));
+        return view('front.page', compact('pageData', 'activeMenuId', 'componentClass', 'renderedMenus', 'product'));
     }
 
     /**
@@ -272,12 +273,14 @@ class ProductController extends Controller
         $activeMenuId = MenuRenderer::detectActiveMenuId($product);
 
         // Get menus and modules for this page (based on activeMenuId)
-        $menuData = MenuRenderer::getMenusForPage($activeMenuId);
-        $menuTopHtml = $menuData['menuTopHtml'];
-        $menuMainHtml = $menuData['menuMainHtml'];
+        $pageModules = MenuRenderer::getModulesForPage($activeMenuId, true);
+        $menuModules = MenuRenderer::getMenuModules($pageModules);
+        $renderedMenus = MenuRenderer::renderMenuModules($menuModules);
         $language = app()->getLocale();
 
         $pageData = [
+            'renderedMenus' => $renderedMenus,
+            'activeMenuId' => $activeMenuId,
             'language' => $language,
             'siteName' => config('app.name', 'Site'),
             'siteDescription' => $product->short_description,
@@ -293,10 +296,9 @@ class ProductController extends Controller
             ],
         ];
 
-        $activeMenuId = $menuData['activeMenuId'];
         $componentClass = 'product';
 
-        return view('front.page', compact('pageData', 'activeMenuId', 'componentClass', 'menuTopHtml', 'menuMainHtml', 'product'));
+        return view('front.page', compact('pageData', 'activeMenuId', 'componentClass', 'renderedMenus', 'product'));
     }
 
     /**

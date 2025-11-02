@@ -30,7 +30,7 @@
             
                 <div class="col-7">
                     {{-- Main menu - dynamic based on modules --}}
-                    <x-menu name="main" :menus="$renderedMenus ?? []" class="menu-main" />
+                    <x-menu name="mainmenu-rus" :menus="$renderedMenus ?? []" class="menu-main" />
                 </div>
 
                 <div class="col-3">
