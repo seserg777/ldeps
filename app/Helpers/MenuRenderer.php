@@ -97,29 +97,29 @@ class MenuRenderer
     public static function getModulesForPage(?int $activeMenuId = null)
     {
         if ($activeMenuId) {
-            // Get modules for this specific menu item via pivot table
+            // Get modules assigned to this specific page via pivot table
             // SELECT m.* FROM vjprf_modules m 
             // INNER JOIN vjprf_modules_menu mm ON m.id = mm.moduleid 
             // WHERE mm.menuid = $activeMenuId AND m.published = 1
             $modules = Module::published()
-                ->whereHas('menuItems', function($query) use ($activeMenuId) {
+                ->whereHas('pages', function($query) use ($activeMenuId) {
                     $query->where('vjprf_menu.id', $activeMenuId);
                 })
                 ->ordered()
                 ->get();
                 
-            // Also get modules without menu restrictions (show everywhere)
+            // Also get global modules (not assigned to specific pages - show everywhere)
             $globalModules = Module::published()
-                ->whereDoesntHave('menuItems')
+                ->whereDoesntHave('pages')
                 ->ordered()
                 ->get();
                 
             return $modules->merge($globalModules)->unique('id')->sortBy('ordering')->values();
         }
         
-        // Get modules without menu restrictions (show on all pages)
+        // Get global modules only (not assigned to specific pages - show on all pages)
         return Module::published()
-            ->whereDoesntHave('menuItems')
+            ->whereDoesntHave('pages')
             ->ordered()
             ->get();
     }

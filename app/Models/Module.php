@@ -72,11 +72,12 @@ class Module extends Model
     ];
 
     /**
-     * Get the menu items associated with this module.
+     * Get the pages (menu items) where this module is assigned.
+     * Relationship via vjprf_modules_menu pivot table.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function menuItems()
+    public function pages()
     {
         return $this->belongsToMany(
             Menu::class,
@@ -86,6 +87,15 @@ class Module extends Model
             'id',
             'id'
         );
+    }
+
+    /**
+     * Alias for backward compatibility.
+     * @deprecated Use pages() instead
+     */
+    public function menuItems()
+    {
+        return $this->pages();
     }
 
     /**
