@@ -30,10 +30,21 @@ The application uses PHPUnit for testing and follows Laravel's testing conventio
   - Null value filtering
   - Fillable attributes
 
-**Note**: This is a basic test suite covering model configuration and data accessors. Feature tests requiring database migrations were intentionally excluded due to existing database schema complexities. Future enhancements should include:
-- Integration tests with test database
+**Note**: The current test suite includes both unit tests and feature tests. However, feature tests that require full database migrations are limited due to existing database schema issues (duplicate columns in products migration). 
+
+**Available Tests:**
+- ✅ Unit tests for models (Module, ProductAttribute)
+- ✅ Feature tests for authentication (login, logout, registration)
+- ✅ Feature tests for Blade components (modals, user-menu)
+- ✅ Feature tests for helpers (MenuRenderer)
+- ✅ Feature tests for homepage display
+- ❌ Feature tests requiring products table (migration issues)
+
+**Future Enhancements:**
+- Fix products migration duplicate columns
+- Integration tests with full test database
 - API endpoint tests
-- Frontend controller tests
+- Frontend controller tests for products
 - Admin panel CRUD tests
 
 ## Running Tests
