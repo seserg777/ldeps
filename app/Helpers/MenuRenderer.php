@@ -87,22 +87,15 @@ class MenuRenderer
     }
 
     /**
-     * Get menus and modules for current page.
+     * Get modules for current page.
      * Retrieves modules linked to specific menu item via vjprf_modules_menu table.
+     * SQL: SELECT m.* FROM vjprf_modules m INNER JOIN vjprf_modules_menu mm ON m.id = mm.moduleid WHERE mm.menuid = ?
      *
      * @param int|null $activeMenuId
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
-    public static function getMenusForPage(?int $activeMenuId = null): array
+    public static function getModulesForPage(?int $activeMenuId = null)
     {
-        $language = app()->getLocale();
-        $result = [
-            'menuTopHtml' => '',
-            'menuMainHtml' => '',
-            'modules' => collect(),
-            'activeMenuId' => $activeMenuId,
-        ];
-
         if ($activeMenuId) {
             // Get modules for this specific menu item via pivot table
             // SELECT m.* FROM vjprf_modules m 
@@ -121,22 +114,39 @@ class MenuRenderer
                 ->ordered()
                 ->get();
                 
-            $modules = $modules->merge($globalModules)->unique('id')->sortBy('ordering');
-        } else {
-            // Get modules without menu restrictions (show on all pages)
-            $modules = Module::published()
-                ->whereDoesntHave('menuItems')
-                ->ordered()
-                ->get();
+            return $modules->merge($globalModules)->unique('id')->sortBy('ordering')->values();
         }
         
-        // If no modules found, return empty menus
+        // Get modules without menu restrictions (show on all pages)
+        return Module::published()
+            ->whereDoesntHave('menuItems')
+            ->ordered()
+            ->get();
+    }
+
+    /**
+     * Get menus and modules for current page.
+     * Backward compatibility wrapper that processes modules and renders menus.
+     *
+     * @param int|null $activeMenuId
+     * @return array
+     */
+    public static function getMenusForPage(?int $activeMenuId = null): array
+    {
+        $language = app()->getLocale();
+        $modules = static::getModulesForPage($activeMenuId);
+        
+        $result = [
+            'menuTopHtml' => '',
+            'menuMainHtml' => '',
+            'modules' => $modules,
+            'activeMenuId' => $activeMenuId,
+        ];
+        
+        // If no modules found, return empty result
         if ($modules->isEmpty()) {
             return $result;
         }
-
-        // Process modules
-        $result['modules'] = $modules;
         
         // Find menu modules and render them
         $menuModules = $modules->filter(function($module) {
