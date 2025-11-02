@@ -99,4 +99,19 @@ class ProfileController extends Controller
 
         return redirect()->route('profile.index')->with('success', 'Профіль успішно оновлено!');
     }
+
+    /**
+     * Show user orders.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function orders()
+    {
+        $user = Auth::guard('custom')->user();
+
+        // TODO: Implement orders retrieval
+        $orders = [];
+
+        return view('front.profile.orders', compact('user', 'orders'));
+    }
 }

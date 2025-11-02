@@ -115,4 +115,99 @@ class AuthController extends Controller
     {
         return Auth::guard('custom')->check();
     }
+
+    /**
+     * Show the registration form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRegistrationForm()
+    {
+        return view('front.auth.register');
+    }
+
+    /**
+     * Handle a registration request.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:150|unique:vjprf_users,username',
+            'email' => 'required|string|email|max:100|unique:vjprf_users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::driver('md5')->make($request->password),
+            'registerDate' => now(),
+            'lastvisitDate' => now(),
+            'block' => 0,
+        ]);
+
+        Auth::guard('custom')->login($user);
+
+        $request->session()->regenerate();
+
+        return redirect($request->input('redirect', '/'));
+    }
+
+    /**
+     * Show the password reset request form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showLinkRequestForm()
+    {
+        return view('front.auth.passwords.email');
+    }
+
+    /**
+     * Send password reset link to user.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        // TODO: Implement password reset email sending
+        return back()->with('status', 'Password reset link has been sent to your email address.');
+    }
+
+    /**
+     * Show the password reset form.
+     *
+     * @param string $token
+     * @return \Illuminate\View\View
+     */
+    public function showResetForm($token)
+    {
+        return view('front.auth.passwords.reset', ['token' => $token]);
+    }
+
+    /**
+     * Reset the user password.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        // TODO: Implement password reset logic
+        return redirect()->route('auth.login')->with('status', 'Your password has been reset!');
+    }
 }

@@ -34,7 +34,10 @@
                 </div>
 
                 <div class="col-3">
-                    @include('share.layouts.partials.search')
+                    <div class="header-actions">
+                        @include('share.layouts.partials.search')
+                        <x-user-menu class="ml-4" />
+                    </div>
                 </div>
             </div>
             

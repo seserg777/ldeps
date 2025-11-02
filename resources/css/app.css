@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Header actions styles */
+.header-actions {
+    @apply flex items-center gap-4;
+}
+
+/* User menu styles */
+.user-menu button {
+    @apply relative inline-flex items-center justify-center;
+    @apply transition-all duration-200;
+}
+
+.user-menu button:hover {
+    @apply transform scale-110;
+}
+
+/* Modal backdrop blur effect */
+.backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+}
+
+/* Modal animation styles */
+[x-cloak] {
+    display: none !important;
+}

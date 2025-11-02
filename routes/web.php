@@ -133,8 +133,18 @@ Route::get('/sw.js', function () {
 // Custom Authentication routes
 Route::prefix('auth')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('auth.login');
-    Route::post('/login', [AuthController::class, 'login'])->name('auth.login.submit');
+    Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+    
+    // Registration routes
+    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+    
+    // Password reset routes
+    Route::get('/password/request', [AuthController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/password/email', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('/password/reset/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/password/reset', [AuthController::class, 'reset'])->name('password.update');
 
     // Protected routes for users
     Route::middleware(['custom.auth'])->group(function () {
@@ -151,9 +161,10 @@ Route::get('/dashboard', function () {
 
 // Profile routes
 Route::middleware(['custom.auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/profile/editaccount', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/orders', [ProfileController::class, 'orders'])->name('profile.orders');
 });
 
 // Sale Banner routes
