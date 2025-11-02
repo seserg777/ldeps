@@ -11,10 +11,8 @@
   <div class="page home">
     <section class="top">
         <div class="container">
-            {{-- Top menu SSR --}}
-            <nav class="site-menu menu-top menu-main-menu-add">
-                {!! $menuTopHtml ?? '' !!}
-            </nav>
+            {{-- Top menu - dynamic based on modules --}}
+            <x-menu name="top" :menus="$renderedMenus ?? []" class="menu-top" />
             
             {{-- Modules: Top position --}}
             @include('share.layouts.partials.modules_position', ['position' => 'top'])
@@ -31,10 +29,8 @@
                 </div>
             
                 <div class="col-7">
-                    {{-- Main menu SSR --}}
-                    <nav class="site-menu menu-main menu-mainmenu-rus">
-                        {!! $menuMainHtml ?? '' !!}
-                    </nav>
+                    {{-- Main menu - dynamic based on modules --}}
+                    <x-menu name="main" :menus="$renderedMenus ?? []" class="menu-main" />
                 </div>
 
                 <div class="col-3">
@@ -76,16 +72,15 @@
         </div>
     </main>
 
-    @isset($footerHtml)
-      <footer>
-        {!! $footerHtml !!}
-        
-        {{-- Modules: Footer position --}}
+    <footer>
         <div class="container">
+            {{-- Footer menu - dynamic based on modules --}}
+            <x-menu name="footer" :menus="$renderedMenus ?? []" class="menu-footer" />
+            
+            {{-- Modules: Footer position --}}
             @include('share.layouts.partials.modules_position', ['position' => 'footer'])
         </div>
-      </footer>
-    @endisset
+    </footer>
     
     {{-- Modules: Bottom position --}}
     <div class="container">

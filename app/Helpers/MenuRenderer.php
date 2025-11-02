@@ -146,6 +146,44 @@ class MenuRenderer
     }
 
     /**
+     * Render menu modules and return array indexed by position or module title.
+     *
+     * @param \Illuminate\Support\Collection $menuModules
+     * @return array
+     */
+    public static function renderMenuModules($menuModules): array
+    {
+        $language = app()->getLocale();
+        $rendered = [];
+        
+        foreach ($menuModules as $module) {
+            $params = $module->params_array;
+            $menuType = $params['menutype'] ?? null;
+            
+            if (!$menuType) continue;
+            
+            // Load menu items for this type
+            $menuItems = static::getMenuItems($menuType);
+            
+            // Render menu HTML
+            $menuHtml = static::renderMenu($menuItems, $language);
+            
+            // Store by position and menutype for flexible access
+            $position = $module->position ?? 'default';
+            $rendered[$position] = $menuHtml;
+            $rendered[$menuType] = $menuHtml;
+            
+            // Also store by module title (normalized as key)
+            if ($module->title) {
+                $titleKey = strtolower(str_replace([' ', '-'], '_', $module->title));
+                $rendered[$titleKey] = $menuHtml;
+            }
+        }
+        
+        return $rendered;
+    }
+
+    /**
      * Get menus and modules for current page.
      * Backward compatibility wrapper that processes modules and renders menus.
      *
