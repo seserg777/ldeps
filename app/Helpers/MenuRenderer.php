@@ -92,19 +92,20 @@ class MenuRenderer
      * SQL: SELECT m.* FROM vjprf_modules m INNER JOIN vjprf_modules_menu mm ON m.id = mm.moduleid WHERE mm.menuid = ?
      *
      * @param int|null $activeMenuId
+     * @param bool $includeGlobal Include global modules (not assigned to specific pages)
      * @return \Illuminate\Support\Collection
      */
-    public static function getModulesForPage(?int $activeMenuId = null)
+    public static function getModulesForPage(?int $activeMenuId = null, bool $includeGlobal = true)
     {
-        // Get global modules (not assigned to any specific page - show everywhere)
-        $globalModules = Module::published()
-            ->whereDoesntHave('pages')
-            ->ordered()
-            ->get();
-        
         if (!$activeMenuId) {
-            // No active menu - return only global modules
-            return $globalModules;
+            // No active menu - return only global modules if requested
+            if ($includeGlobal) {
+                return Module::published()
+                    ->whereDoesntHave('pages')
+                    ->ordered()
+                    ->get();
+            }
+            return collect();
         }
         
         // Get modules assigned to this specific page via pivot table
@@ -118,8 +119,17 @@ class MenuRenderer
             ->ordered()
             ->get();
         
-        // Merge page-specific modules with global modules
-        return $pageModules->merge($globalModules)->unique('id')->sortBy('ordering')->values();
+        // Include global modules if requested
+        if ($includeGlobal) {
+            $globalModules = Module::published()
+                ->whereDoesntHave('pages')
+                ->ordered()
+                ->get();
+            
+            return $pageModules->merge($globalModules)->unique('id')->sortBy('ordering')->values();
+        }
+        
+        return $pageModules;
     }
 
     /**

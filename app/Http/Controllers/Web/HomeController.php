@@ -21,10 +21,10 @@ class HomeController extends Controller
     {
         // Get menus and modules for homepage
         $activeMenuId = MenuRenderer::detectActiveMenuId();
-        $pageModules = MenuRenderer::getModulesForPage($activeMenuId);
+        $pageModules = MenuRenderer::getModulesForPage($activeMenuId, false); // Only page-specific modules
         $menuModules = MenuRenderer::getMenuModules($pageModules);
 
-        dd($activeMenuId, $menuModules, $pageModules);
+        dd($activeMenuId, $pageModules, $menuModules);
 
         // Placeholder homepage content area (can be replaced by widgets/partials)
         $homepageHtml = '';
