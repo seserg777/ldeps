@@ -123,6 +123,19 @@ class MenuRenderer
     }
 
     /**
+     * Filter modules collection to return only menu modules (mod_menu).
+     *
+     * @param \Illuminate\Support\Collection $modules
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getMenuModules($modules)
+    {
+        return $modules->filter(function($module) {
+            return $module->module === 'mod_menu';
+        });
+    }
+
+    /**
      * Get menus and modules for current page.
      * Backward compatibility wrapper that processes modules and renders menus.
      *
