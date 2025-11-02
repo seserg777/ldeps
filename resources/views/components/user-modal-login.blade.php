@@ -1,10 +1,11 @@
 @props(['class' => ''])
 
-<div {{ $attributes->merge(['class' => 'user-menu ' . $class]) }}>
+<div {{ $attributes->merge(['class' => 'user-menu ' . $class]) }} x-data>
     @auth
         <!-- Authorized user icon (without lock) -->
         <button
-            @click="$dispatch('open-modal', 'profile-modal')"
+            type="button"
+            @click.prevent="$dispatch('open-modal', 'profile-modal'); console.log('Profile modal clicked')"
             class="flex items-center justify-center p-2 text-gray-900 hover:text-green-600 transition-colors duration-200 rounded-lg hover:bg-gray-100"
             aria-label="Профіль користувача"
         >
@@ -18,7 +19,8 @@
     @else
         <!-- Unauthorized user icon (with lock) -->
         <button
-            @click="$dispatch('open-modal', 'auth-modal')"
+            type="button"
+            @click.prevent="$dispatch('open-modal', 'auth-modal'); console.log('Auth modal clicked')"
             class="flex items-center justify-center p-2 text-gray-900 hover:text-green-600 transition-colors duration-200 rounded-lg hover:bg-gray-100"
             aria-label="Увійти"
         >

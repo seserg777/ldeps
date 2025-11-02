@@ -12,9 +12,20 @@ $maxWidthClass = [
 @endphp
 
 <div
-    x-data="{ show: false }"
+    x-data="{ 
+        show: false,
+        init() {
+            console.log('Modal {{ $name }} initialized');
+        }
+    }"
     x-show="show"
-    x-on:open-modal.window="$event.detail === '{{ $name }}' ? show = true : null"
+    x-on:open-modal.window="
+        console.log('Event received:', $event.detail, 'Expected:', '{{ $name }}');
+        if ($event.detail === '{{ $name }}') {
+            show = true;
+            console.log('Modal {{ $name }} opened');
+        }
+    "
     x-on:close-modal.window="$event.detail === '{{ $name }}' ? show = false : null"
     x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false"

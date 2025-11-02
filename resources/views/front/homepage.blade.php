@@ -33,11 +33,14 @@
                     <x-menu name="mainmenu-rus" :menus="$renderedMenus ?? []" class="menu-main" />
                 </div>
 
-                <div class="col-3">
+                <div class="col-2">
                     <div class="header-actions">
                         @include('share.layouts.partials.search')
-                        <x-user-modal-login class="ml-4" />
                     </div>
+                </div>
+
+                <div class="col-1">
+                    <x-user-modal-login class="ml-4" />
                 </div>
             </div>
             
